@@ -1,0 +1,244 @@
+{% load static %}
+
+<!-- 🚀 WIDGET CHATBOT CAMPO MARKT -->
+<div id="cm-chatbot-root"
+     class="fixed bottom-4 right-4 z-50 flex flex-col items-end space-y-2">
+
+  <!-- Panel del chat (oculto por defecto) -->
+  <div id="cm-chatbot-panel"
+       class="hidden w-80 md:w-96 bg-white shadow-2xl rounded-2xl border border-gray-200 overflow-hidden">
+
+    <!-- Header -->
+    <div class="bg-[#f37021] text-white px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <img src="{% static 'img/robot.png' %}"
+             alt="Asesor CampoMarkt"
+             class="w-8 h-8 rounded-full object-cover">
+        <div>
+          <p class="text-sm font-semibold">Asesor CampoMarkt</p>
+          <p class="text-[11px] text-orange-100">Consultas técnicas y detección de plagas</p>
+        </div>
+      </div>
+      <button type="button"
+              id="cm-chatbot-close"
+              class="text-white/80 hover:text-white text-xl leading-none">
+        ×
+      </button>
+    </div>
+
+    <!-- Tabs (texto / imagen) -->
+    <div class="flex text-xs font-semibold border-b">
+      <button type="button"
+              id="cm-tab-texto"
+              class="w-1/2 py-2 text-center bg-white text-[#15803d] border-b-2 border-[#15803d]">
+        Asesoría técnica
+      </button>
+      <button type="button"
+              id="cm-tab-imagen"
+              class="w-1/2 py-2 text-center bg-gray-100 text-gray-500">
+        Reconocimiento de plaga
+      </button>
+    </div>
+
+    <!-- Cuerpo del chat -->
+    <div id="cm-chatbody"
+         class="h-64 overflow-y-auto px-3 py-2 text-sm bg-gray-50 space-y-2">
+      <!-- Mensaje de bienvenida -->
+      <div class="flex items-start gap-2">
+        <div class="w-7 h-7 rounded-full bg-[#f37021] flex items-center justify-center text-white text-xs">🤖</div>
+        <div class="bg-white rounded-xl px-3 py-2 shadow text-gray-700 max-w-[80%]">
+          ¡Hola! Soy tu asistente de CampoMarkt 🌱<br>
+          Escríbeme una duda técnica o sube una imagen de tu cultivo con plaga.
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario de TEXTO -->
+    <form id="cm-form-texto"
+          class="flex items-center gap-2 border-t px-2 py-2 bg-white">
+      <input id="cm-input-texto"
+             type="text"
+             placeholder="Escribe tu pregunta..."
+             class="flex-1 text-sm border rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#81BC5D]"
+             autocomplete="off">
+      <button type="submit"
+              class="bg-[#81BC5D] hover:brightness-90 text-white rounded-full px-3 py-2 text-xs font-semibold">
+        Enviar
+      </button>
+    </form>
+
+    <!-- Formulario de IMAGEN -->
+    <form id="cm-form-imagen"
+          class="hidden flex-col gap-2 border-t px-3 py-3 bg-white"
+          enctype="multipart/form-data">
+      <label class="text-xs text-gray-600">Sube una imagen de la planta afectada:</label>
+      <input id="cm-input-imagen"
+             type="file"
+             name="image"
+             accept="image/*"
+             class="text-xs">
+      <button type="submit"
+              class="mt-1 bg-[#81BC5D] hover:brightness-90 text-white rounded-full px-3 py-2 text-xs font-semibold self-end">
+        Analizar
+      </button>
+    </form>
+
+  </div>
+
+  <!-- Botón flotante con el robot -->
+  <button id="cm-chatbot-toggle"
+          type="button"
+          class="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-white shadow-2xl overflow-hidden bg-white hover:scale-105 transition transform">
+    <img src="{% static 'img/robot.png' %}"
+         alt="Chat CampoMarkt"
+         class="w-full h-full object-cover">
+  </button>
+</div>
+
+<script>
+(function() {
+  // 🔗 Usamos las URLs reales de Django en vez de apiBase = '/api/'
+  const chatUrl   = "{% url 'chat_api' %}";
+  const uploadUrl = "{% url 'upload_image_api' %}";
+
+  const panel      = document.getElementById('cm-chatbot-panel');
+  const toggleBtn  = document.getElementById('cm-chatbot-toggle');
+  const closeBtn   = document.getElementById('cm-chatbot-close');
+  const tabTexto   = document.getElementById('cm-tab-texto');
+  const tabImagen  = document.getElementById('cm-tab-imagen');
+  const formTexto  = document.getElementById('cm-form-texto');
+  const formImagen = document.getElementById('cm-form-imagen');
+  const inputTexto = document.getElementById('cm-input-texto');
+  const inputImagen= document.getElementById('cm-input-imagen');
+  const chatBody   = document.getElementById('cm-chatbody');
+
+  function scrollBottom() {
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function addMessage(text, from) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'flex items-start gap-2 ' + (from === 'user' ? 'justify-end' : '');
+    let bubbleClasses = 'rounded-xl px-3 py-2 shadow text-sm max-w-[80%] ';
+    if (from === 'user') {
+      bubbleClasses += 'bg-[#81BC5D] text-white';
+      wrapper.innerHTML = `<div class="${bubbleClasses}">${text}</div>`;
+    } else {
+      bubbleClasses += 'bg-white text-gray-700';
+      wrapper.innerHTML = `
+        <div class="w-7 h-7 rounded-full bg-[#f37021] flex items-center justify-center text-white text-xs mr-1">🤖</div>
+        <div class="${bubbleClasses}">${String(text).replace(/\n/g,'<br>')}</div>`;
+    }
+    chatBody.appendChild(wrapper);
+    scrollBottom();
+  }
+
+  // Toggle mostrar/ocultar
+  toggleBtn.addEventListener('click', () => {
+    panel.classList.toggle('hidden');
+  });
+  closeBtn.addEventListener('click', () => {
+    panel.classList.add('hidden');
+  });
+
+  // Tabs
+  tabTexto.addEventListener('click', () => {
+    tabTexto.className  = "w-1/2 py-2 text-center bg-white text-[#15803d] border-b-2 border-[#15803d]";
+    tabImagen.className = "w-1/2 py-2 text-center bg-gray-100 text-gray-500";
+    formTexto.classList.remove('hidden');
+    formImagen.classList.add('hidden');
+  });
+
+  tabImagen.addEventListener('click', () => {
+    tabImagen.className = "w-1/2 py-2 text-center bg-white text-[#15803d] border-b-2 border-[#15803d]";
+    tabTexto.className  = "w-1/2 py-2 text-center bg-gray-100 text-gray-500";
+    formTexto.classList.add('hidden');
+    formImagen.classList.remove('hidden');
+  });
+
+  // 📝 Envío de TEXTO -> chat_api
+  formTexto.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const text = inputTexto.value.trim();
+    if (!text) return;
+    addMessage(text, 'user');
+    inputTexto.value = '';
+
+    try {
+      const res = await fetch(chatUrl, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({message:text})
+      });
+
+      if (!res.ok) {
+        const txt = await res.text();
+        console.error('Error HTTP en chat:', res.status, txt);
+        addMessage("Hubo un error al procesar tu mensaje.", 'bot');
+        return;
+      }
+
+      const data = await res.json();
+      addMessage(data.response || "No se obtuvo respuesta del servidor.", 'bot');
+    } catch (err) {
+      console.error(err);
+      addMessage("Ocurrió un error al contactar el servidor.", 'bot');
+    }
+  });
+
+  // 📷 Envío de IMAGEN -> upload_image_api
+  formImagen.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!inputImagen.files.length) {
+      addMessage("Por favor selecciona una imagen primero.", 'bot');
+      return;
+    }
+
+    const file = inputImagen.files[0];
+    const fd = new FormData();
+    fd.append('image', file);  // 👈 mismo nombre que espera tu view
+
+    addMessage("Imagen enviada, analizando...", 'user');
+
+    try {
+      const res = await fetch(uploadUrl, {
+        method:'POST',
+        body: fd
+      });
+
+      if (!res.ok) {
+        const txt = await res.text();
+        console.error('Error HTTP en upload:', res.status, txt);
+        addMessage("Hubo un error al analizar la imagen.", 'bot');
+        return;
+      }
+
+      const data = await res.json();
+
+      if (data.success === false || data.error) {
+        addMessage(data.message || data.error || "No se pudo reconocer la enfermedad.", 'bot');
+        return;
+      }
+
+      let txt = `Se detectó: <b>${data.disease_name || data.predicted_label}</b> en el cultivo <b>${data.crop}</b>.<br>`;
+      txt += `Confianza aproximada: ${data.confidence}%<br><br>`;
+      if (data.symptoms) {
+        txt += `<b>Síntomas:</b> ${data.symptoms}<br><br>`;
+      }
+      if (data.recommendations) {
+        txt += `<b>Recomendaciones:</b> ${data.recommendations}<br><br>`;
+      }
+      if (data.related_articles) {
+        txt += `<b>Artículos relacionados:</b><br>${String(data.related_articles).replace(/\n/g,'<br>')}`;
+      }
+
+      addMessage(txt, 'bot');
+      inputImagen.value = "";
+    } catch (err) {
+      console.error(err);
+      addMessage("Ocurrió un error al analizar la imagen.", 'bot');
+    }
+  });
+
+})();
+</script>

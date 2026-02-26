@@ -1,0 +1,105 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Completar registro | CampoMarkt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-green-50 flex items-center justify-center p-4">
+
+  <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 bg-white rounded-2xl shadow-2xl overflow-hidden border">
+
+    <!-- LADO IZQUIERDO (IMAGEN) -->
+    <div class="hidden md:block relative">
+      <img src="{% static 'img/1.jpg' %}" alt="CampoMarkt"
+           class="absolute inset-0 w-full h-full object-cover">
+      <div class="absolute inset-0 bg-black/40"></div>
+
+      <div class="relative p-10 h-full flex flex-col justify-end">
+        <h2 class="text-white text-3xl font-extrabold">¡Ya casi!</h2>
+        <p class="text-white/90 mt-2 text-sm leading-relaxed">
+          Estás a un paso de terminar el registro con Google.
+          Completa el correo y continúa.
+        </p>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="p-8 md:p-10">
+      <div class="flex items-center gap-3 mb-6">
+        <img src="{% static 'img/logo.png' %}" onerror="this.style.display='none'"
+             class="h-10 w-10 rounded-lg" alt="Logo">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold text-green-700">Completar registro</h1>
+          <p class="text-gray-500 text-sm">Usando tu cuenta de Google</p>
+        </div>
+      </div>
+
+      <!-- MENSAJES (por si allauth manda alguno) -->
+      {% if messages %}
+        <div class="space-y-2 mb-4">
+          {% for message in messages %}
+            <div class="p-3 rounded-lg text-sm
+              {% if message.tags == 'success' %}bg-green-100 text-green-800 border border-green-200
+              {% elif message.tags == 'error' %}bg-red-100 text-red-800 border border-red-200
+              {% else %}bg-yellow-100 text-yellow-800 border border-yellow-200{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-100">
+        <p class="text-gray-700 text-sm">
+          Estás a punto de usar tu cuenta de Google para entrar a <b>CampoMarkt</b>.
+          Como último paso, confirma tu correo.
+        </p>
+      </div>
+
+      <form method="post" action="">
+        {% csrf_token %}
+
+        <!-- RENDER FORM bonito -->
+        <div class="space-y-4">
+
+          <div>
+            <label class="block text-gray-700 font-semibold mb-1">Correo</label>
+
+            <!-- si form trae el email -->
+            {{ form.email.errors }}
+            <input type="email"
+                   name="email"
+                   value="{{ form.email.value|default:'' }}"
+                   required
+                   class="w-full px-4 py-3 rounded-lg bg-green-100 outline-none focus:ring-2 focus:ring-green-400"
+                   placeholder="tucorreo@gmail.com">
+          </div>
+
+          {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+          {% endif %}
+
+          <button type="submit"
+                  class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg transition">
+            Finalizar registro
+          </button>
+
+          <a href="/main/"
+             class="block text-center text-sm text-gray-500 hover:text-green-700">
+            Volver al inicio
+          </a>
+        </div>
+      </form>
+
+      <p class="text-xs text-gray-400 mt-6 text-center">
+        Al continuar, aceptas las políticas de CampoMarkt.
+      </p>
+    </div>
+
+  </div>
+
+</body>
+</html>

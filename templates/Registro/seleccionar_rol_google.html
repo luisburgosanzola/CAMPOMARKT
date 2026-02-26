@@ -1,0 +1,90 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Selecciona tu tipo de usuario | CampoMarkt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Efecto visual cuando se selecciona */
+    input[type="radio"]:checked + div {
+      border: 2px solid #16a34a;
+      background-color: #f0fdf4;
+      box-shadow: 0 0 0 2px #16a34a33;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+
+  <div class="w-full max-w-xl mx-auto bg-white rounded-xl shadow-2xl p-8 border border-gray-200">
+    
+    <h1 class="text-2xl font-bold text-green-700 text-center mb-2">
+      ¡Bienvenido, {{ user.first_name|default:user.username|default:user.email }}!
+    </h1>
+
+    <p class="text-center text-gray-600 mb-6">
+      Antes de continuar, cuéntanos qué tipo de usuario eres en CampoMarkt.
+    </p>
+
+    {% if messages %}
+      <div class="space-y-2 mb-4">
+        {% for message in messages %}
+          <div class="p-3 rounded-lg text-sm
+            {% if message.tags == 'success' %} bg-green-100 text-green-800 border border-green-400
+            {% elif message.tags == 'error' %} bg-red-100 text-red-800 border border-red-400
+            {% else %} bg-gray-100 text-gray-800 border border-gray-400 {% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" class="space-y-6">
+      {% csrf_token %}
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!-- CLIENTE -->
+        <label class="cursor-pointer">
+          <input type="radio" name="rol" value="cliente" class="hidden" required>
+          <div class="border rounded-xl p-4 hover:shadow-md transition flex flex-col items-center gap-2">
+            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-xl">
+              🛒
+            </div>
+            <span class="font-semibold text-gray-800">Cliente</span>
+            <p class="text-xs text-gray-500 text-center">
+              Quiero comprar productos agrícolas directamente a los productores.
+            </p>
+          </div>
+        </label>
+
+        <!-- PRODUCTOR -->
+        <label class="cursor-pointer">
+          <input type="radio" name="rol" value="productor" class="hidden" required>
+          <div class="border rounded-xl p-4 hover:shadow-md transition flex flex-col items-center gap-2">
+            <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-xl">
+              🌱
+            </div>
+            <span class="font-semibold text-gray-800">Productor</span>
+            <p class="text-xs text-gray-500 text-center">
+              Quiero publicar y vender los productos de mi finca o cultivo.
+            </p>
+          </div>
+        </label>
+
+      </div>
+
+      <button
+        type="submit"
+        class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg mt-4">
+        Continuar
+      </button>
+    </form>
+
+  </div>
+
+</body>
+</html>

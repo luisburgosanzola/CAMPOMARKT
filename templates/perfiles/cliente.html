@@ -1,0 +1,313 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfil de Cliente - CampoMarkt</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 font-sans">
+
+  {% if messages %}
+  <div class="max-w-7xl mx-auto px-4 mt-4 space-y-2">
+    {% for message in messages %}
+      <div class="p-3 rounded-xl text-sm shadow-sm border
+        {% if message.tags == 'success' %}bg-green-50 text-green-800 border-green-200
+        {% elif message.tags == 'error' %}bg-red-50 text-red-800 border-red-200
+        {% else %}bg-gray-50 text-gray-800 border-gray-200{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Header -->
+  <header class="shadow-sm">
+
+    <!-- Top bar -->
+    <div class="bg-[#f37021] flex flex-col md:flex-row md:justify-between md:items-center gap-4 px-4 md:px-14 py-4">
+
+      <!-- Logo -->
+      <a href="{% url 'main_page' %}" class="flex items-center space-x-3">
+        <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt"
+             class="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover ring-2 ring-white/40" />
+        <div class="leading-tight">
+          <span class="text-white font-extrabold text-2xl md:text-3xl tracking-wide">CAMPOMARKT</span>
+          <p class="text-white/90 text-xs md:text-sm -mt-1">Tu mercado directo del campo</p>
+        </div>
+      </a>
+
+      <!-- User + search -->
+      <div class="flex flex-col items-end gap-2 w-full md:w-auto">
+        <a href="{% url 'mi_perfil' %}"
+           class="flex items-center gap-2 bg-white/85 rounded-full px-4 py-2 hover:bg-white transition shadow-sm">
+          <span class="text-sm font-semibold text-gray-800">
+            {{ user.first_name|default:user.username|default:user.email }}
+          </span>
+
+          {% if user.profile_image %}
+            <img src="{{ user.profile_image.url }}" alt="Foto perfil"
+                 class="w-10 h-10 rounded-full object-cover ring-2 ring-orange-200" />
+          {% else %}
+            <img src="{% static 'img/user_default.png' %}" alt="Foto perfil"
+                 class="w-10 h-10 rounded-full object-cover ring-2 ring-orange-200" />
+          {% endif %}
+        </a>
+
+        <div class="flex items-center bg-white/85 rounded-full px-4 py-2 shadow-sm w-full md:w-auto">
+          <input type="text" placeholder="¡Busca aquí!"
+                 class="bg-transparent outline-none text-sm placeholder-gray-600 w-full md:w-56" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="bg-[#81BC5D] text-white">
+      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-4 md:px-6 py-3">
+
+        <!-- IMPORTANTE: scroll horizontal en móvil -->
+        <ul class="flex items-center gap-2 md:gap-0 text-xs md:text-sm font-semibold uppercase tracking-wide
+                   overflow-x-auto whitespace-nowrap max-w-full px-2">
+          <li><a href="{% url 'main_page' %}" class="hover:text-orange-200 px-2">Inicio</a></li>
+
+          <li class="flex items-center">
+            <span class="hidden md:inline mx-2 md:mx-3 opacity-60">|</span>
+            <a href="{% url 'listar_productos' %}" class="hover:text-orange-200 px-2">Productos</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'listar_ofertas' %}" class="hover:text-orange-300 px-2">Ofertas</a>
+
+          </li>
+
+          <li class="flex items-center">
+            <span class="hidden md:inline mx-2 md:mx-3 opacity-60">|</span>
+            <a href="{% url 'nosotros' %}" class="hover:text-orange-200 px-2">Nosotros</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="hidden md:inline mx-2 md:mx-3 opacity-60">|</span>
+            <a href="{% url 'mis_favoritos' %}" class="hover:text-orange-200 px-2">Favoritos</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="hidden md:inline mx-2 md:mx-3 opacity-60">|</span>
+            <a href="#" class="hover:text-orange-200 px-2">Novedades</a>
+          </li>
+        </ul>
+
+        <!-- Bell -->
+        <div class="absolute right-3">
+          <div class="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white hover:text-orange-200 cursor-pointer"
+                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+            </svg>
+            <span class="absolute -top-1 -right-1 bg-red-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">
+              3
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-5xl mx-auto px-4 md:px-6 py-10">
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+
+      <div class="px-6 md:px-8 py-6 bg-gradient-to-r from-green-50 via-white to-orange-50 border-b">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+
+          <!-- FOTO GRANDE -->
+          <div class="flex items-center gap-4">
+            {% if user.profile_image %}
+              <img src="{{ user.profile_image.url }}" class="w-24 h-24 rounded-full object-cover ring-4 ring-orange-200" alt="Foto de perfil">
+            {% else %}
+              <img src="{% static 'img/user_default.png' %}" class="w-24 h-24 rounded-full object-cover ring-4 ring-orange-200" alt="Foto de perfil">
+            {% endif %}
+
+            <div>
+              <h1 class="text-2xl md:text-3xl font-extrabold text-green-800">
+                {{ user.first_name|default:user.username|default:user.email }}
+              </h1>
+              <p class="text-sm text-gray-600 mt-1">Gestiona tu información para comprar más rápido.</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
+              {{ user.rol|default:"cliente" }}
+            </span>
+            {% if editable %}
+              <span class="px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-800 border border-orange-200">
+                Modo edición
+              </span>
+            {% else %}
+              <span class="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200">
+                Solo lectura
+              </span>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form method="post" enctype="multipart/form-data" class="px-6 md:px-8 py-8 space-y-7">
+        {% csrf_token %}
+
+        {% if editable %}
+          <!-- FOTO DE PERFIL (RESPONSIVE) -->
+          <div class="flex flex-col md:flex-row items-center md:items-end gap-5">
+            <div class="flex flex-col items-center">
+              <img
+                id="profilePreview"
+                src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'img/user_default.png' %}{% endif %}"
+                alt="Foto de perfil"
+                class="w-28 h-28 rounded-full object-cover ring-4 ring-orange-200"
+              />
+              <p class="mt-2 text-xs text-gray-500">Foto de perfil</p>
+            </div>
+
+            <div class="w-full md:w-auto">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Cambiar foto</label>
+
+              <input
+                id="profileInput"
+                type="file"
+                name="profile_image"
+                accept="image/png,image/jpeg"
+                class="block w-full md:w-96 text-sm text-gray-700
+                       file:mr-4 file:py-2 file:px-4
+                       file:rounded-lg file:border-0
+                       file:text-sm file:font-semibold
+                       file:bg-orange-100 file:text-orange-800
+                       hover:file:bg-orange-200"
+              />
+
+              <p class="text-xs text-gray-500 mt-1">JPG/PNG recomendado.</p>
+            </div>
+          </div>
+
+          <!-- PREVIEW JS -->
+          <script>
+            const input = document.getElementById("profileInput");
+            const preview = document.getElementById("profilePreview");
+
+            if (input && preview) {
+              input.addEventListener("change", function () {
+                const file = this.files && this.files[0];
+                if (!file) return;
+                if (!file.type.startsWith("image/")) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                  preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+              });
+            }
+          </script>
+        {% endif %}
+
+        <!-- Datos del usuario -->
+        <section>
+          <h2 class="text-sm font-bold text-gray-800 mb-4 uppercase tracking-wide">Datos de cuenta</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-600">Nombre</label>
+              <input type="text" name="first_name" value="{{ user.first_name }}" {% if not editable %}readonly{% endif %}
+                     class="mt-1 w-full rounded-xl border px-4 py-3 text-sm bg-gray-50">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-600">Apellido</label>
+              <input type="text" name="last_name" value="{{ user.last_name }}" {% if not editable %}readonly{% endif %}
+                     class="mt-1 w-full rounded-xl border px-4 py-3 text-sm bg-gray-50">
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="block text-xs font-semibold text-gray-600">Correo electrónico</label>
+              <input type="email" name="email" value="{{ user.email }}" {% if not editable %}readonly{% endif %}
+                     class="mt-1 w-full rounded-xl border px-4 py-3 text-sm bg-gray-50">
+            </div>
+          </div>
+        </section>
+
+        <!-- Datos cliente -->
+        <section>
+          <h2 class="text-sm font-bold text-gray-800 mb-4 uppercase tracking-wide">Datos de envío</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="md:col-span-2">
+              <label class="block text-xs font-semibold text-gray-600">Dirección</label>
+              <input type="text" name="direccion" value="{{ perfil.direccion }}" {% if not editable %}readonly{% endif %}
+                     class="mt-1 w-full rounded-xl border px-4 py-3 text-sm bg-gray-50">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-600">Teléfono</label>
+              <input type="text" name="telefono" value="{{ perfil.telefono }}" {% if not editable %}readonly{% endif %}
+                     class="mt-1 w-full rounded-xl border px-4 py-3 text-sm bg-gray-50">
+            </div>
+
+            <div class="flex items-end">
+              <div class="w-full rounded-xl border bg-gray-50 px-4 py-3 text-sm">
+                <p class="text-xs font-semibold text-gray-600 mb-1">Estado del teléfono</p>
+                {% if perfil.telefono_verificado %}
+                  <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-800 border border-green-200 text-xs font-semibold">
+                    ✅ Verificado
+                  </div>
+                {% else %}
+                  <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-800 border border-orange-200 text-xs font-semibold">
+                    ⚠️ Sin verificar
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Buttons -->
+        <div class="pt-3 flex flex-col sm:flex-row gap-3 justify-center">
+          {% if editable %}
+            <button type="submit"
+                    class="inline-flex items-center justify-center gap-2 bg-green-700 text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-green-800 shadow-sm">
+              Guardar cambios
+            </button>
+            <a href="{% url 'mi_perfil' %}"
+               class="inline-flex items-center justify-center gap-2 bg-gray-200 text-gray-800 px-6 py-3 rounded-xl text-sm font-bold hover:bg-gray-300">
+              Cancelar
+            </a>
+          {% else %}
+            <a href="?editar=true"
+               class="inline-flex items-center justify-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-orange-700 shadow-sm">
+              Editar perfil
+            </a>
+          {% endif %}
+
+          <a href="{% url 'logout_page' %}"
+             class="inline-flex items-center justify-center gap-2 bg-red-600 text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-red-700 shadow-sm">
+            Cerrar sesión
+          </a>
+        </div>
+
+      </form>
+    </div>
+
+    <p class="text-center text-xs text-gray-500 mt-6">
+      CampoMarkt · Compra directo del productor con confianza.
+    </p>
+  </main>
+
+</body>
+</html>

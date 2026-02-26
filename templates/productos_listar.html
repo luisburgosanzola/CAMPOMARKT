@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="es">
+{% load static %}
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Productos | CampoMarkt</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --orange: #f37021;
+      --green: #15803d;
+      --peach: #ffffff;
+      /* <-- antes era #fbeadf */
+    }
+
+    body {
+      background-color: var(--peach);
+    }
+  </style>
+
+</head>
+
+<body class="min-h-screen flex flex-col antialiased text-gray-700">
+
+  <!-- HEADER -->
+  <!-- HEADER -->
+  <!-- Header -->
+  <header>
+    <!-- Parte superior naranja -->
+    <div class="bg-[#f37021] flex justify-between items-center px-14 py-4">
+      <!-- Logo e Identidad -->
+      <div class="flex items-center space-x-3">
+        <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt" class="w-16 h-16 rounded-full object-cover" />
+        <span class="text-white font-bold text-3xl tracking-wide">
+          CAMPOMARKT
+        </span>
+      </div>
+
+      <!-- Usuario + Buscador (uno debajo del otro) -->
+      <div class="flex flex-col items-end space-y-2">
+
+        <!-- Usuario / Login / Registro -->
+        {% if user.is_authenticated %}
+        <!-- Usuario logueado: muestra chip con nombre y acceso al perfil -->
+        <a href="{% url 'mi_perfil' %}"
+          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
+          <span class="text-sm font-semibold text-gray-800">
+            {{ user.first_name|default:user.username|default:user.email }}
+          </span>
+
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6 text-gray-700">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+          </svg>
+        </a>
+        {% else %}
+        <!-- Visitante: mostrar Iniciar sesión + Registrarse -->
+        <div class="flex items-center space-x-2">
+          <a href="{% url 'login_page' %}"
+            class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
+            <span class="text-sm font-semibold text-gray-800">
+              Iniciar sesión
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-6 h-6 text-gray-700">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+            </svg>
+          </a>
+
+          <a href="{% url 'register_page' %}"
+            class="bg-green-700 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-green-800 transition">
+            Registrarse
+          </a>
+        </div>
+        {% endif %}
+
+
+
+        <!-- Campo de búsqueda -->
+        <form action="{% url 'buscar_global' %}" method="get"
+          class="flex items-center bg-orange-100 rounded-full px-4 py-1.5">
+          <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
+            class="bg-transparent outline-none text-sm placeholder-gray-600 w-52" />
+
+          <button type="submit" aria-label="Buscar">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- Barra de navegación verde -->
+    <nav class="bg-[#81BC5D] text-white py-4">
+      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-6">
+        <ul class="flex items-center text-sm font-semibold uppercase tracking-wide">
+          <li>
+            <a href="{% url 'main_page' %}" class="hover:text-orange-300 px-2">
+              Inicio
+            </a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'listar_productos' %}" class="hover:text-orange-300 px-2">Productos</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'listar_ofertas' %}" class="hover:text-orange-300 px-2">Ofertas</a>
+
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'nosotros' %}" class="hover:text-orange-300 px-2">Nosotros</a>
+          </li>
+
+          {% if user.is_authenticated %}
+          <!-- Solo mostrar 'Favoritos' si el usuario está logueado -->
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'mis_favoritos' %}" class="hover:text-orange-300 px-2">Favoritos</a>
+          </li>
+          {% endif %}
+
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="#" class="hover:text-orange-300 px-2">Novedades</a>
+          </li>
+          <li>
+            {% if request.user.is_authenticated and request.user.rol == "productor" %}
+            <a href="{% url 'agregar_producto' %}" class="hover:text-orange-300 px-2">
+              Publicar producto
+            </a>
+            {% endif %}
+
+          </li>
+        </ul>
+
+        <!-- CAMPANA TOTALMENTE A LA DERECHA -->
+        <div class="absolute right-2">
+          <div class="relative">
+
+            <!-- BOTÓN CAMPANA -->
+            <button id="btnBell" type="button" class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 text-white hover:text-orange-300 cursor-pointer">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+              </svg>
+
+              {% if user.is_authenticated and notif_unread > 0 %}
+              <span
+                class="absolute -top-1 -right-1 bg-red-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">
+                {{ notif_unread }}
+              </span>
+              {% endif %}
+            </button>
+
+            <!-- DROPDOWN -->
+            {% if user.is_authenticated %}
+            <div id="notifDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
+
+              <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
+
+              {% for n in notif_last %}
+              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-gray-50">
+                <p class="text-sm text-gray-800">{{ n.message }}</p>
+                <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+              </a>
+              {% empty %}
+              <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+
+          </div>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            const btn = document.getElementById("btnBell");
+            const dropdown = document.getElementById("notifDropdown");
+
+            if (!btn || !dropdown) return;
+
+            // abrir/cerrar al click
+            btn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              dropdown.classList.toggle("hidden");
+            });
+
+            // click afuera => cerrar
+            document.addEventListener("click", () => {
+              dropdown.classList.add("hidden");
+            });
+
+            // evitar que click dentro del dropdown lo cierre antes de abrir links
+            dropdown.addEventListener("click", (e) => {
+              e.stopPropagation();
+            });
+          });
+        </script>
+
+      </div>
+    </nav>
+
+  </header>
+
+
+  <!-- CONTENIDO -->
+  <main class="flex-grow max-w-7xl mx-auto px-6 py-10 ">
+
+    <!-- Filtros y categorías -->
+    <section class="py-16 bg-[color:var(--peach)]">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">
+          Explora nuestras categorías
+        </h2>
+
+        <!-- Filtros -->
+        <div class="flex justify-center mb-10">
+          <form method="get" class="bg-white rounded-xl shadow-md px-8 py-6 w-full max-w-5xl">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center">
+              <!-- Buscar por nombre -->
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-700">Buscar producto</label>
+                <input type="text" name="busqueda" placeholder="Ej: manzana" value="{{ busqueda|default:'' }}" class="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2
+                              focus:ring-green-500 focus:border-green-500">
+              </div>
+
+              <!-- Categoría -->
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-700">Categoría</label>
+                <select name="categoria" class="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2
+               focus:ring-green-500 focus:border-green-500">
+                  <option value="">Todas</option>
+
+                  {% for cat in categorias %}
+                  <option value="{{ cat.nombre }}" {% if categoria_seleccionada == cat.nombre %} selected{% endif %}>
+                    {{ cat.nombre }}
+                  </option>
+                  {% endfor %}
+                </select>
+
+
+              </div>
+
+              <!-- Orden -->
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-700">Ordenar por</label>
+                <select name="orden" class="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2
+               focus:ring-green-500 focus:border-green-500">
+                  <option value="">Por defecto</option>
+
+                  <option value="precio_asc" {% if orden == 'precio_asc' %}selected{% endif %}>
+                    Precio: menor a mayor
+                  </option>
+
+                  <option value="precio_desc" {% if orden == 'precio_desc' %}selected{% endif %}>
+                    Precio: mayor a menor
+                  </option>
+                </select>
+
+              </div>
+            </div>
+
+            <!-- Botones centrados -->
+            <div class="flex justify-center gap-4 mt-6">
+              <a href="{% url 'listar_productos' %}" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium
+                        hover:bg-gray-300 transition">
+                Limpiar filtros
+              </a>
+              <button type="submit" class="px-6 py-2 bg-[color:var(--green)] text-white rounded-lg text-sm font-semibold
+                             hover:brightness-90 transition">
+                Buscar
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Tarjetas de categorías -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Categoría Frutas -->
+          <div class="flex flex-col items-center text-center bg-white rounded-lg shadow-lg overflow-hidden">
+            <img src="https://libbys.es/wordpress/wp-content/uploads/2018/10/estadosfruta.jpg" alt="Frutas"
+              class="w-full h-56 object-cover">
+            <div class="p-6">
+              <h3 class="text-xl font-semibold text-gray-800">Frutas</h3>
+              <p class="text-gray-600">
+                Frescas y naturales, directo del campo a tu mesa.
+              </p>
+              <button onclick="filtrarCategoria('fruta')"
+                class="mt-4 inline-block text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-full">
+                Ver más
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Categoría Tubérculos -->
+          <div class="flex flex-col items-center text-center bg-white rounded-lg shadow-lg overflow-hidden">
+            <img
+              src="https://media.istockphoto.com/id/1179964582/es/foto/ra%C3%ADces-org%C3%A1nicas-legumbres-y-tub%C3%A9rculos.jpg?s=612x612&w=0&k=20&c=bg7fpKQxthWvDbGYlKFE4BwWXCGCcHoA6l2gg0l-fHg="
+              alt="Tubérculos" class="w-full h-56 object-cover">
+            <div class="p-6">
+              <h3 class="text-xl font-semibold text-gray-800">Tubérculos</h3>
+              <p class="text-gray-600">
+                Descubre los mejores tubérculos para tu cocina.
+              </p>
+              <button onclick="filtrarCategoria('tuberculo')"
+                class="mt-4 inline-block text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-full">
+                Ver más
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Categoría Verduras -->
+          <div class="flex flex-col items-center text-center bg-white rounded-lg shadow-lg overflow-hidden">
+            <img
+              src="https://verduras.consumer.es/sites/verduras/files/styles/max_2600x2600/public/images/verduras.webp?itok=XWwowr2t"
+              alt="Verduras" class="w-full h-56 object-cover">
+            <div class="p-6">
+              <h3 class="text-xl font-semibold text-gray-800">Verduras</h3>
+              <p class="text-gray-600">
+                Variedad de verduras frescas y saludables.
+              </p>
+              <button onclick="filtrarCategoria('verdura')"
+                class="mt-4 inline-block text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-full">
+                Ver más
+              </button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Productos publicados -->
+
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+      Productos publicados
+    </h2>
+
+    <div id="contenedor-productos" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+
+      {% for p in productos %}
+      <article class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 flex flex-col">
+        <!-- Imagen -->
+        {% if p.imagen_principal %}
+        <img src="{{ p.imagen_principal.url }}" alt="{{ p.nombre }}" class="h-40 w-full object-cover">
+        {% else %}
+        <div class="h-40 w-full flex items-center justify-center bg-gray-100 text-gray-400 text-sm">
+          Sin imagen
+        </div>
+        {% endif %}
+
+        <!-- Contenido -->
+        <div class="p-4 flex-1 flex flex-col">
+          <div class="flex items-start justify-between gap-2 mb-1">
+            <h4 class="font-bold text-lg text-gray-800">
+              {{ p.nombre }}
+            </h4>
+
+            {% if p.categoria %}
+            <span class="text-xs px-2 py-1 rounded-full bg-[color:var(--green)]
+                               text-white whitespace-nowrap">
+              {{ p.categoria.nombre }}
+            </span>
+            {% endif %}
+          </div>
+
+          {% if p.descripcion %}
+          <p class="text-sm text-gray-600 mb-2">
+            {{ p.descripcion|truncatechars:100 }}
+          </p>
+          {% endif %}
+
+          <!-- Info técnica -->
+          <div class="text-xs text-gray-500 mb-3 space-y-0.5">
+            {% if user.is_authenticated %}
+            <p>
+              <strong>Productor:</strong>
+              {% if p.productor and p.productor.username %}
+              <a href="{% url 'perfil_productor_publico' p.productor.username %}"
+                class="text-green-700 font-semibold hover:underline">
+                {{ p.productor.username }}
+              </a>
+              {% else %}
+              <span class="italic text-gray-400">Sin productor asignado</span>
+              {% endif %}
+            </p>
+
+            {% endif %}
+
+
+            {% if p.tipo_cultivo %}
+            <p><strong>Cultivo:</strong> {{ p.tipo_cultivo }}</p>
+            {% endif %}
+
+            {% if p.variedad %}
+            <p><strong>Variedad:</strong> {{ p.variedad }}</p>
+            {% endif %}
+
+            {% if p.presentacion %}
+            <p><strong>Presentación:</strong> {{ p.presentacion }}</p>
+            {% endif %}
+          </div>
+
+          <!-- Precio / stock / botón + favorito -->
+          <div class="mt-auto flex items-center justify-between gap-2">
+            <!-- Precio -->
+            <div class="flex flex-col">
+              <span class="font-bold text-[color:var(--orange)] text-base">
+                $ {{ p.precio_unitario }}
+              </span>
+              <span class="text-xs text-gray-500">
+                /
+                {% if p.get_unidad_medida_display %}
+                {{ p.get_unidad_medida_display }}
+                {% else %}
+                {{ p.unidad_medida }}
+                {% endif %}
+              </span>
+              <span class="text-xs text-gray-500">
+                Stock: {{ p.cantidad_disponible }}
+              </span>
+            </div>
+
+            <!-- Favorito + Ver detalles -->
+            <div class="flex flex-col items-end gap-2">
+              <!-- BOTÓN FAVORITO EN LISTA (SIN RECARGAR) -->
+              <form method="post" action="{% url 'toggle_favorito' p.id %}" data-producto-id="{{ p.id }}"
+                onsubmit="toggleFavoritoLista(event)">
+
+                {% csrf_token %}
+                <button type="submit" id="btn-fav-{{ p.id }}"
+                  data-favorito="{% if p.es_favorito_usuario %}true{% else %}false{% endif %}" class="flex items-center gap-1 px-3 py-1 rounded-full border text-xs font-semibold
+                               {% if p.es_favorito_usuario %}
+                                 bg-red-100 text-red-600 border-red-400 hover:bg-red-200
+                               {% else %}
+                                 bg-white text-gray-700 border-gray-300 hover:bg-gray-100
+                               {% endif %}">
+                  <span class="text-base">
+                    {% if p.es_favorito_usuario %}❤️{% else %}🤍{% endif %}
+                  </span>
+                  <span>
+                    {% if p.es_favorito_usuario %}
+                    Quitar
+                    {% else %}
+                    Favorito
+                    {% endif %}
+                  </span>
+                </button>
+              </form>
+
+
+
+
+
+              <!-- Ver detalles -->
+              <a href="{% url 'detalle_producto' p.id %}" class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-semibold
+                            text-white bg-[color:var(--green)] hover:brightness-90">
+                Ver detalles
+              </a>
+            </div>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% for p in productos %}
+
+    {% empty %}
+    <p class="text-sm text-gray-500 italic">
+      Aún no hay productos registrados.
+    </p>
+    {% endfor %}
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#f37021] text-black mt-10">
+    <div class="max-w-6xl mx-auto px-6 py-10">
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start text-center md:text-left">
+
+        <!-- SERVICIOS -->
+        <div class="md:pl-6">
+          <h3 class="font-bold text-xl mb-4">SERVICIOS</h3>
+          <ul class="space-y-2 text-sm">
+            <li>Asesorías</li>
+            <li>Acerca de nosotros</li>
+            <li>Contáctanos</li>
+          </ul>
+        </div>
+
+        <!-- REDES SOCIALES -->
+        <div class="flex flex-col items-center">
+          <h3 class="font-bold text-xl mb-4">Redes sociales</h3>
+
+          <div class="flex gap-5">
+            <!-- WHATSAPP -->
+            <a href="https://wa.me/573212279231?text=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20mas%20informacion%20por%20favor"
+              target="_blank" class="hover:scale-110 transition">
+              <img
+                src="https://thumbs.dreamstime.com/b/logotipo-de-whatsapp-verde-para-web-y-app-ui-aislado-en-fondo-blanco-png-transparente-265016409.jpg"
+                class="w-14 h-14 rounded-xl shadow-md" alt="WhatsApp">
+            </a>
+
+            <!-- FACEBOOK -->
+            <a href="https://m.me/61584277056410?ref=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20más%20información"
+              target="_blank" class="hover:scale-110 transition">
+              <img
+                src="https://static.vecteezy.com/system/resources/previews/018/910/719/non_2x/facebook-logo-facebook-icon-free-free-vector.jpg"
+                class="w-14 h-14 rounded-xl shadow-md" alt="Facebook">
+            </a>
+
+            <!-- INSTAGRAM -->
+            <a href="https://instagram.com/CAMPOMARKT" target="_blank" class="hover:scale-110 transition">
+              <img src="https://img.freepik.com/psd-premium/logotipo-aplicacion-instagram_23-2151544088.jpg"
+                class="w-14 h-14 rounded-xl shadow-md" alt="Instagram">
+            </a>
+          </div>
+
+          <!-- Texto debajo iconos -->
+          <div class="flex gap-8 mt-2 text-sm font-medium">
+            <span>WhatsApp</span>
+            <span>Facebook</span>
+            <span>Instagram</span>
+          </div>
+        </div>
+
+        <!-- SEGURIDAD -->
+        <div class="md:pr-6">
+          <a href="{% url 'seguridad_aw' %}" class="hover:text-orange-300 px-2">Seguridad</a>
+          <p class="text-sm leading-relaxed">
+            Nuestra aplicación de seguridad está diseñada para ofrecer a los usuarios una protección integral y
+            tranquilidad en el mundo digital y físico. Con un enfoque en la simplicidad y la eficiencia, esta
+            herramienta intuitiva empodera a individuos y empresas para salvaguardar sus activos, información y seres
+            queridos.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+
+
+  <!-- MENSAJE FLOTANTE PARA LISTA -->
+  <div id="mensaje-favorito-lista"
+    class="hidden fixed bottom-5 right-5 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg text-sm">
+  </div>
+  <script>
+    function filtrarCategoria(categoria) {
+      fetch(`/producto/ajax-filtrar/?categoria=${categoria}`)
+        .then(async (res) => {
+
+          // ✅ Si no está logueado, el backend debe responder 401 con JSON {url: "..."}
+          if (res.status === 401) {
+            const data = await res.json();
+            window.location.href =
+              data.url + "?next=" + encodeURIComponent(window.location.pathname);
+            return null;
+          }
+
+          return res.json();
+        })
+        .then(data => {
+          if (!data) return;
+
+          const contenedor = document.getElementById("contenedor-productos");
+          contenedor.innerHTML = "";
+
+          if (data.productos.length === 0) {
+            contenedor.innerHTML = `
+          <div class="col-span-4 flex justify-center items-center">
+            <div class="bg-white shadow-xl rounded-2xl p-10 text-center border border-gray-200 max-w-lg w-full">
+
+              <div class="text-6xl mb-4">🛒</div>
+
+              <h2 class="text-2xl font-bold text-gray-700 mb-2">
+                Ups... no hay productos aquí
+              </h2>
+
+              <p class="text-gray-500 mb-6">
+                Aún no hay productos publicados en esta categoría.
+                Intenta con otra o vuelve más tarde.
+              </p>
+
+              <button onclick="window.location.reload()"
+                class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full shadow-md transition">
+                Ver todos los productos
+              </button>
+
+            </div>
+          </div>
+        `;
+            return;
+          }
+
+          data.productos.forEach(p => {
+            contenedor.innerHTML += `
+          <div class="bg-white rounded-2xl shadow-md overflow-hidden border flex flex-col">
+            <img src="${p.imagen}" class="h-40 w-full object-cover"/>
+            <div class="p-4 flex flex-col flex-1">
+              <h4 class="font-bold text-lg">${p.nombre}</h4>
+              <p class="text-sm text-gray-600 mb-2">$ ${p.precio} / ${p.unidad}</p>
+
+              <div class="mt-auto">
+                <a href="/producto/${p.id}/"
+                   class="inline-block bg-green-600 text-white px-3 py-1 rounded text-sm">
+                   Ver detalles
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+          });
+
+          contenedor.scrollIntoView({ behavior: "smooth" });
+        })
+        .catch(err => {
+          console.error("Error en filtrarCategoria:", err);
+        });
+    }
+  </script>
+
+  <script>
+    function toggleFavoritoLista(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const url = form.action;
+      const btn = form.querySelector("button");
+
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value,
+          "X-Requested-With": "XMLHttpRequest"
+        },
+      })
+        .then(async (res) => {
+          // ✅ si no hay sesión → redirigir a login
+          if (res.status === 401) {
+            const data = await res.json();
+            window.location.href =
+              data.url + "?next=" + encodeURIComponent(window.location.pathname);
+            return null;
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (!data) return;
+
+          if (data.es_favorito) {
+            btn.className = "flex items-center gap-1 px-3 py-1 rounded-full border text-xs font-semibold bg-red-100 text-red-600 border-red-400 hover:bg-red-200";
+            btn.innerHTML = "❤️ <span>Quitar</span>";
+          } else {
+            btn.className = "flex items-center gap-1 px-3 py-1 rounded-full border text-xs font-semibold bg-white text-gray-700 border-gray-300 hover:bg-gray-100";
+            btn.innerHTML = "🤍 <span>Favorito</span>";
+          }
+        })
+        .catch(err => console.error("Error toggleFavoritoLista:", err));
+    }
+  </script>
+
+
+
+
+</body>
+
+</html>

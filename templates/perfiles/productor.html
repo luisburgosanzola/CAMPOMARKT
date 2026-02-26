@@ -1,0 +1,454 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfil de Productor - CampoMarkt</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 font-sans">
+
+  {% if messages %}
+  <div class="max-w-7xl mx-auto px-4 mt-4 space-y-2">
+    {% for message in messages %}
+    <div class="p-3 rounded-xl text-sm border
+      {% if message.tags == 'success' %}bg-green-50 text-green-800 border-green-200
+      {% elif message.tags == 'error' %}bg-red-50 text-red-800 border-red-200
+      {% else %}bg-yellow-50 text-yellow-800 border-yellow-200{% endif %}">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- HEADER -->
+  <header class="shadow-sm">
+    <div class="bg-[#f37021]">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
+        <a href="{% url 'main_page' %}" class="flex items-center gap-3">
+          <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt"
+            class="w-14 h-14 rounded-full object-cover ring-2 ring-white/60" />
+          <span class="text-white font-extrabold text-2xl md:text-3xl tracking-wide">
+            CAMPOMARKT
+          </span>
+        </a>
+
+        <div class="flex flex-col items-end gap-2">
+          <a href="{% url 'mi_perfil' %}"
+            class="flex items-center gap-2 bg-orange-200/90 rounded-full px-4 py-1.5 hover:bg-orange-200 transition">
+            <span class="text-sm font-semibold text-gray-900">
+              {{ user.first_name|default:user.username|default:user.email }}
+            </span>
+
+            <img
+              src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'img/user_default.png' %}{% endif %}"
+              alt="Foto perfil" class="w-9 h-9 rounded-full object-cover ring-2 ring-white/60" />
+          </a>
+
+          <form method="GET" action="#" class="flex items-center bg-orange-100 rounded-full px-4 py-1.5 w-64 md:w-72">
+            <input type="text" name="q" placeholder="¡Busca aquí!"
+              class="bg-transparent outline-none text-sm placeholder-gray-600 w-full" />
+            <button type="submit" class="ml-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <nav class="bg-[#81BC5D] text-white">
+      <div class="max-w-7xl mx-auto px-6 py-3 relative flex items-center justify-center">
+        <ul class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-semibold uppercase tracking-wide">
+          <li><a href="{% url 'main_page' %}" class="hover:text-orange-200">Inicio</a></li>
+          <li class="opacity-70">|</li>
+          <li><a href="{% url 'listar_productos' %}" class="hover:text-orange-200">Productos</a></li>
+          <li class="opacity-70">|</li>
+                    <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'listar_ofertas' %}" class="hover:text-orange-300 px-2">Ofertas</a>
+
+          </li>
+          <li class="opacity-70">|</li>
+          <li><a href="{% url 'nosotros' %}" class="hover:text-orange-200">Nosotros</a></li>
+          <li class="opacity-70">|</li>
+          <li><a href="{% url 'mis_favoritos' %}" class="hover:text-orange-200">Favoritos</a></li>
+          <li class="opacity-70">|</li>
+          <li><a href="#" class="hover:text-orange-200">Novedades</a></li>
+        </ul>
+
+        <div class="absolute right-6">
+          <div class="relative">
+            <button type="button" class="hover:text-orange-200 transition">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+              </svg>
+            </button>
+            <span class="absolute -top-1 -right-2 bg-red-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">
+              3
+            </span>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main class="max-w-6xl mx-auto px-4 md:px-6 py-8">
+
+    <section class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="px-6 py-5 border-b bg-gradient-to-r from-orange-50 to-green-50 flex items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">Perfil de Productor</h1>
+          <p class="text-sm text-gray-600 mt-1">
+            {% if es_publico %}
+              Estás viendo el perfil público del productor.
+            {% else %}
+              Administra tus datos y revisa tus productos publicados.
+            {% endif %}
+          </p>
+        </div>
+
+        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-100 text-green-800 text-xs font-bold uppercase">
+          Productor
+        </span>
+      </div>
+
+      <div class="p-6">
+
+       
+        {% if es_publico %}
+        {% with perfil_user=productor_user %}
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+          {% csrf_token %}
+
+          <!-- FOTO -->
+          <div class="flex flex-col md:flex-row items-center md:items-end gap-5">
+            <div class="flex flex-col items-center">
+              <img id="profilePreview"
+                src="{% if perfil_user.profile_image %}{{ perfil_user.profile_image.url }}{% else %}{% static 'img/user_default.png' %}{% endif %}"
+                class="w-28 h-28 rounded-full object-cover ring-4 ring-orange-200"
+                alt="Foto de perfil" />
+              <p class="mt-2 text-xs text-gray-500">Foto de perfil</p>
+            </div>
+          </div>
+
+          <!-- DATOS PERSONALES -->
+          <div>
+            <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3">Datos personales</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Nombre</label>
+                <input type="text" value="{{ perfil_user.first_name }}" readonly
+                  class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm cursor-not-allowed">
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Apellido</label>
+                <input type="text" value="{{ perfil_user.last_name }}" readonly
+                  class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm cursor-not-allowed">
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-sm font-semibold text-gray-700">Correo electrónico</label>
+                <input type="email" value="{{ perfil_user.email }}" readonly
+                  class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm cursor-not-allowed">
+              </div>
+            </div>
+          </div>
+
+          <!-- DATOS FINCA -->
+          <div>
+            <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3">Datos de la finca</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Nombre de la finca</label>
+                <input type="text" value="{{ perfil.nombre_finca }}" readonly
+                  class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm cursor-not-allowed">
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Categorías de cultivo</label>
+                <input type="text" value="{{ perfil.categorias_cultivo }}" readonly
+                  class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm cursor-not-allowed">
+                <p class="text-xs text-gray-500 mt-1">Ejemplo: <b>frutas</b>, <b>verduras</b>, <b>tuberculos</b></p>
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-sm font-semibold text-gray-700">Teléfono</label>
+                <input type="text" value="{{ perfil.telefono }}" readonly
+                  class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm cursor-not-allowed">
+              </div>
+            </div>
+          </div>
+
+          <!-- PRODUCTOS -->
+          <section class="pt-4">
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide">Productos publicados</h2>
+              <span class="text-xs text-gray-500">Total: {{ productos|length }}</span>
+            </div>
+
+            {% if productos %}
+            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {% for p in productos %}
+              <article class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 flex flex-col">
+                {% if p.imagen_principal %}
+                  <img src="{{ p.imagen_principal.url }}" alt="{{ p.nombre }}" class="h-40 w-full object-cover">
+                {% else %}
+                  <div class="h-40 w-full flex items-center justify-center bg-gray-100 text-gray-400 text-sm">
+                    Sin imagen
+                  </div>
+                {% endif %}
+
+                <div class="p-4 flex-1 flex flex-col">
+                  <div class="flex items-start justify-between gap-2 mb-1">
+                    <h4 class="font-bold text-lg text-gray-800">{{ p.nombre }}</h4>
+                    {% if p.categoria %}
+                      <span class="text-xs px-2 py-1 rounded-full bg-green-700 text-white whitespace-nowrap">
+                        {{ p.categoria.nombre }}
+                      </span>
+                    {% endif %}
+                  </div>
+
+                  {% if p.descripcion %}
+                    <p class="text-sm text-gray-600 mb-2">{{ p.descripcion|truncatechars:100 }}</p>
+                  {% endif %}
+
+                  <div class="mt-auto flex items-center justify-between gap-2">
+                    <div class="flex flex-col">
+                      <span class="font-bold text-orange-600 text-base">$ {{ p.precio_unitario }}</span>
+                      <span class="text-xs text-gray-500">Stock: {{ p.cantidad_disponible }}</span>
+                    </div>
+                    <div class="flex flex-col items-end gap-2">
+                      <a href="{% url 'detalle_producto' p.id %}"
+                        class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-green-700 hover:brightness-90">
+                        Ver detalles
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              {% endfor %}
+            </div>
+            {% else %}
+              <div class="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center">
+                <p class="text-sm font-semibold text-gray-700">Este productor aún no tiene productos publicados.</p>
+              </div>
+            {% endif %}
+          </section>
+
+        </form>
+        {% endwith %}
+        {% else %}
+
+        {% with perfil_user=user %}
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+          {% csrf_token %}
+
+          <!-- FOTO + SUBIR -->
+          <div class="flex flex-col md:flex-row items-center md:items-end gap-5">
+            <div class="flex flex-col items-center">
+              <img id="profilePreview"
+                src="{% if perfil_user.profile_image %}{{ perfil_user.profile_image.url }}{% else %}{% static 'img/user_default.png' %}{% endif %}"
+                class="w-28 h-28 rounded-full object-cover ring-4 ring-orange-200" alt="Foto de perfil" />
+              <p class="mt-2 text-xs text-gray-500">Foto de perfil</p>
+            </div>
+
+            {% if editable %}
+            <div class="w-full md:w-auto">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Cambiar foto</label>
+              <input id="profileInput" type="file" name="profile_image" accept="image/png,image/jpeg"
+                class="block w-full md:w-96 text-sm text-gray-700
+                       file:mr-4 file:py-2 file:px-4
+                       file:rounded-lg file:border-0
+                       file:text-sm file:font-semibold
+                       file:bg-orange-100 file:text-orange-800
+                       hover:file:bg-orange-200" />
+              <p class="text-xs text-gray-500 mt-1">JPG/PNG recomendado.</p>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- DATOS PERSONALES -->
+          <div>
+            <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3">Datos personales</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Nombre</label>
+                <input type="text" name="first_name" value="{{ perfil_user.first_name }}"
+                  {% if not editable %}readonly{% endif %}
+                  class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm
+                         {% if not editable %}cursor-not-allowed{% endif %}">
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Apellido</label>
+                <input type="text" name="last_name" value="{{ perfil_user.last_name }}"
+                  {% if not editable %}readonly{% endif %}
+                  class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm
+                         {% if not editable %}cursor-not-allowed{% endif %}">
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-sm font-semibold text-gray-700">Correo electrónico</label>
+                <input type="email" name="email" value="{{ perfil_user.email }}"
+                  {% if not editable %}readonly{% endif %}
+                  class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm
+                         {% if not editable %}cursor-not-allowed{% endif %}">
+              </div>
+            </div>
+          </div>
+
+          <!-- DATOS FINCA -->
+          <div>
+            <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3">Datos de tu finca</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Nombre de la finca</label>
+                <input type="text" name="nombre_finca" value="{{ perfil.nombre_finca }}"
+                  {% if not editable %}readonly{% endif %}
+                  class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm
+                         {% if not editable %}cursor-not-allowed{% endif %}">
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Categorías de cultivo</label>
+                <input type="text" name="categorias_cultivo" value="{{ perfil.categorias_cultivo }}"
+                  {% if not editable %}readonly{% endif %}
+                  class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm
+                         {% if not editable %}cursor-not-allowed{% endif %}">
+                <p class="text-xs text-gray-500 mt-1">Ejemplo: <b>frutas</b>, <b>verduras</b>, <b>tuberculos</b></p>
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-sm font-semibold text-gray-700">Teléfono</label>
+                <input type="text" name="telefono" value="{{ perfil.telefono }}"
+                  {% if not editable %}readonly{% endif %}
+                  class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm
+                         {% if not editable %}cursor-not-allowed{% endif %}">
+              </div>
+            </div>
+          </div>
+
+          <!-- PRODUCTOS -->
+          <section class="pt-4">
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide">Productos publicados</h2>
+              <span class="text-xs text-gray-500">Total: {{ productos|length }}</span>
+            </div>
+
+            {% if productos %}
+            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {% for p in productos %}
+              <article class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 flex flex-col">
+                {% if p.imagen_principal %}
+                  <img src="{{ p.imagen_principal.url }}" alt="{{ p.nombre }}" class="h-40 w-full object-cover">
+                {% else %}
+                  <div class="h-40 w-full flex items-center justify-center bg-gray-100 text-gray-400 text-sm">
+                    Sin imagen
+                  </div>
+                {% endif %}
+
+                <div class="p-4 flex-1 flex flex-col">
+                  <div class="flex items-start justify-between gap-2 mb-1">
+                    <h4 class="font-bold text-lg text-gray-800">{{ p.nombre }}</h4>
+                    {% if p.categoria %}
+                      <span class="text-xs px-2 py-1 rounded-full bg-green-700 text-white whitespace-nowrap">
+                        {{ p.categoria.nombre }}
+                      </span>
+                    {% endif %}
+                  </div>
+
+                  {% if p.descripcion %}
+                    <p class="text-sm text-gray-600 mb-2">{{ p.descripcion|truncatechars:100 }}</p>
+                  {% endif %}
+
+                  <div class="mt-auto flex items-center justify-between gap-2">
+                    <div class="flex flex-col">
+                      <span class="font-bold text-orange-600 text-base">$ {{ p.precio_unitario }}</span>
+                      <span class="text-xs text-gray-500">Stock: {{ p.cantidad_disponible }}</span>
+                    </div>
+                    <div class="flex flex-col items-end gap-2">
+                      <a href="{% url 'detalle_producto' p.id %}"
+                        class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-green-700 hover:brightness-90">
+                        Ver detalles
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center">
+              <p class="text-sm font-semibold text-gray-700">Aún no tienes productos publicados.</p>
+              <p class="text-xs text-gray-500 mt-1">Cuando publiques productos, aparecerán aquí.</p>
+            </div>
+            {% endif %}
+          </section>
+
+          <!-- BOTONES -->
+          {% if editable %}
+          <div class="pt-2 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end">
+            <a href="{% url 'mi_perfil' %}"
+              class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition">
+              Cancelar
+            </a>
+            <button type="submit"
+              class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-700 text-white font-extrabold hover:bg-green-800 transition">
+              Guardar cambios
+            </button>
+          </div>
+          {% else %}
+          <div class="pt-2 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-center">
+            <a href="?editar=true"
+              class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-orange-600 text-white font-extrabold hover:bg-orange-700 transition">
+              Editar perfil
+            </a>
+            <a href="{% url 'logout_page' %}"
+              class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-red-600 text-white font-extrabold hover:bg-red-700 transition">
+              Cerrar sesión
+            </a>
+          </div>
+          {% endif %}
+
+        </form>
+        {% endwith %}
+        {% endif %}
+
+      </div>
+    </section>
+
+    <!-- PREVIEW JS -->
+    <script>
+      const input = document.getElementById("profileInput");
+      const preview = document.getElementById("profilePreview");
+
+      if (input && preview) {
+        input.addEventListener("change", function () {
+          const file = this.files && this.files[0];
+          if (!file) return;
+          if (!file.type.startsWith("image/")) return;
+
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            preview.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+    </script>
+
+  </main>
+</body>
+
+</html>

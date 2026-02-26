@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="es">
+{% load static %}
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Detalle Producto | CampoMarkt</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --orange: #f37021;
+      --green: #15803d;
+      --peach: #fbeadf;
+    }
+    body { background-color: var(--peach); }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased text-gray-700">
+
+  <!-- Header -->
+  <header>
+    <div class="bg-[#f37021] flex justify-between items-center px-14 py-4">
+      <div class="flex items-center space-x-3">
+        <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt" class="w-16 h-16 rounded-full object-cover" />
+        <span class="text-white font-bold text-3xl tracking-wide">CAMPOMARKT</span>
+      </div>
+
+      <div class="flex flex-col items-end space-y-2">
+        {% if user.is_authenticated %}
+        <a href="{% url 'mi_perfil' %}"
+          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
+          <span class="text-sm font-semibold text-gray-800">
+            {{ user.first_name|default:user.username|default:user.email }}
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6 text-gray-700">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+          </svg>
+        </a>
+        {% else %}
+        <a href="{% url 'login_page' %}"
+          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
+          <span class="text-sm font-semibold text-gray-800">Iniciar sesión</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6 text-gray-700">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+          </svg>
+        </a>
+        {% endif %}
+
+        <form action="{% url 'buscar_global' %}" method="get"
+          class="flex items-center bg-orange-100 rounded-full px-4 py-1.5">
+          <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
+            class="bg-transparent outline-none text-sm placeholder-gray-600 w-52" />
+          <button type="submit" aria-label="Buscar">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <nav class="bg-[#81BC5D] text-white py-4">
+      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-6">
+        <ul class="flex items-center text-sm font-semibold uppercase tracking-wide">
+          <li><a href="{% url 'main_page' %}" class="hover:text-orange-300 px-2">Inicio</a></li>
+
+          <li class="flex items-center"><span class="mx-3">|</span>
+            <a href="{% url 'listar_productos' %}" class="hover:text-orange-300 px-2">Productos</a>
+          </li>
+
+          <li class="flex items-center"><span class="mx-3">|</span>
+            <a href="{% url 'listar_ofertas' %}" class="hover:text-orange-300 px-2">Ofertas</a>
+          </li>
+
+          <li class="flex items-center"><span class="mx-3">|</span>
+            <a href="{% url 'nosotros' %}" class="hover:text-orange-300 px-2">Nosotros</a>
+          </li>
+
+          {% if user.is_authenticated %}
+          <li class="flex items-center"><span class="mx-3">|</span>
+            <a href="{% url 'mis_favoritos' %}" class="hover:text-orange-300 px-2">Favoritos</a>
+          </li>
+          {% endif %}
+        </ul>
+
+        <!-- Campana -->
+        <div class="absolute right-2">
+          <div class="relative">
+            <button id="btnBell" type="button" class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 text-white hover:text-orange-300 cursor-pointer">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+              </svg>
+
+              {% if user.is_authenticated and notif_unread > 0 %}
+              <span
+                class="absolute -top-1 -right-1 bg-red-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">
+                {{ notif_unread }}
+              </span>
+              {% endif %}
+            </button>
+
+            {% if user.is_authenticated %}
+            <div id="notifDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
+              <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
+              {% for n in notif_last %}
+              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-gray-50">
+                <p class="text-sm text-gray-800">{{ n.message }}</p>
+                <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+              </a>
+              {% empty %}
+              <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            const btn = document.getElementById("btnBell");
+            const dropdown = document.getElementById("notifDropdown");
+            if (!btn || !dropdown) return;
+
+            btn.addEventListener("click", (e) => { e.stopPropagation(); dropdown.classList.toggle("hidden"); });
+            document.addEventListener("click", () => dropdown.classList.add("hidden"));
+            dropdown.addEventListener("click", (e) => e.stopPropagation());
+          });
+        </script>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-grow max-w-6xl mx-auto px-6 py-12">
+    <div class="bg-white rounded-2xl shadow-xl p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <!-- Izquierda -->
+      <div class="space-y-6">
+        <h3 class="text-gray-800 font-semibold text-lg">Tu mercado natural, directo del productor</h3>
+
+        <div
+          class="h-64 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden relative">
+          {% if producto.imagen_principal %}
+          <img src="{{ producto.imagen_principal.url }}" alt="{{ producto.nombre }}" class="w-full h-full object-cover">
+          {% else %}
+          <div class="flex flex-col items-center justify-center text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mb-2" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span class="font-medium text-gray-600">Sin imagen disponible</span>
+          </div>
+          {% endif %}
+
+          {% if oferta_activa %}
+          <div class="absolute top-3 left-3 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+            OFERTA 🔥
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center gap-2 flex-wrap">
+            {% if producto.categoria %}
+            <span
+              class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
+              {{ producto.categoria.nombre }}
+            </span>
+            {% endif %}
+
+            {% if producto.estado == "disponible" %}
+            <span
+              class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-700">
+              Disponible
+            </span>
+            {% elif producto.estado == "pausado" %}
+            <span
+              class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-700">
+              Pausado
+            </span>
+            {% else %}
+            <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700">
+              Vendido
+            </span>
+            {% endif %}
+          </div>
+
+          <h2 class="text-2xl font-bold text-gray-900">{{ producto.nombre }}</h2>
+
+          <!-- PRECIOS -->
+          {% if oferta_activa %}
+          <div class="flex items-end gap-3 flex-wrap">
+            <div>
+              <p class="text-xs text-gray-500">Precio normal</p>
+              <p class="text-gray-500 line-through font-bold">$ {{ producto.precio_unitario }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Precio oferta</p>
+              <p class="text-3xl font-extrabold text-orange-600">$ {{ oferta_activa.precio_oferta }}</p>
+            </div>
+            <span class="text-sm text-gray-500">
+              /
+              {% if producto.get_unidad_medida_display %}{{ producto.get_unidad_medida_display }}{% else %}{{ producto.unidad_medida }}{% endif %}
+            </span>
+          </div>
+          {% else %}
+          <div class="flex items-baseline gap-2">
+            <p class="text-3xl font-extrabold text-[color:var(--green)]">$ {{ producto.precio_unitario }}</p>
+            <p class="text-sm text-gray-500">/
+              {% if producto.get_unidad_medida_display %}{{ producto.get_unidad_medida_display }}{% else %}{{ producto.unidad_medida }}{% endif %}
+            </p>
+          </div>
+          {% endif %}
+
+          <p class="text-sm text-gray-600">
+            Cantidad disponible:
+            <span class="font-semibold text-gray-800">{{ producto.cantidad_disponible }}</span>
+          </p>
+
+          {% if user.is_authenticated %}
+          <p class="text-xs text-gray-500">
+            Productor:
+            {% if producto.productor and producto.productor.username %}
+            <a href="{% url 'perfil_productor_publico' username=producto.productor.username %}"
+              class="text-green-700 font-semibold hover:underline">
+              {{ producto.productor.username }}
+            </a>
+            {% else %}
+            <span class="italic text-gray-400">Sin productor asignado</span>
+            {% endif %}
+          </p>
+          {% endif %}
+
+          <p class="text-xs text-gray-500">
+            Publicado el:
+            <span class="font-medium text-gray-700">{{ producto.fecha_publicacion|date:"d/m/Y H:i" }}</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Derecha -->
+      <div class="space-y-6">
+
+        <div>
+          <h4 class="block text-sm font-medium text-gray-700 mb-1">Descripción</h4>
+          <p class="text-sm text-gray-700 bg-gray-50 rounded-lg px-3 py-2 min-h-[60px]">
+            {% if producto.descripcion %}{{ producto.descripcion }}{% else %}
+            <span class="text-gray-400 italic">Este producto no tiene descripción.</span>
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div>
+            <span class="block font-medium text-gray-700">Departamento</span>
+            <p class="mt-1 text-gray-800 bg-gray-50 rounded-lg px-3 py-2">
+              {% if producto.departamento %}{{ producto.departamento }}{% else %}<span class="text-gray-400 italic">No registrado</span>{% endif %}
+            </p>
+          </div>
+
+          <div>
+            <span class="block font-medium text-gray-700">Municipio</span>
+            <p class="mt-1 text-gray-800 bg-gray-50 rounded-lg px-3 py-2">
+              {% if producto.municipio %}{{ producto.municipio }}{% else %}<span class="text-gray-400 italic">No registrado</span>{% endif %}
+            </p>
+          </div>
+
+          <div>
+            <span class="block font-medium text-gray-700">Teléfono de contacto</span>
+            <p class="mt-1 text-gray-800 bg-gray-50 rounded-lg px-3 py-2">
+              {% if producto.telefono %}{{ producto.telefono }}{% else %}<span class="text-gray-400 italic">No registrado</span>{% endif %}
+            </p>
+          </div>
+
+          <div>
+            <span class="block font-medium text-gray-700">Fecha de disponibilidad</span>
+            <p class="mt-1 text-gray-800 bg-gray-50 rounded-lg px-3 py-2">
+              {% if producto.fecha_disponibilidad %}{{ producto.fecha_disponibilidad|date:"d/m/Y" }}{% else %}
+              <span class="text-gray-400 italic">No especificada</span>{% endif %}
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div>
+            <span class="block font-medium text-gray-700">Unidad de medida</span>
+            <p class="mt-1 text-gray-800 bg-gray-50 rounded-lg px-3 py-2">
+              {% if producto.get_unidad_medida_display %}{{ producto.get_unidad_medida_display }}{% else %}{{ producto.unidad_medida }}{% endif %}
+            </p>
+          </div>
+
+          <div>
+            <span class="block font-medium text-gray-700">Calidad</span>
+            <p class="mt-1 text-gray-800 bg-gray-50 rounded-lg px-3 py-2">
+              {% if producto.get_calidad_display %}{{ producto.get_calidad_display }}{% else %}{{ producto.calidad|capfirst }}{% endif %}
+            </p>
+          </div>
+
+          <div>
+            <span class="block font-medium text-gray-700">Estado</span>
+            <p class="mt-1 text-gray-800 bg-gray-50 rounded-lg px-3 py-2 capitalize">{{ producto.estado }}</p>
+          </div>
+        </div>
+
+        <!-- Herramientas productor -->
+        {% if user.is_authenticated and user.rol == "productor" and producto.productor_id == user.id %}
+        <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4">
+          <p class="font-bold text-orange-700">🔥 Herramientas de productor</p>
+          <p class="text-sm text-gray-600 mt-1">Activa o desactiva la oferta de este producto.</p>
+
+          <div class="flex flex-wrap gap-3 mt-4">
+            {% if oferta_activa %}
+            <form action="{% url 'quitar_oferta' oferta_activa.id %}" method="post"
+              onsubmit="return confirm('¿Seguro que quieres quitar esta oferta?');">
+              {% csrf_token %}
+              <button type="submit"
+                class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-extrabold hover:bg-red-700 transition shadow">
+                ❌ Quitar oferta
+              </button>
+            </form>
+            {% else %}
+            <a href="{% url 'crear_oferta' producto.id %}"
+              class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-orange-500 text-white text-sm font-extrabold hover:bg-orange-600 transition shadow">
+              🔥 Ofertar producto
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="pt-4 border-t border-gray-100 flex flex-wrap gap-3 justify-between">
+          <a href="{% url 'listar_productos' %}"
+            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            Volver a productos
+          </a>
+
+          {% if producto.estado == "disponible" and producto.telefono %}
+          <a href="https://wa.me/57{{ producto.telefono }}?text=Hola%20vengo%20desde%20CampoMarkt%20y%20estoy%20interesado%20en%20tu%20producto:%20{{ producto.nombre|urlencode }}"
+            target="_blank"
+            class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-[color:var(--green)] text-white text-sm font-semibold shadow-md hover:brightness-90">
+            Contactar productor
+          </a>
+          {% else %}
+          <span class="text-sm text-gray-400 italic">Teléfono no disponible</span>
+          {% endif %}
+        </div>
+
+        <!-- Favoritos -->
+        <form action="{% url 'toggle_favorito' producto.id %}" method="post" onsubmit="mostrarMensajeFavorito()">
+          {% csrf_token %}
+          <button id="btn-favorito" data-favorito="{% if es_favorito %}true{% else %}false{% endif %}" type="submit"
+            class="flex items-center gap-2 px-4 py-2 rounded-full border transition
+              {% if es_favorito %}bg-red-100 text-red-600 border-red-400 hover:bg-red-200
+              {% else %}bg-white text-gray-700 border-gray-300 hover:bg-gray-100{% endif %}">
+            <span class="text-xl">{% if es_favorito %}❤{% else %}🤍{% endif %}</span>
+            <span class="text-sm font-semibold">{% if es_favorito %}Quitar de favoritos{% else %}Agregar a favoritos{% endif %}</span>
+          </button>
+        </form>
+
+        <div id="mensaje-favorito"
+          class="hidden fixed bottom-5 right-5 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg text-sm transition">
+        </div>
+
+        <script>
+          function mostrarMensajeFavorito() {
+            const mensaje = document.getElementById("mensaje-favorito");
+            const eraFavorito = document.getElementById("btn-favorito").dataset.favorito === "true";
+            mensaje.innerText = eraFavorito ? "❌ Producto eliminado de favoritos" : "✅ Producto agregado a favoritos";
+            mensaje.classList.remove("hidden");
+            setTimeout(() => mensaje.classList.add("hidden"), 4000);
+          }
+        </script>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-[#f37021] text-black mt-10">
+    <div class="max-w-6xl mx-auto px-6 py-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start text-center md:text-left">
+
+        <div class="md:pl-6">
+          <h3 class="font-bold text-xl mb-4">SERVICIOS</h3>
+          <ul class="space-y-2 text-sm">
+            <li>Asesorías</li>
+            <li>Acerca de nosotros</li>
+            <li>Contáctanos</li>
+          </ul>
+        </div>
+
+        <div class="flex flex-col items-center">
+          <h3 class="font-bold text-xl mb-4">Redes sociales</h3>
+          <div class="flex gap-5">
+            <a href="https://wa.me/573212279231?text=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20mas%20informacion%20por%20favor"
+              target="_blank" class="hover:scale-110 transition">
+              <img
+                src="https://thumbs.dreamstime.com/b/logotipo-de-whatsapp-verde-para-web-y-app-ui-aislado-en-fondo-blanco-png-transparente-265016409.jpg"
+                class="w-14 h-14 rounded-xl shadow-md" alt="WhatsApp">
+            </a>
+            <a href="https://m.me/61584277056410?ref=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20más%20información"
+              target="_blank" class="hover:scale-110 transition">
+              <img
+                src="https://static.vecteezy.com/system/resources/previews/018/910/719/non_2x/facebook-logo-facebook-icon-free-free-vector.jpg"
+                class="w-14 h-14 rounded-xl shadow-md" alt="Facebook">
+            </a>
+            <a href="https://instagram.com/CAMPOMARKT" target="_blank" class="hover:scale-110 transition">
+              <img src="https://img.freepik.com/psd-premium/logotipo-aplicacion-instagram_23-2151544088.jpg"
+                class="w-14 h-14 rounded-xl shadow-md" alt="Instagram">
+            </a>
+          </div>
+          <div class="flex gap-8 mt-2 text-sm font-medium">
+            <span>WhatsApp</span><span>Facebook</span><span>Instagram</span>
+          </div>
+        </div>
+
+        <div class="md:pr-6">
+          <a href="{% url 'seguridad_aw' %}" class="hover:text-orange-300 px-2">Seguridad</a>
+          <p class="text-sm leading-relaxed">
+            Nuestra aplicación de seguridad está diseñada para ofrecer a los usuarios una protección integral y tranquilidad.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  {% include 'includes/chatbot_widget.html' %}
+</body>
+</html>

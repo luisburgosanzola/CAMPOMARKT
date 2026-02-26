@@ -1,0 +1,394 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Búsqueda | CampoMarkt</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --orange: #f37021;
+      --green: #15803d;
+      --peach: #fbeadf;
+    }
+
+    body {
+      background-color: var(--peach);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased text-gray-700">
+
+  <!-- Header -->
+  <header>
+    <!-- Parte superior naranja -->
+    <div class="bg-[#f37021] flex justify-between items-center px-6 md:px-14 py-4">
+      <!-- Logo e Identidad -->
+      <div class="flex items-center space-x-3">
+        <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt" class="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover" />
+        <span class="text-white font-bold text-2xl md:text-3xl tracking-wide">CAMPOMARKT</span>
+      </div>
+
+      <!-- Usuario + Buscador -->
+      <div class="flex flex-col items-end space-y-2">
+        {% if user.is_authenticated %}
+        <a href="{% url 'mi_perfil' %}"
+          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
+          <span class="text-sm font-semibold text-gray-800">
+            {{ user.first_name|default:user.username|default:user.email }}
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6 text-gray-700">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+          </svg>
+        </a>
+        {% else %}
+        <a href="{% url 'login_page' %}"
+          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
+          <span class="text-sm font-semibold text-gray-800">Iniciar sesión</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6 text-gray-700">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+          </svg>
+        </a>
+        {% endif %}
+
+        <!-- Campo de búsqueda -->
+        <form action="{% url 'buscar_global' %}" method="get"
+          class="flex items-center bg-orange-100 rounded-full px-4 py-1.5">
+          <input type="text" name="q" value="{{ q }}" placeholder="¡Busca aquí!"
+            class="bg-transparent outline-none text-sm placeholder-gray-600 w-52" />
+          <button type="submit" aria-label="Buscar">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Barra de navegación verde -->
+    <nav class="bg-[#81BC5D] text-white py-4">
+      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-6">
+        <ul class="flex items-center text-sm font-semibold uppercase tracking-wide">
+          <li>
+            <a href="{% url 'main_page' %}" class="hover:text-orange-300 px-2">Inicio</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'listar_productos' %}" class="hover:text-orange-300 px-2">Productos</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'listar_ofertas' %}" class="hover:text-orange-300 px-2">Ofertas</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'nosotros' %}" class="hover:text-orange-300 px-2">Nosotros</a>
+          </li>
+
+          {% if user.is_authenticated %}
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'mis_favoritos' %}" class="hover:text-orange-300 px-2">Favoritos</a>
+          </li>
+          {% endif %}
+        </ul>
+
+        <!-- Campana total derecha -->
+        <div class="absolute right-2">
+          <div class="relative">
+            <button id="btnBell" type="button" class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 text-white hover:text-orange-300 cursor-pointer">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+              </svg>
+
+              {% if user.is_authenticated and notif_unread > 0 %}
+              <span
+                class="absolute -top-1 -right-1 bg-red-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">
+                {{ notif_unread }}
+              </span>
+              {% endif %}
+            </button>
+
+            {% if user.is_authenticated %}
+            <div id="notifDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
+              <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
+              {% for n in notif_last %}
+              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-gray-50">
+                <p class="text-sm text-gray-800">{{ n.message }}</p>
+                <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+              </a>
+              {% empty %}
+              <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            const btn = document.getElementById("btnBell");
+            const dropdown = document.getElementById("notifDropdown");
+            if (!btn || !dropdown) return;
+
+            btn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              dropdown.classList.toggle("hidden");
+            });
+
+            document.addEventListener("click", () => dropdown.classList.add("hidden"));
+            dropdown.addEventListener("click", (e) => e.stopPropagation());
+          });
+        </script>
+
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-grow">
+
+    <!-- Hero -->
+    <section class="max-w-7xl mx-auto px-6 pt-10 pb-6">
+      <div class="bg-white rounded-3xl shadow-xl border p-8">
+        <div class="flex flex-wrap items-start justify-between gap-6">
+          <div>
+            <span class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-semibold">
+              🔎 Resultados de búsqueda
+            </span>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4">
+              Resultados para: <span class="text-[color:var(--green)]">“{{ q }}”</span>
+            </h1>
+            <p class="text-gray-600 mt-2 max-w-2xl">
+              Aquí verás productos y productores relacionados con tu búsqueda.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <button onclick="history.back()"
+              class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gray-100 text-gray-800 font-semibold hover:bg-gray-200 transition">
+              ⬅ Volver
+            </button>
+            <a href="{% url 'listar_productos' %}"
+              class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[color:var(--green)] text-white font-semibold hover:brightness-95 transition shadow">
+              🛒 Ir a productos
+            </a>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mt-8 flex flex-wrap gap-3">
+          <button id="tabProductos"
+            class="tab-btn px-5 py-2.5 rounded-full font-extrabold border shadow-sm bg-[color:var(--green)] text-white">
+            🛒 Productos <span class="ml-1 opacity-90">({{ productos|length }})</span>
+          </button>
+
+          <button id="tabProductores"
+            class="tab-btn px-5 py-2.5 rounded-full font-extrabold border shadow-sm bg-white text-gray-800 hover:bg-gray-50">
+            🌾 Productores <span class="ml-1 text-gray-500">({{ productores|length }})</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTENIDO -->
+    <section class="max-w-7xl mx-auto px-6 pb-12">
+
+      <!-- PRODUCTOS -->
+      <div id="panelProductos" class="space-y-6">
+        {% if productos %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+          {% for p in productos %}
+          <a href="{% url 'detalle_producto' p.id %}"
+            class="group bg-white rounded-3xl shadow-lg border hover:shadow-2xl transition overflow-hidden block">
+
+            <!-- Imagen -->
+            <div class="relative h-44 bg-gray-100 overflow-hidden">
+              {% if p.imagen_principal %}
+              <img src="{{ p.imagen_principal.url }}" alt="{{ p.nombre }}"
+                class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+              {% else %}
+              <div class="w-full h-full flex items-center justify-center text-gray-400">
+                <div class="text-center">
+                  <div class="text-3xl">📦</div>
+                  <p class="text-sm font-semibold mt-1">Sin imagen</p>
+                </div>
+              </div>
+              {% endif %}
+
+              {% if p.categoria %}
+              <div class="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-extrabold px-3 py-1 rounded-full shadow">
+                {{ p.categoria.nombre }}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Info -->
+            <div class="p-6">
+              <h3 class="text-xl font-extrabold text-gray-900">
+                {{ p.nombre }}
+              </h3>
+
+              <div class="mt-3 flex items-end justify-between">
+                <div>
+                  <p class="text-xs text-gray-500">Precio</p>
+                  <p class="text-2xl font-extrabold text-[color:var(--green)]">$ {{ p.precio_unitario }}</p>
+                </div>
+
+                <span class="text-sm font-semibold text-gray-700 group-hover:text-[color:var(--green)] transition">
+                  Ver detalle →
+                </span>
+              </div>
+
+              {% if p.productor %}
+              <p class="mt-3 text-xs text-gray-500">
+                Productor: <span class="font-semibold text-gray-700">{{ p.productor.username }}</span>
+              </p>
+              {% endif %}
+            </div>
+          </a>
+          {% endfor %}
+
+        </div>
+        {% else %}
+        <!-- Empty productos -->
+        <div class="bg-white rounded-3xl shadow-xl border p-10 text-center">
+          <div class="text-5xl">🧺</div>
+          <h2 class="text-2xl font-extrabold text-gray-900 mt-4">No encontramos productos</h2>
+          <p class="text-gray-600 mt-2">Prueba con otra palabra (ej: “tomate”, “papa”, “mango”).</p>
+          <div class="flex flex-wrap justify-center gap-3 mt-6">
+            <a href="{% url 'listar_productos' %}"
+              class="px-6 py-3 rounded-full bg-[color:var(--green)] text-white font-semibold hover:brightness-95 transition shadow">
+              🛒 Ver productos
+            </a>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- PRODUCTORES -->
+      <div id="panelProductores" class="hidden space-y-6">
+        {% if productores %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          {% for u in productores %}
+          <div class="bg-white rounded-3xl shadow-lg border p-6 hover:shadow-2xl transition">
+            <div class="flex items-center justify-between gap-4">
+
+              <!-- Avatar -->
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-14 h-14 rounded-2xl bg-green-100 text-green-800 flex items-center justify-center font-extrabold text-xl shadow-sm">
+                  {{ u.username|slice:":1"|upper }}
+                </div>
+
+                <div>
+                  <p class="text-lg font-extrabold text-gray-900">{{ u.username }}</p>
+                  <p class="text-sm text-gray-600">
+                    {% if u.first_name or u.last_name %}
+                      {{ u.first_name }} {{ u.last_name }}
+                    {% else %}
+                      Productor verificado 🌾
+                    {% endif %}
+                  </p>
+
+                  <div class="mt-2 flex flex-wrap gap-2">
+                    <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
+                      🌿 Productor
+                    </span>
+                    <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-700">
+                      Directo del campo
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CTA -->
+              <a href="{% url 'perfil_productor_publico' username=u.username %}"
+                class="shrink-0 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[color:var(--green)] text-white font-extrabold hover:brightness-95 transition shadow">
+                Ver perfil →
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>
+        {% else %}
+        <!-- Empty productores -->
+        <div class="bg-white rounded-3xl shadow-xl border p-10 text-center">
+          <div class="text-5xl">🌾</div>
+          <h2 class="text-2xl font-extrabold text-gray-900 mt-4">No encontramos productores</h2>
+          <p class="text-gray-600 mt-2">Intenta buscar por nombre o usuario del productor.</p>
+        </div>
+        {% endif %}
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Footer simple (si ya tienes uno global puedes quitar esto) -->
+  <footer class="bg-[#f37021] text-black mt-10">
+    <div class="max-w-6xl mx-auto px-6 py-10">
+      <div class="text-center text-sm font-semibold">
+        CampoMarkt © {{ now|date:"Y" }} - Directo del productor 🌱
+      </div>
+    </div>
+  </footer>
+
+  <!-- Chatbot Widget -->
+  {% include "includes/chatbot_widget.html" %}
+
+  <!-- Tabs JS -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabProductos = document.getElementById("tabProductos");
+    const tabProductores = document.getElementById("tabProductores");
+    const panelProductos = document.getElementById("panelProductos");
+    const panelProductores = document.getElementById("panelProductores");
+
+    function activarProductos() {
+      tabProductos.className = "tab-btn px-5 py-2.5 rounded-full font-extrabold border shadow-sm bg-[color:var(--green)] text-white";
+      tabProductores.className = "tab-btn px-5 py-2.5 rounded-full font-extrabold border shadow-sm bg-white text-gray-800 hover:bg-gray-50";
+      panelProductos.classList.remove("hidden");
+      panelProductores.classList.add("hidden");
+    }
+
+    function activarProductores() {
+      tabProductores.className = "tab-btn px-5 py-2.5 rounded-full font-extrabold border shadow-sm bg-[color:var(--green)] text-white";
+      tabProductos.className = "tab-btn px-5 py-2.5 rounded-full font-extrabold border shadow-sm bg-white text-gray-800 hover:bg-gray-50";
+      panelProductores.classList.remove("hidden");
+      panelProductos.classList.add("hidden");
+    }
+
+    tabProductos.addEventListener("click", activarProductos);
+    tabProductores.addEventListener("click", activarProductores);
+
+    // ✅ PARTE ARREGLADA (no falla)
+    const productosCount = parseInt("{{ productos|length|escapejs }}", 10) || 0;
+    const productoresCount = parseInt("{{ productores|length|escapejs }}", 10) || 0;
+
+    if (productosCount === 0 && productoresCount > 0) activarProductores();
+  });
+</script>
+
+</body>
+
+</html>

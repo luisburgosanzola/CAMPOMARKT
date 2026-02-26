@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Completar Perfil Productor | CampoMarkt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-green-100 via-white to-orange-100 min-h-screen flex items-center justify-center">
+
+<div class="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-xl relative overflow-hidden">
+
+    <!-- Decoración -->
+    <div class="absolute -top-10 -right-10 w-40 h-40 bg-green-200 rounded-full opacity-30"></div>
+    <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-orange-200 rounded-full opacity-30"></div>
+
+    <!-- Logo -->
+    <div class="text-center mb-6">
+        <img src="{% static 'img/logo1.png' %}" class="w-20 mx-auto mb-3">
+        <h2 class="text-3xl font-bold text-green-700">Completa tu perfil de Productor</h2>
+        <p class="text-gray-600 mt-2">
+            Estos datos permitirán que los clientes conozcan mejor tu producción.
+        </p>
+    </div>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- TELÉFONO -->
+        <div>
+            <label class="text-sm text-gray-600 font-semibold">Teléfono</label>
+            <input type="text" name="telefono" required
+                class="w-full mt-1 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-400 outline-none transition"
+                placeholder="Ej: 3001234567">
+        </div>
+
+        <!-- NOMBRE FINCA -->
+        <div>
+            <label class="text-sm text-gray-600 font-semibold">Nombre de la finca</label>
+            <input type="text" name="nombre_finca" required
+                class="w-full mt-1 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-400 outline-none transition"
+                placeholder="Ej: Finca El Paraíso">
+        </div>
+
+        <!-- CATEGORÍAS -->
+        <div>
+            <label class="text-sm text-gray-600 font-semibold block mb-2">
+                Categorías de cultivo
+            </label>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+
+                <label class="flex items-center gap-2 p-3 rounded-xl bg-green-50 border border-green-200 cursor-pointer hover:bg-green-100 transition">
+                    <input type="checkbox" name="categorias_cultivo" value="frutas">
+                    <span class="font-medium text-gray-700">🍎 Frutas</span>
+                </label>
+
+                <label class="flex items-center gap-2 p-3 rounded-xl bg-green-50 border border-green-200 cursor-pointer hover:bg-green-100 transition">
+                    <input type="checkbox" name="categorias_cultivo" value="verduras">
+                    <span class="font-medium text-gray-700">🥬 Verduras</span>
+                </label>
+
+                <label class="flex items-center gap-2 p-3 rounded-xl bg-green-50 border border-green-200 cursor-pointer hover:bg-green-100 transition">
+                    <input type="checkbox" name="categorias_cultivo" value="tuberculos">
+                    <span class="font-medium text-gray-700">🥔 Tubérculos</span>
+                </label>
+
+            </div>
+
+            <p class="text-xs text-gray-500 mt-2">
+                Puedes seleccionar una o varias categorías.
+            </p>
+        </div>
+
+        <!-- BOTÓN -->
+        <button type="submit"
+            class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold shadow-lg transition transform hover:scale-105">
+            Guardar Información
+        </button>
+    </form>
+
+    <p class="text-center text-xs text-gray-400 mt-6">
+        CampoMarkt conecta tu finca con miles de clientes en todo el país.
+    </p>
+</div>
+
+</body>
+</html>

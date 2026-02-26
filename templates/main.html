@@ -1,0 +1,726 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampoMarkt</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#f6fbf7] font-sans">
+  <!-- Header -->
+  <header>
+    <!-- Parte superior (ANTES naranja) => ahora verde pro -->
+    <div class="bg-[#166534] flex justify-between items-center px-14 py-4 shadow-lg">
+      <!-- Logo e Identidad -->
+      <div class="flex items-center space-x-3">
+        <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt" class="w-16 h-16 rounded-full object-cover ring-4 ring-white/30" />
+        <span class="text-white font-extrabold text-3xl tracking-wide">
+          CAMPOMARKT
+        </span>
+      </div>
+
+      <!-- Usuario + Buscador (uno debajo del otro) -->
+      <div class="flex flex-col items-end space-y-2">
+
+        <!-- Usuario / Login / Registro -->
+        {% if user.is_authenticated %}
+        <!-- Usuario logueado: muestra chip con nombre y acceso al perfil -->
+        <a href="{% url 'mi_perfil' %}"
+          class="flex items-center space-x-2 bg-white/15 backdrop-blur rounded-full px-4 py-1.5 hover:bg-white/25 transition shadow-sm border border-white/20">
+          <span class="text-sm font-semibold text-white">
+            {{ user.first_name|default:user.username|default:user.email }}
+          </span>
+
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6 text-white/90">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+          </svg>
+        </a>
+        {% else %}
+        <!-- Visitante: mostrar Iniciar sesión + Registrarse -->
+        <div class="flex items-center space-x-2">
+          <a href="{% url 'login_page' %}"
+            class="flex items-center space-x-2 bg-white/15 backdrop-blur rounded-full px-4 py-1.5 hover:bg-white/25 transition shadow-sm border border-white/20">
+            <span class="text-sm font-semibold text-white">
+              Iniciar sesión
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-6 h-6 text-white/90">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+            </svg>
+          </a>
+
+          <a href="{% url 'register_page' %}"
+            class="bg-[#22c55e] text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow">
+            Registrarse
+          </a>
+        </div>
+        {% endif %}
+
+        <!-- Campo de búsqueda -->
+        <form action="{% url 'buscar_global' %}" method="get"
+          class="flex items-center bg-white/15 backdrop-blur rounded-full px-4 py-1.5 border border-white/20 shadow-sm">
+          <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
+            class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-52" />
+
+          <button type="submit" aria-label="Buscar">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90 hover:text-white transition" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- Barra de navegación (verde más fino) -->
+    <nav class="bg-[#14532d] text-white py-4 shadow">
+      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-6">
+        <ul class="flex items-center text-sm font-semibold uppercase tracking-wide">
+          <li>
+            <a href="{% url 'main_page' %}" class="hover:text-[#86efac] px-2 transition">
+              Inicio
+            </a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'listar_productos' %}" class="hover:text-[#86efac] px-2 transition">Productos</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'listar_ofertas' %}" class="hover:text-[#86efac] px-2 transition">Ofertas</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'nosotros' %}" class="hover:text-[#86efac] px-2 transition">Nosotros</a>
+          </li>
+
+          {% if user.is_authenticated %}
+          <!-- Solo mostrar 'Favoritos' si el usuario está logueado -->
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'mis_favoritos' %}" class="hover:text-[#86efac] px-2 transition">Favoritos</a>
+          </li>
+          {% endif %}
+        </ul>
+
+        <!-- CAMPANA TOTALMENTE A LA DERECHA -->
+        <div class="absolute right-2">
+          <div class="relative">
+
+            <!-- BOTÓN CAMPANA -->
+            <button id="btnBell" type="button" class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 text-white hover:text-[#86efac] cursor-pointer transition">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+              </svg>
+
+              {% if user.is_authenticated and notif_unread > 0 %}
+              <span
+                class="absolute -top-1 -right-1 bg-emerald-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center shadow">
+                {{ notif_unread }}
+              </span>
+              {% endif %}
+            </button>
+
+            <!-- DROPDOWN -->
+            {% if user.is_authenticated %}
+            <div id="notifDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
+
+              <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
+
+              {% for n in notif_last %}
+              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-[#f0fdf4] transition">
+                <p class="text-sm text-gray-800">{{ n.message }}</p>
+                <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+              </a>
+              {% empty %}
+              <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+
+          </div>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            const btn = document.getElementById("btnBell");
+            const dropdown = document.getElementById("notifDropdown");
+
+            if (!btn || !dropdown) return;
+
+            // abrir/cerrar al click
+            btn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              dropdown.classList.toggle("hidden");
+            });
+
+            // click afuera => cerrar
+            document.addEventListener("click", () => {
+              dropdown.classList.add("hidden");
+            });
+
+            // evitar que click dentro del dropdown lo cierre antes de abrir links
+            dropdown.addEventListener("click", (e) => {
+              e.stopPropagation();
+            });
+          });
+        </script>
+
+      </div>
+    </nav>
+
+    <!-- 🔥 BIENVENIDA INTERACTIVA -->
+    {% if user.is_authenticated %}
+    <div id="welcomeBox"
+      class="hidden max-w-5xl mx-auto mt-6 bg-[#dcfce7] border border-green-200 text-green-900 px-6 py-4 rounded-xl shadow-lg text-lg font-semibold transition-all duration-700">
+    </div>
+    {% endif %}
+
+    {% if messages %}
+    <div id="alert-container" class="fixed top-6 right-6 z-50 space-y-3">
+      {% for message in messages %}
+      <div class="alert-msg px-6 py-4 rounded-xl shadow-xl text-white font-semibold
+      {% if message.tags == 'success' %} bg-emerald-600
+      {% elif message.tags == 'error' %} bg-red-500
+      {% else %} bg-gray-700 {% endif %}">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </header>
+
+  <!-- Main Section -->
+  <main class="bg-white py-12">
+
+    <!-- HERO AGRÍCOLA MEJORADO -->
+    <section class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center px-6 mb-16">
+      <div>
+        <span class="inline-block bg-[#dcfce7] text-[#166534] px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-green-200">
+          🌱 Mercado directo del productor al consumidor
+        </span>
+
+        <h1 class="text-5xl font-extrabold text-[#166534] mb-6 leading-tight">
+          Conectamos el campo con la tecnología
+        </h1>
+
+        <p class="text-gray-700 text-xl mb-6">
+          Compra productos frescos directamente del agricultor.
+          <strong>Menos intermediarios</strong>, mejor precio para ti y <strong>más ganancia</strong> para el productor.
+        </p>
+
+        <!-- KPI RÁPIDOS -->
+        <div class="grid grid-cols-3 gap-4 mb-8">
+          <div class="bg-[#f0fdf4] border border-green-200 rounded-2xl p-4 text-center hover:shadow-md transition">
+            <p class="text-2xl font-bold text-[#166534]" id="kpiAhorro">0%</p>
+            <p class="text-xs text-gray-600 mt-1">Ahorro promedio</p>
+          </div>
+          <div class="bg-[#f0fdf4] border border-green-200 rounded-2xl p-4 text-center hover:shadow-md transition">
+            <p class="text-2xl font-bold text-emerald-700" id="kpiIntermediarios">0</p>
+            <p class="text-xs text-gray-600 mt-1">Intermediarios menos</p>
+          </div>
+          <div class="bg-[#f0fdf4] border border-green-200 rounded-2xl p-4 text-center hover:shadow-md transition">
+            <p class="text-2xl font-bold text-green-700" id="kpiProductividad">0%</p>
+            <p class="text-xs text-gray-600 mt-1">+Productividad</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <a href="{% url 'listar_productos' %}"
+            class="bg-[#22c55e] text-white px-8 py-3 rounded-full text-lg hover:bg-[#16a34a] transition shadow-lg">
+            🛒 Explorar productos
+          </a>
+
+          <a href="#impacto"
+            class="bg-[#dcfce7] text-[#166534] px-8 py-3 rounded-full text-lg hover:bg-[#bbf7d0] transition shadow border border-green-200">
+            📊 Ver impacto
+          </a>
+        </div>
+      </div>
+
+      <div class="relative">
+        <img src="https://agriculturadigital.cepal.org/sites/default/files/2023-04/Gesti%C3%B3n%20Integral%201.jpeg"
+          class="rounded-2xl shadow-2xl w-full object-cover ring-1 ring-black/5">
+        <div
+          class="absolute bottom-4 left-4 bg-white/90 backdrop-blur rounded-2xl p-4 shadow-lg border border-gray-100">
+          <p class="font-semibold text-gray-800">🚜 Producción local</p>
+          <p class="text-sm text-gray-600">Apoya el agro, compra sin intermediarios</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATEGORÍAS RÁPIDAS (INTERACTIVO) -->
+    <section class="max-w-7xl mx-auto px-6 mb-16">
+      <div class="flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <h2 class="text-3xl font-bold text-[#166534]">Compra por categoría</h2>
+          <p class="text-gray-600 mt-1">Filtra rápido lo que necesitas del campo 🌾</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            class="catBtn bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow"
+            data-cat="todos">
+            Todos
+          </button>
+          <button
+            class="catBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
+            data-cat="frutas">
+            🍍 Frutas
+          </button>
+          <button
+            class="catBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
+            data-cat="verduras">
+            🥦 Verduras
+          </button>
+          <button
+            class="catBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
+            data-cat="granos">
+            🌾 Granos
+          </button>
+        </div>
+      </div>
+
+      <div id="catGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+        <!-- Tarjetas ejemplo -->
+        <div class="catCard bg-white rounded-2xl shadow-md border border-green-100 hover:shadow-xl transition p-5 hover:-translate-y-0.5" data-cat="frutas">
+          <p class="text-3xl">🍌</p>
+          <h3 class="text-xl font-bold mt-2 text-gray-900">Frutas</h3>
+          <p class="text-gray-600 text-sm mt-1">Frescas, cosecha directa</p>
+          <a href="{% url 'listar_productos' %}" class="inline-block mt-4 text-[#166534] font-semibold hover:underline">
+            Ver frutas →
+          </a>
+        </div>
+
+        <div class="catCard bg-white rounded-2xl shadow-md border border-green-100 hover:shadow-xl transition p-5 hover:-translate-y-0.5" data-cat="verduras">
+          <p class="text-3xl">🥬</p>
+          <h3 class="text-xl font-bold mt-2 text-gray-900">Verduras</h3>
+          <p class="text-gray-600 text-sm mt-1">Calidad y precio justo</p>
+          <a href="{% url 'listar_productos' %}" class="inline-block mt-4 text-[#166534] font-semibold hover:underline">
+            Ver verduras →
+          </a>
+        </div>
+
+        <div class="catCard bg-white rounded-2xl shadow-md border border-green-100 hover:shadow-xl transition p-5 hover:-translate-y-0.5" data-cat="granos">
+          <p class="text-3xl">🌽</p>
+          <h3 class="text-xl font-bold mt-2 text-gray-900">Granos</h3>
+          <p class="text-gray-600 text-sm mt-1">Arroz, maíz, fríjol y más</p>
+          <a href="{% url 'listar_productos' %}" class="inline-block mt-4 text-[#166534] font-semibold hover:underline">
+            Ver granos →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMPACTO / BALANCE PRODUCTIVIDAD (CON GRÁFICOS) -->
+    <section id="impacto" class="max-w-7xl mx-auto px-6 mb-16">
+      <div class="bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7] border border-green-200 rounded-3xl p-8 shadow-lg">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 class="text-3xl font-bold text-[#166534]">📊 Impacto real: más productividad, menos intermediarios</h2>
+            <p class="text-gray-700 mt-2 max-w-3xl">
+              CampoMarkt mejora el ciclo comercial: el productor vende más rápido, el cliente paga mejor precio y el
+              mercado se vuelve más eficiente.
+              Aquí te mostramos un <strong>balance</strong> del impacto esperado.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-4 shadow border border-green-100 w-full sm:w-auto">
+            <p class="text-sm font-semibold text-gray-700 mb-2">Simulador (ajusta valores)</p>
+            <div class="flex gap-2 items-center">
+              <input id="precioIntermediario" type="number" value="8000"
+                class="w-32 border border-green-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-300" />
+              <span class="text-sm text-gray-600">$/Kg con intermediario</span>
+            </div>
+            <div class="flex gap-2 items-center mt-2">
+              <input id="precioCampoMarkt" type="number" value="6000"
+                class="w-32 border border-green-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-300" />
+              <span class="text-sm text-gray-600">$/Kg en CampoMarkt</span>
+            </div>
+            <button id="btnCalcular"
+              class="mt-3 w-full bg-[#22c55e] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#16a34a] transition shadow">
+              Calcular ahorro
+            </button>
+            <p id="resultadoAhorro" class="text-sm text-gray-700 mt-2"></p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
+          <!-- Gráfico 1 -->
+          <div class="bg-white rounded-2xl p-6 shadow border border-green-100">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">📉 Reducción de intermediarios</h3>
+            <p class="text-gray-600 text-sm mb-4">
+              Comparación del canal tradicional vs venta directa.
+            </p>
+            <canvas id="chartIntermediarios" height="120"></canvas>
+          </div>
+
+          <!-- Gráfico 2 -->
+          <div class="bg-white rounded-2xl p-6 shadow border border-green-100">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">📈 Productividad del productor</h3>
+            <p class="text-gray-600 text-sm mb-4">
+              Balance estimado: rotación de inventario, ventas y tiempo de comercialización.
+            </p>
+            <canvas id="chartProductividad" height="120"></canvas>
+          </div>
+        </div>
+
+        <!-- Texto Balance -->
+        <div class="mt-10 bg-white rounded-2xl p-6 border border-green-100 shadow">
+          <h3 class="text-2xl font-bold text-[#166534]">✅ Balance de beneficios</h3>
+          <div class="grid md:grid-cols-3 gap-6 mt-4">
+            <div class="p-4 rounded-2xl bg-[#f0fdf4] border border-green-200">
+              <h4 class="font-bold text-gray-800">Para el productor</h4>
+              <ul class="text-sm text-gray-700 mt-2 space-y-1">
+                <li>• Mayor margen por venta (menos comisiones)</li>
+                <li>• Visibilidad directa al cliente</li>
+                <li>• Mejor rotación de cosecha</li>
+              </ul>
+            </div>
+            <div class="p-4 rounded-2xl bg-[#f0fdf4] border border-green-200">
+              <h4 class="font-bold text-gray-800">Para el comprador</h4>
+              <ul class="text-sm text-gray-700 mt-2 space-y-1">
+                <li>• Precios más justos</li>
+                <li>• Productos frescos y de origen claro</li>
+                <li>• Compra rápida y confiable</li>
+              </ul>
+            </div>
+            <div class="p-4 rounded-2xl bg-[#f0fdf4] border border-green-200">
+              <h4 class="font-bold text-gray-800">Para el mercado</h4>
+              <ul class="text-sm text-gray-700 mt-2 space-y-1">
+                <li>• Menos especulación y reventa</li>
+                <li>• Mejor eficiencia logística</li>
+                <li>• Impulso a lo local</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PRODUCTORES + HISTORIAS (MEJORADO) -->
+    <section class="max-w-7xl mx-auto px-6 mb-16">
+      <div class="flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <h2 class="text-3xl font-bold text-[#166534]">👩‍🌾 Productores y sus historias</h2>
+          <p class="text-gray-600 mt-1">Conoce quién siembra lo que tú compras.</p>
+        </div>
+        <a href="{% url 'nosotros' %}" class="text-[#166534] font-semibold hover:underline">
+          Ver comunidad →
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+        <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-green-100 hover:shadow-2xl transition">
+          <img src="{% static 'img/producer-image.jpg' %}" alt="Productor" class="w-full h-56 object-cover" />
+          <div class="p-5">
+            <h3 class="text-xl font-bold text-[#166534]">Juan Pérez</h3>
+            <p class="text-gray-600 text-sm mt-1">Finca orgánica - Valle del Cauca</p>
+            <p class="text-gray-700 mt-3">
+              Cultiva con prácticas sostenibles y vende directo para garantizar frescura y precio justo.
+            </p>
+            <div class="flex items-center justify-between mt-4">
+              <span class="text-xs bg-[#dcfce7] text-[#166534] px-3 py-1 rounded-full font-semibold border border-green-200">Orgánico</span>
+              <a href="#!" class="text-[#166534] font-semibold hover:underline">Leer más →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-green-100 hover:shadow-2xl transition">
+          <img src="{% static 'img/producer-image.jpg' %}" alt="Productor" class="w-full h-56 object-cover" />
+          <div class="p-5">
+            <h3 class="text-xl font-bold text-[#166534]">María González</h3>
+            <p class="text-gray-600 text-sm mt-1">Productora - Cundinamarca</p>
+            <p class="text-gray-700 mt-3">
+              Produce hortalizas frescas y usa CampoMarkt para reducir pérdidas por intermediación.
+            </p>
+            <div class="flex items-center justify-between mt-4">
+              <span class="text-xs bg-[#dcfce7] text-[#166534] px-3 py-1 rounded-full font-semibold border border-green-200">Hortalizas</span>
+              <a href="#!" class="text-[#166534] font-semibold hover:underline">Leer más →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-green-100 hover:shadow-2xl transition">
+          <img src="{% static 'img/producer-image.jpg' %}" alt="Productor" class="w-full h-56 object-cover" />
+          <div class="p-5">
+            <h3 class="text-xl font-bold text-[#166534]">Carlos Rojas</h3>
+            <p class="text-gray-600 text-sm mt-1">Granos - Tolima</p>
+            <p class="text-gray-700 mt-3">
+              Comercializa maíz y fríjol con trazabilidad, asegurando calidad para el comprador final.
+            </p>
+            <div class="flex items-center justify-between mt-4">
+              <span class="text-xs bg-[#dcfce7] text-[#166534] px-3 py-1 rounded-full font-semibold border border-green-200">Granos</span>
+              <a href="#!" class="text-[#166534] font-semibold hover:underline">Leer más →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="max-w-7xl mx-auto px-6">
+      <div class="bg-[#166534] text-white p-8 rounded-3xl text-center shadow-xl">
+        <h3 class="text-3xl font-extrabold mb-3">¿Quieres vender tus productos en CampoMarkt?</h3>
+        <p class="text-white/90 max-w-2xl mx-auto mb-6">
+          Regístrate como productor y llega directo a compradores reales. Menos intermediarios, más ingresos.
+        </p>
+        <a href="#!"
+          class="inline-block bg-white text-[#166534] px-8 py-3 rounded-full hover:bg-[#f0fdf4] font-semibold transition shadow">
+          📲 Escríbenos a WhatsApp
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-[#166534] text-white mt-10">
+    <div class="max-w-6xl mx-auto px-6 py-10">
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start text-center md:text-left">
+
+        <!-- SERVICIOS -->
+        <div class="md:pl-6">
+          <h3 class="font-extrabold text-xl mb-4">SERVICIOS</h3>
+          <ul class="space-y-2 text-sm text-white/90">
+            <li>Asesorías</li>
+            <li>Acerca de nosotros</li>
+            <li>Contáctanos</li>
+          </ul>
+        </div>
+
+        <!-- REDES SOCIALES -->
+        <div class="flex flex-col items-center">
+          <h3 class="font-extrabold text-xl mb-4">Redes sociales</h3>
+
+          <div class="flex gap-5">
+            <!-- WHATSAPP -->
+            <a href="https://wa.me/573212279231?text=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20mas%20informacion%20por%20favor"
+              target="_blank" class="hover:scale-110 transition">
+              <img
+                src="https://thumbs.dreamstime.com/b/logotipo-de-whatsapp-verde-para-web-y-app-ui-aislado-en-fondo-blanco-png-transparente-265016409.jpg"
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="WhatsApp">
+            </a>
+
+            <!-- FACEBOOK -->
+            <a href="https://m.me/61584277056410?ref=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20más%20información"
+              target="_blank" class="hover:scale-110 transition">
+              <img
+                src="https://static.vecteezy.com/system/resources/previews/018/910/719/non_2x/facebook-logo-facebook-icon-free-free-vector.jpg"
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="Facebook">
+            </a>
+
+            <!-- INSTAGRAM -->
+            <a href="https://instagram.com/CAMPOMARKT" target="_blank" class="hover:scale-110 transition">
+              <img src="https://img.freepik.com/psd-premium/logotipo-aplicacion-instagram_23-2151544088.jpg"
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="Instagram">
+            </a>
+          </div>
+
+          <!-- Texto debajo iconos -->
+          <div class="flex gap-8 mt-2 text-sm font-medium text-white/90">
+            <span>WhatsApp</span>
+            <span>Facebook</span>
+            <span>Instagram</span>
+          </div>
+        </div>
+
+        <!-- SEGURIDAD -->
+        <div class="md:pr-6">
+          <a href="{% url 'seguridad_aw' %}" class="hover:text-[#86efac] px-2 font-semibold transition">Seguridad</a>
+          <p class="text-sm leading-relaxed text-white/90 mt-2">
+            Nuestra aplicación de seguridad está diseñada para ofrecer a los usuarios una protección integral y
+            tranquilidad en el mundo digital y físico. Con un enfoque en la simplicidad y la eficiencia, esta
+            herramienta intuitiva empodera a individuos y empresas para salvaguardar sus activos, información y seres
+            queridos.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <!-- Chatbot Widget -->
+  {% include 'includes/chatbot_widget.html' %}
+
+  <!-- 🔥 SCRIPT BIENVENIDA -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const box = document.getElementById("welcomeBox");
+      if (!box) return;
+
+      const userName = "{{ user.first_name|default:user.username }}";
+
+      const messages = [
+        `👋 ¡Hola ${userName}, bienvenido a CampoMarkt!`,
+        `🌱 Aquí conectas directamente con productores del campo`,
+        `🛒 Encuentra productos frescos y apoya lo local`,
+        `🚜 La tecnología ahora trabaja para el campo contigo`
+      ];
+
+      let i = 0;
+      box.classList.remove("hidden");
+
+      function rotateMessage() {
+        box.style.opacity = 0;
+
+        setTimeout(() => {
+          box.innerHTML = messages[i];
+          box.style.opacity = 1;
+          i = (i + 1) % messages.length;
+        }, 300);
+      }
+
+      rotateMessage();
+      setInterval(rotateMessage, 3500);
+    });
+  </script>
+
+  <script>
+    setTimeout(() => {
+      document.querySelectorAll('.alert-msg').forEach(el => {
+        el.style.transition = "all 0.7s ease";
+        el.style.opacity = "0";
+        el.style.transform = "translateX(100px)";
+        setTimeout(() => el.remove(), 700);
+      });
+    }, 3500);
+  </script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // KPIs animados (demo)
+    document.addEventListener("DOMContentLoaded", () => {
+      const kpiAhorro = document.getElementById("kpiAhorro");
+      const kpiInter = document.getElementById("kpiIntermediarios");
+      const kpiProd = document.getElementById("kpiProductividad");
+
+      // valores ejemplo (puedes conectarlos a datos reales luego)
+      animateNumber(kpiAhorro, 0, 25, "%");
+      animateNumber(kpiInter, 0, 2, "");
+      animateNumber(kpiProd, 0, 18, "%");
+
+      function animateNumber(el, start, end, suffix) {
+        let current = start;
+        const step = Math.max(1, Math.round((end - start) / 40));
+        const interval = setInterval(() => {
+          current += step;
+          if (current >= end) {
+            current = end;
+            clearInterval(interval);
+          }
+          el.textContent = current + suffix;
+        }, 25);
+      }
+    });
+
+    // Filtro por categorías (interactivo)
+    document.addEventListener("DOMContentLoaded", () => {
+      const btns = document.querySelectorAll(".catBtn");
+      const cards = document.querySelectorAll(".catCard");
+
+      btns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const cat = btn.dataset.cat;
+
+          // estilos botones
+          btns.forEach(b => b.className = "catBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition");
+          btn.className = "catBtn bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow";
+
+          // filtrar cards
+          cards.forEach(card => {
+            const belongs = card.dataset.cat === cat || cat === "todos";
+            card.style.display = belongs ? "block" : "none";
+          });
+        });
+      });
+    });
+
+    // Simulador ahorro
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById("btnCalcular");
+      const p1 = document.getElementById("precioIntermediario");
+      const p2 = document.getElementById("precioCampoMarkt");
+      const out = document.getElementById("resultadoAhorro");
+
+      if (!btn) return;
+
+      btn.addEventListener("click", () => {
+        const a = Number(p1.value);
+        const b = Number(p2.value);
+        if (!a || !b || a <= 0 || b <= 0) {
+          out.textContent = "⚠️ Ingresa valores válidos.";
+          return;
+        }
+        const ahorro = Math.round(((a - b) / a) * 100);
+        out.innerHTML = `✅ Ahorro estimado: <strong>${ahorro}%</strong> por Kg comprando directo del campo.`;
+      });
+    });
+
+    // Gráficos (Chart.js)
+    document.addEventListener("DOMContentLoaded", () => {
+      const ctx1 = document.getElementById("chartIntermediarios");
+      const ctx2 = document.getElementById("chartProductividad");
+
+      if (ctx1) {
+        new Chart(ctx1, {
+          type: "bar",
+          data: {
+            labels: ["Tradicional", "CampoMarkt"],
+            datasets: [{
+              label: "Número de intermediarios",
+              data: [3, 1],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: true } },
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+          }
+        });
+      }
+
+      if (ctx2) {
+        new Chart(ctx2, {
+          type: "line",
+          data: {
+            labels: ["Semana 1", "Semana 2", "Semana 3", "Semana 4"],
+            datasets: [{
+              label: "Rotación de ventas (%)",
+              data: [10, 14, 16, 18],
+              fill: false,
+              tension: 0.3,
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: true } },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+
+</html>

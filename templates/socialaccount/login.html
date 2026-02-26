@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Continuar con Google | CampoMarkt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+<div class="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-md text-center">
+
+    <img src="{% static 'img/logo1.png' %}" class="w-20 mx-auto mb-4">
+
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">
+        Continuar con Google
+    </h1>
+
+    <p class="text-gray-600 mb-6">
+        Estás a punto de iniciar sesión en <strong>CampoMarkt</strong> usando tu cuenta de Google.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit"
+            class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg shadow-lg transition">
+            Continuar con Google
+        </button>
+    </form>
+
+    <a href="{% url 'login_page' %}"
+       class="block mt-6 text-sm text-gray-500 hover:underline">
+        Volver al inicio de sesión
+    </a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+{% load static %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Perfil Productor | CampoMarkt</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#fbeadf] min-h-screen">
+
+  <div class="max-w-6xl mx-auto p-6">
+    <div class="bg-white rounded-2xl shadow p-6 flex items-center gap-4">
+      <img src="{{ productor_user.profile_image.url }}" class="w-20 h-20 rounded-full object-cover" alt="perfil">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">{{ productor_user.username }}</h1>
+        {% if productor_profile %}
+          <p class="text-gray-600">Finca: {{ productor_profile.nombre_finca }}</p>
+          <p class="text-gray-600">Teléfono: {{ productor_profile.telefono }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <h2 class="text-xl font-bold mt-8 mb-4 text-gray-800">Productos publicados</h2>
+
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {% for p in productos %}
+        <a href="{% url 'detalle_producto' p.id %}" class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden">
+          {% if p.imagen_principal %}
+            <img src="{{ p.imagen_principal.url }}" class="h-40 w-full object-cover" alt="{{ p.nombre }}">
+          {% else %}
+            <div class="h-40 w-full flex items-center justify-center bg-gray-100 text-gray-400">Sin imagen</div>
+          {% endif %}
+          <div class="p-4">
+            <h3 class="font-bold text-gray-800">{{ p.nombre }}</h3>
+            <p class="text-sm text-gray-600">$ {{ p.precio_unitario }} / {{ p.unidad_medida }}</p>
+          </div>
+        </a>
+      {% empty %}
+        <p class="text-gray-500 italic">Este productor aún no ha publicado productos.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+</body>
+</html>

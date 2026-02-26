@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="es">
+{% load static %}
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nosotros | CampoMarkt</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --orange: #f37021;
+      --green: #15803d;
+      --peach: #fbeadf;
+    }
+
+    body {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col text-gray-800">
+
+  <!-- Header -->
+  <header>
+    <!-- Parte superior naranja -->
+    <div class="bg-[#f37021] flex justify-between items-center px-14 py-4">
+      <!-- Logo e Identidad -->
+      <div class="flex items-center space-x-3">
+        <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt" class="w-16 h-16 rounded-full object-cover" />
+        <span class="text-white font-bold text-3xl tracking-wide">
+          CAMPOMARKT
+        </span>
+      </div>
+
+      <!-- Usuario + Buscador (uno debajo del otro) -->
+      <div class="flex flex-col items-end space-y-2">
+
+        <!-- Usuario / Login / Registro -->
+        {% if user.is_authenticated %}
+        <!-- Usuario logueado: muestra chip con nombre y acceso al perfil -->
+        <a href="{% url 'mi_perfil' %}"
+          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
+          <span class="text-sm font-semibold text-gray-800">
+            {{ user.first_name|default:user.username|default:user.email }}
+          </span>
+
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6 text-gray-700">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+          </svg>
+        </a>
+        {% else %}
+        <!-- Visitante: mostrar Iniciar sesión + Registrarse -->
+        <div class="flex items-center space-x-2">
+          <a href="{% url 'login_page' %}"
+            class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
+            <span class="text-sm font-semibold text-gray-800">
+              Iniciar sesión
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-6 h-6 text-gray-700">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+            </svg>
+          </a>
+
+          <a href="{% url 'register_page' %}"
+            class="bg-green-700 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-green-800 transition">
+            Registrarse
+          </a>
+        </div>
+        {% endif %}
+
+
+
+        <!-- Campo de búsqueda -->
+        <form action="{% url 'buscar_global' %}" method="get"
+          class="flex items-center bg-orange-100 rounded-full px-4 py-1.5">
+          <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
+            class="bg-transparent outline-none text-sm placeholder-gray-600 w-52" />
+
+          <button type="submit" aria-label="Buscar">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- Barra de navegación verde -->
+    <nav class="bg-[#81BC5D] text-white py-4">
+      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-6">
+        <ul class="flex items-center text-sm font-semibold uppercase tracking-wide">
+          <li>
+            <a href="{% url 'main_page' %}" class="hover:text-orange-300 px-2">
+              Inicio
+            </a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'listar_productos' %}" class="hover:text-orange-300 px-2">Productos</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'listar_ofertas' %}" class="hover:text-orange-300 px-2">Ofertas</a>
+
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="#" class="hover:text-orange-300 px-2">Nosotros</a>
+          </li>
+
+          {% if user.is_authenticated %}
+          <!-- Solo mostrar 'Favoritos' si el usuario está logueado -->
+          <li class="flex items-center">
+            <span class="mx-3">|</span>
+            <a href="{% url 'mis_favoritos' %}" class="hover:text-orange-300 px-2">Favoritos</a>
+          </li>
+          {% endif %}
+        </ul>
+
+        <!-- CAMPANA TOTALMENTE A LA DERECHA -->
+        <div class="absolute right-2">
+          <div class="relative">
+
+            <!-- BOTÓN CAMPANA -->
+            <button id="btnBell" type="button" class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 text-white hover:text-orange-300 cursor-pointer">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+              </svg>
+
+              {% if user.is_authenticated and notif_unread > 0 %}
+              <span
+                class="absolute -top-1 -right-1 bg-red-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">
+                {{ notif_unread }}
+              </span>
+              {% endif %}
+            </button>
+
+            <!-- DROPDOWN -->
+            {% if user.is_authenticated %}
+            <div id="notifDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
+
+              <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
+
+              {% for n in notif_last %}
+              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-gray-50">
+                <p class="text-sm text-gray-800">{{ n.message }}</p>
+                <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+              </a>
+              {% empty %}
+              <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+
+          </div>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            const btn = document.getElementById("btnBell");
+            const dropdown = document.getElementById("notifDropdown");
+
+            if (!btn || !dropdown) return;
+
+            // abrir/cerrar al click
+            btn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              dropdown.classList.toggle("hidden");
+            });
+
+            // click afuera => cerrar
+            document.addEventListener("click", () => {
+              dropdown.classList.add("hidden");
+            });
+
+            // evitar que click dentro del dropdown lo cierre antes de abrir links
+            dropdown.addEventListener("click", (e) => {
+              e.stopPropagation();
+            });
+          });
+        </script>
+
+      </div>
+    </nav>
+
+  </header>
+
+  <!-- CONTENIDO -->
+  <main class="flex-1">
+    <!-- HERO -->
+    <section
+      class="relative bg-[url('https://images.pexels.com/photos/158827/field-corn-air-frisch-158827.jpeg?auto=compress&cs=tinysrgb&w=1600')] bg-cover bg-center">
+      <div class="absolute inset-0 bg-black/40"></div>
+
+      <div class="max-w-7xl mx-auto px-6 py-20 relative z-10 flex flex-col md:flex-row items-center gap-10">
+        <div class="text-white max-w-xl">
+          <p class="text-sm uppercase tracking-[0.3em] text-[color:var(--peach)] mb-3">
+            CampoMarkt
+          </p>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-4">
+            UNA PÁGINA WEB QUE ES TU MEJOR OPCIÓN<br>
+            PARA TRIUNFAR EN TUS PRODUCCIONES
+          </h1>
+          <p class="text-sm md:text-base text-gray-100">
+            Conecta tus cosechas con compradores directos, elimina intermediarios y fortalece tu economía
+            rural con
+            herramientas digitales pensadas para el campo.
+          </p>
+        </div>
+
+        <div class="bg-white/95 rounded-2xl shadow-xl p-6 w-full max-w-sm">
+          <h2 class="text-lg font-bold text-gray-800 mb-2">¿Por qué CampoMarkt?</h2>
+          <ul class="text-sm text-gray-600 space-y-2">
+            <li>• Venta directa del productor al comprador.</li>
+            <li>• Acceso a información técnica y asesorías.</li>
+            <li>• Plataforma sencilla, segura y accesible.</li>
+            <li>• Impulso al comercio local y la inclusión digital.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUIÉNES SOMOS -->
+    <section class="bg-white">
+      <div class="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <h2 class="text-3xl font-extrabold text-gray-900 mb-4">¿QUIÉNES SOMOS?</h2>
+          <p class="text-sm md:text-base text-gray-700 mb-4">
+            CampoMarkt creamos este aplicativo web con el propósito de conectar a los productores campesinos
+            con
+            compradores directos, eliminando intermediarios, fortaleciendo el comercio local y facilitando
+            el acceso
+            a servicios, asesorías técnicas y canales de venta en línea.
+          </p>
+          <p class="text-sm md:text-base text-gray-700">
+            CampoMarkt busca impulsar el desarrollo del campo a través de la tecnología, ofreciendo una
+            plataforma
+            sencilla, segura y eficiente que mejora la calidad de vida de las comunidades rurales.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <img
+            src="https://thumbs.dreamstime.com/z/producci%C3%B3n-intensiva-o-huerta-de-la-fruta-con-las-redes-protecci%C3%B3n-cultivos-en-el-tyrol-del-sur-italia-manzanar-nueva-variedad-126808993.jpg"
+            class="rounded-xl shadow-md h-40 w-full object-cover">
+          <img src="https://blog.cambiagro.com/wp-content/uploads/2024/07/maiz-guia-completa.jpg"
+            class="rounded-xl shadow-md h-40 w-full object-cover mt-6">
+          <img src="https://www.invesa.com/wp-content/uploads/2020/10/Cebolla-larga.jpg"
+            class="rounded-xl shadow-md h-40 w-full object-cover col-span-2">
+        </div>
+      </div>
+    </section>
+
+    <!-- MISIÓN / VISIÓN -->
+    <section class="bg-[color:var(--peach)]">
+      <div class="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8">
+        <div class="relative overflow-hidden rounded-2xl shadow-md">
+          <img src="https://cdn.portalfruticola.com/2018/11/1ab23f5e-cultivo-de-frutas-y-hortalizas-en-el-huerto.jpg"
+            class="absolute inset-0 w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/45"></div>
+          <div class="relative p-6 text-white">
+            <h3 class="text-2xl font-extrabold mb-3">MISIÓN</h3>
+            <p class="text-sm md:text-base text-gray-100">
+              Brindar a los productores rurales una plataforma digital accesible, segura y eficiente que
+              facilite la
+              comercialización directa de sus productos, el acceso a información técnica y el
+              fortalecimiento del
+              comercio local, contribuyendo al desarrollo sostenible del sector agrícola.
+            </p>
+          </div>
+        </div>
+
+        <div class="relative overflow-hidden rounded-2xl shadow-md">
+          <img src="https://fertisac.es/wp-content/uploads/2021/07/hortlizas-destacada-1080x675-1.jpg"
+            class="absolute inset-0 w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/45"></div>
+          <div class="relative p-6 text-white">
+            <h3 class="text-2xl font-extrabold mb-3">VISIÓN</h3>
+            <p class="text-sm md:text-base text-gray-100">
+              Ser en 2026 la plataforma líder en el apoyo digital al sector rural, fortaleciendo la
+              economía campesina
+              a través de tecnología accesible, conectividad y comercio directo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OBJETIVO / ALCANCE -->
+    <section class="bg-white">
+      <div class="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-10 items-start">
+        <div>
+          <h3 class="text-2xl font-extrabold text-gray-900 mb-3">OBJETIVO</h3>
+          <p class="text-sm md:text-base text-gray-700 mb-4">
+            Desarrollar una plataforma web que facilite a los productores rurales la venta directa de sus
+            productos,
+            el acceso a información técnica y la conexión con el mercado, ayudando el desarrollo económico
+            del sector
+            agrícola.
+          </p>
+          <img src="https://images.pexels.com/photos/1268101/pexels-photo-1268101.jpeg?auto=compress&cs=tinysrgb&w=1200"
+            class="rounded-xl shadow-md w-full h-56 object-cover">
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-extrabold text-gray-900 mb-3">ALCANCE</h3>
+          <p class="text-sm md:text-base text-gray-700 mb-4">
+            Fortalecer CampoMarkt como la plataforma web que permita a los productores rurales vender sus
+            productos
+            directamente, acceder a información técnica y conectarse con compradores, fortaleciendo el
+            comercio local
+            y la inclusión digital.
+          </p>
+          <img src="https://ubjonline.b-cdn.net/wp-content/uploads/2017/01/alcance-proyecto.jpg"
+            class="rounded-xl shadow-md w-full h-56 object-cover">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#f37021] text-black mt-10">
+    <div class="max-w-6xl mx-auto px-6 py-10">
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start text-center md:text-left">
+
+        <!-- SERVICIOS -->
+        <div class="md:pl-6">
+          <h3 class="font-bold text-xl mb-4">SERVICIOS</h3>
+          <ul class="space-y-2 text-sm">
+            <li>Asesorías</li>
+            <li>Acerca de nosotros</li>
+            <li>Contáctanos</li>
+          </ul>
+        </div>
+
+        <!-- REDES SOCIALES -->
+        <div class="flex flex-col items-center">
+          <h3 class="font-bold text-xl mb-4">Redes sociales</h3>
+
+          <div class="flex gap-5">
+            <!-- WHATSAPP -->
+            <a href="https://wa.me/573212279231?text=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20mas%20informacion%20por%20favor"
+              target="_blank" class="hover:scale-110 transition">
+              <img
+                src="https://thumbs.dreamstime.com/b/logotipo-de-whatsapp-verde-para-web-y-app-ui-aislado-en-fondo-blanco-png-transparente-265016409.jpg"
+                class="w-14 h-14 rounded-xl shadow-md" alt="WhatsApp">
+            </a>
+
+            <!-- FACEBOOK -->
+            <a href="https://m.me/61584277056410?ref=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20más%20información"
+              target="_blank" class="hover:scale-110 transition">
+              <img
+                src="https://static.vecteezy.com/system/resources/previews/018/910/719/non_2x/facebook-logo-facebook-icon-free-free-vector.jpg"
+                class="w-14 h-14 rounded-xl shadow-md" alt="Facebook">
+            </a>
+
+            <!-- INSTAGRAM -->
+            <a href="https://instagram.com/CAMPOMARKT" target="_blank" class="hover:scale-110 transition">
+              <img src="https://img.freepik.com/psd-premium/logotipo-aplicacion-instagram_23-2151544088.jpg"
+                class="w-14 h-14 rounded-xl shadow-md" alt="Instagram">
+            </a>
+          </div>
+
+          <!-- Texto debajo iconos -->
+          <div class="flex gap-8 mt-2 text-sm font-medium">
+            <span>WhatsApp</span>
+            <span>Facebook</span>
+            <span>Instagram</span>
+          </div>
+        </div>
+
+        <!-- SEGURIDAD -->
+        <div class="md:pr-6">
+          <a href="{% url 'seguridad_aw' %}" class="hover:text-orange-300 px-2">Seguridad</a>
+          <p class="text-sm leading-relaxed">
+            Nuestra aplicación de seguridad está diseñada para ofrecer a los usuarios una protección integral y
+            tranquilidad en el mundo digital y físico. Con un enfoque en la simplicidad y la eficiencia, esta
+            herramienta intuitiva empodera a individuos y empresas para salvaguardar sus activos, información y seres
+            queridos.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+  <!-- Chatbot Widget -->
+  {% include 'includes/chatbot_widget.html' %}
+
+</body>
+
+</html>

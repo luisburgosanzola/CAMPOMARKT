@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="es">
+{% load static %}
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Crear oferta | CampoMarkt</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root { --orange:#f37021; --green:#15803d; --peach:#fbeadf; }
+    body { background-color: var(--peach); }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased text-gray-700">
+
+  <!-- Header -->
+  <header>
+    <div class="bg-[#f37021] flex justify-between items-center px-14 py-4">
+      <div class="flex items-center space-x-3">
+        <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt" class="w-16 h-16 rounded-full object-cover" />
+        <span class="text-white font-bold text-3xl tracking-wide">CAMPOMARKT</span>
+      </div>
+
+      <div class="flex flex-col items-end space-y-2">
+        {% if user.is_authenticated %}
+        <a href="{% url 'mi_perfil' %}"
+          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
+          <span class="text-sm font-semibold text-gray-800">
+            {{ user.first_name|default:user.username|default:user.email }}
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6 text-gray-700">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+          </svg>
+        </a>
+        {% else %}
+        <a href="{% url 'login_page' %}"
+          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
+          <span class="text-sm font-semibold text-gray-800">Iniciar sesión</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6 text-gray-700">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+          </svg>
+        </a>
+        {% endif %}
+
+        <form action="{% url 'buscar_global' %}" method="get"
+          class="flex items-center bg-orange-100 rounded-full px-4 py-1.5">
+          <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
+            class="bg-transparent outline-none text-sm placeholder-gray-600 w-52" />
+          <button type="submit" aria-label="Buscar">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <nav class="bg-[#81BC5D] text-white py-4">
+      <div class="max-w-7xl mx-auto flex justify-center items-center px-6">
+        <ul class="flex items-center text-sm font-semibold uppercase tracking-wide">
+          <li><a href="{% url 'main_page' %}" class="hover:text-orange-300 px-2">Inicio</a></li>
+          <li class="flex items-center"><span class="mx-3">|</span><a href="{% url 'listar_productos' %}" class="hover:text-orange-300 px-2">Productos</a></li>
+          <li class="flex items-center"><span class="mx-3">|</span><a href="{% url 'listar_ofertas' %}" class="hover:text-orange-300 px-2">Ofertas</a></li>
+          <li class="flex items-center"><span class="mx-3">|</span><a href="{% url 'nosotros' %}" class="hover:text-orange-300 px-2">Nosotros</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main -->
+  <main class="flex-grow max-w-6xl mx-auto px-6 py-10">
+
+    <div class="bg-white rounded-3xl shadow-xl border p-8">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-full text-sm font-semibold">
+            🔥 Panel de ofertas
+          </span>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-[color:var(--green)] mt-4">
+            Crear / actualizar oferta
+          </h1>
+          <p class="text-gray-600 mt-2 max-w-2xl">
+            Producto: <span class="font-semibold text-gray-800">{{ producto.nombre }}</span>
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <button onclick="history.back()"
+            class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gray-100 text-gray-800 font-semibold hover:bg-gray-200 transition">
+            ⬅ Volver
+          </button>
+          <a href="{% url 'detalle_producto' producto.id %}"
+            class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border text-gray-800 font-semibold hover:bg-gray-50 transition">
+            👀 Ver detalle
+          </a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+
+        <div class="bg-gray-50 rounded-3xl border p-6">
+          <div class="flex items-center justify-between">
+            <p class="font-bold text-gray-900 text-lg">Vista previa</p>
+            <span class="text-xs font-bold bg-orange-500 text-white px-3 py-1 rounded-full shadow">OFERTA 🔥</span>
+          </div>
+
+          <div class="mt-4 rounded-2xl overflow-hidden border bg-white">
+            <div class="h-48 bg-gray-100 overflow-hidden">
+              {% if producto.imagen_principal %}
+              <img src="{{ producto.imagen_principal.url }}" alt="{{ producto.nombre }}" class="w-full h-full object-cover">
+              {% else %}
+              <div class="w-full h-full flex items-center justify-center text-gray-400">
+                <span class="text-sm font-semibold">Sin imagen</span>
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="p-5">
+              <p class="text-sm text-gray-600">Producto</p>
+              <p class="text-xl font-extrabold text-gray-900">{{ producto.nombre }}</p>
+              <div class="mt-4">
+                <p class="text-xs text-gray-500">Precio actual</p>
+                <p class="text-2xl font-extrabold text-[color:var(--green)]">$ {{ producto.precio_unitario }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 text-sm text-gray-600">
+            💡 Tip: una buena oferta suele ser entre <span class="font-bold">10% y 30%</span> menos.
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl border shadow-sm p-6">
+          <h2 class="text-xl font-extrabold text-gray-900">Publicar precio de oferta</h2>
+          <p class="text-sm text-gray-600 mt-1">Actualiza el valor y guarda.</p>
+
+          <form method="post" class="mt-6 space-y-4">
+            {% csrf_token %}
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700">Precio de oferta</label>
+              <div class="mt-1 flex items-center gap-2">
+                <span class="px-3 py-2 rounded-xl bg-gray-100 border text-gray-700 font-bold">$</span>
+                <input name="precio_oferta" value="{{ oferta.precio_oferta|default:'' }}"
+                  class="w-full border rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-orange-200"
+                  placeholder="Ej: 4500">
+              </div>
+              <p class="text-xs text-gray-500 mt-2">Solo números.</p>
+            </div>
+
+            <button class="w-full bg-[color:var(--green)] text-white py-3 rounded-2xl font-extrabold hover:brightness-95 transition shadow-lg">
+              ✅ Publicar oferta
+            </button>
+
+            <a href="{% url 'listar_ofertas' %}"
+              class="block w-full text-center bg-orange-100 text-orange-700 py-3 rounded-2xl font-bold hover:bg-orange-200 transition">
+              🔥 Ver ofertas activas
+            </a>
+          </form>
+
+          <div class="mt-6 p-4 rounded-2xl bg-green-50 border border-green-100">
+            <p class="font-bold text-green-700">📢 Esto hará tu oferta:</p>
+            <ul class="text-sm text-gray-700 mt-2 space-y-1">
+              <li>• Aparece en <span class="font-semibold">Ofertas</span></li>
+              <li>• Se puede quitar cuando quieras</li>
+              <li>• Al dar clic, los lleva al detalle</li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-[#f37021] text-black mt-10">
+    <div class="max-w-6xl mx-auto px-6 py-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start text-center md:text-left">
+        <div class="md:pl-6">
+          <h3 class="font-bold text-xl mb-4">SERVICIOS</h3>
+          <ul class="space-y-2 text-sm">
+            <li>Asesorías</li><li>Acerca de nosotros</li><li>Contáctanos</li>
+          </ul>
+        </div>
+
+        <div class="flex flex-col items-center">
+          <h3 class="font-bold text-xl mb-4">Redes sociales</h3>
+          <div class="flex gap-5">
+            <a href="https://wa.me/573212279231?text=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20mas%20informacion%20por%20favor"
+              target="_blank" class="hover:scale-110 transition">
+              <img src="https://thumbs.dreamstime.com/b/logotipo-de-whatsapp-verde-para-web-y-app-ui-aislado-en-fondo-blanco-png-transparente-265016409.jpg"
+                class="w-14 h-14 rounded-xl shadow-md" alt="WhatsApp">
+            </a>
+            <a href="https://m.me/61584277056410?ref=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20más%20información"
+              target="_blank" class="hover:scale-110 transition">
+              <img src="https://static.vecteezy.com/system/resources/previews/018/910/719/non_2x/facebook-logo-facebook-icon-free-free-vector.jpg"
+                class="w-14 h-14 rounded-xl shadow-md" alt="Facebook">
+            </a>
+            <a href="https://instagram.com/CAMPOMARKT" target="_blank" class="hover:scale-110 transition">
+              <img src="https://img.freepik.com/psd-premium/logotipo-aplicacion-instagram_23-2151544088.jpg"
+                class="w-14 h-14 rounded-xl shadow-md" alt="Instagram">
+            </a>
+          </div>
+          <div class="flex gap-8 mt-2 text-sm font-medium">
+            <span>WhatsApp</span><span>Facebook</span><span>Instagram</span>
+          </div>
+        </div>
+
+        <div class="md:pr-6">
+          <a href="{% url 'seguridad_aw' %}" class="hover:text-orange-300 px-2">Seguridad</a>
+          <p class="text-sm leading-relaxed">Protección integral y tranquilidad.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
