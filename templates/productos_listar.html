@@ -1,6 +1,6 @@
+{% load static %}
 <!doctype html>
 <html lang="es">
-{% load static %}
 
 <head>
   <meta charset="utf-8" />
@@ -10,173 +10,201 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    :root {
-      --orange: #f37021;
-      --green: #15803d;
-      --peach: #ffffff;
-      /* <-- antes era #fbeadf */
-    }
-
     body {
-      background-color: var(--peach);
+      background: radial-gradient(circle at top left, #ffffff 0, #f0fdf4 35%, #dcfce7 70%, #f6fbf7 100%);
     }
   </style>
-
 </head>
 
-<body class="min-h-screen flex flex-col antialiased text-gray-700">
+<body class="min-h-screen flex flex-col antialiased text-gray-800 bg-[#f6fbf7] font-sans">
 
-  <!-- HEADER -->
-  <!-- HEADER -->
-  <!-- Header -->
-  <header>
-    <!-- Parte superior naranja -->
-    <div class="bg-[#f37021] flex justify-between items-center px-14 py-4">
-      <!-- Logo e Identidad -->
-      <div class="flex items-center space-x-3">
-        <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt" class="w-16 h-16 rounded-full object-cover" />
-        <span class="text-white font-bold text-3xl tracking-wide">
-          CAMPOMARKT
-        </span>
-      </div>
-
-      <!-- Usuario + Buscador (uno debajo del otro) -->
-      <div class="flex flex-col items-end space-y-2">
-
-        <!-- Usuario / Login / Registro -->
-        {% if user.is_authenticated %}
-        <!-- Usuario logueado: muestra chip con nombre y acceso al perfil -->
-        <a href="{% url 'mi_perfil' %}"
-          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
-          <span class="text-sm font-semibold text-gray-800">
-            {{ user.first_name|default:user.username|default:user.email }}
+  <!-- ================= HEADER (RESPONSIVE + HAMBURGUESA) ================= -->
+  <header class="sticky top-0 z-50">
+    <!-- Top bar -->
+    <div class="bg-[#166534] shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 md:px-14 py-4 flex items-center justify-between gap-4">
+        <!-- Logo -->
+        <a href="{% url 'main_page' %}" class="flex items-center gap-3 shrink-0">
+          <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt"
+            class="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover ring-4 ring-white/30" />
+          <span class="text-white font-extrabold text-xl sm:text-2xl md:text-3xl tracking-wide">
+            CAMPOMARKT
           </span>
-
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" class="w-6 h-6 text-gray-700">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
-          </svg>
         </a>
-        {% else %}
-        <!-- Visitante: mostrar Iniciar sesión + Registrarse -->
-        <div class="flex items-center space-x-2">
-          <a href="{% url 'login_page' %}"
-            class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
-            <span class="text-sm font-semibold text-gray-800">
-              Iniciar sesión
+
+        <!-- Desktop: Search + User -->
+        <div class="hidden md:flex items-center gap-3">
+          <form action="{% url 'buscar_global' %}" method="get"
+            class="flex items-center bg-white/15 backdrop-blur rounded-full px-4 py-2 border border-white/20 shadow-sm">
+            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
+              class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-64" />
+            <button type="submit" aria-label="Buscar">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90 hover:text-white transition"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          </form>
+
+          {% if user.is_authenticated %}
+          <a href="{% url 'mi_perfil' %}"
+            class="flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition shadow-sm border border-white/20">
+            <span class="text-sm font-semibold text-white">
+              {{ user.first_name|default:user.username|default:user.email }}
             </span>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="w-6 h-6 text-gray-700">
+              stroke="currentColor" class="w-6 h-6 text-white/90">
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
             </svg>
           </a>
-
-          <a href="{% url 'register_page' %}"
-            class="bg-green-700 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-green-800 transition">
-            Registrarse
-          </a>
+          {% else %}
+          <div class="flex items-center gap-2">
+            <a href="{% url 'login_page' %}"
+              class="flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition shadow-sm border border-white/20">
+              <span class="text-sm font-semibold text-white">Iniciar sesión</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 text-white/90">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+              </svg>
+            </a>
+            <a href="{% url 'register_page' %}"
+              class="bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow">
+              Registrarse
+            </a>
+          </div>
+          {% endif %}
         </div>
-        {% endif %}
 
-
-
-        <!-- Campo de búsqueda -->
-        <form action="{% url 'buscar_global' %}" method="get"
-          class="flex items-center bg-orange-100 rounded-full px-4 py-1.5">
-          <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
-            class="bg-transparent outline-none text-sm placeholder-gray-600 w-52" />
-
-          <button type="submit" aria-label="Buscar">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24"
+        <!-- Mobile buttons: search icon + bell + hamburger -->
+        <div class="md:hidden flex items-center gap-2">
+          <!-- Mobile Search toggle -->
+          <button id="btnMobileSearch"
+            class="p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/15 transition"
+            aria-label="Abrir búsqueda">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </button>
-        </form>
 
+          <!-- Bell -->
+          <button id="btnBellMobile" type="button"
+            class="relative p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/15 transition"
+            aria-label="Notificaciones">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-6 h-6 text-white">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+            </svg>
+
+            {% if user.is_authenticated and notif_unread > 0 %}
+            <span
+              class="absolute -top-1 -right-1 bg-emerald-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center shadow">
+              {{ notif_unread }}
+            </span>
+            {% endif %}
+          </button>
+
+          <!-- Hamburger -->
+          <button id="btnHamburger"
+            class="p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/15 transition"
+            aria-label="Abrir menú">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile search bar (collapsible) -->
+      <div id="mobileSearchBar" class="hidden md:hidden px-4 pb-4">
+        <form action="{% url 'buscar_global' %}" method="get"
+          class="flex items-center bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20 shadow-sm">
+          <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
+            class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-full" />
+          <button type="submit" aria-label="Buscar">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90 hover:text-white transition"
+              fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </form>
       </div>
     </div>
 
-    <!-- Barra de navegación verde -->
-    <nav class="bg-[#81BC5D] text-white py-4">
-      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-6">
+    <!-- Desktop nav -->
+    <nav class="hidden md:block bg-[#14532d] text-white shadow">
+      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-6 py-4">
         <ul class="flex items-center text-sm font-semibold uppercase tracking-wide">
-          <li>
-            <a href="{% url 'main_page' %}" class="hover:text-orange-300 px-2">
-              Inicio
-            </a>
+          <li><a href="{% url 'main_page' %}" class="hover:text-[#86efac] px-2 transition">Inicio</a></li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <span class="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[#bbf7d0]">Productos</span>
           </li>
 
           <li class="flex items-center">
-            <span class="mx-3">|</span>
-            <a href="{% url 'listar_productos' %}" class="hover:text-orange-300 px-2">Productos</a>
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'listar_ofertas' %}" class="hover:text-[#86efac] px-2 transition">Ofertas</a>
           </li>
 
           <li class="flex items-center">
-            <span class="mx-3">|</span>
-            <a href="{% url 'listar_ofertas' %}" class="hover:text-orange-300 px-2">Ofertas</a>
-
-          </li>
-
-          <li class="flex items-center">
-            <span class="mx-3">|</span>
-            <a href="{% url 'nosotros' %}" class="hover:text-orange-300 px-2">Nosotros</a>
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'nosotros' %}" class="hover:text-[#86efac] px-2 transition">Nosotros</a>
           </li>
 
           {% if user.is_authenticated %}
-          <!-- Solo mostrar 'Favoritos' si el usuario está logueado -->
           <li class="flex items-center">
-            <span class="mx-3">|</span>
-            <a href="{% url 'mis_favoritos' %}" class="hover:text-orange-300 px-2">Favoritos</a>
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'mis_favoritos' %}" class="hover:text-[#86efac] px-2 transition">Favoritos</a>
           </li>
           {% endif %}
 
           <li class="flex items-center">
-            <span class="mx-3">|</span>
-            <a href="#" class="hover:text-orange-300 px-2">Novedades</a>
+            <span class="mx-3 text-white/40">|</span>
+            <a href="#novedades" class="hover:text-[#86efac] px-2 transition">Novedades</a>
           </li>
-          <li>
-            {% if request.user.is_authenticated and request.user.rol == "productor" %}
-            <a href="{% url 'agregar_producto' %}" class="hover:text-orange-300 px-2">
-              Publicar producto
-            </a>
-            {% endif %}
 
+          {% if request.user.is_authenticated and request.user.rol == "productor" %}
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'agregar_producto' %}" class="hover:text-[#86efac] px-2 transition">Publicar producto</a>
           </li>
+          {% endif %}
         </ul>
 
-        <!-- CAMPANA TOTALMENTE A LA DERECHA -->
+        <!-- Bell desktop -->
         <div class="absolute right-2">
           <div class="relative">
-
-            <!-- BOTÓN CAMPANA -->
             <button id="btnBell" type="button" class="relative">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-6 h-6 text-white hover:text-orange-300 cursor-pointer">
+                stroke="currentColor" class="w-6 h-6 text-white hover:text-[#86efac] cursor-pointer transition">
                 <path stroke-linecap="round" stroke-linejoin="round"
                   d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
               </svg>
 
               {% if user.is_authenticated and notif_unread > 0 %}
               <span
-                class="absolute -top-1 -right-1 bg-red-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">
+                class="absolute -top-1 -right-1 bg-emerald-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center shadow">
                 {{ notif_unread }}
               </span>
               {% endif %}
             </button>
 
-            <!-- DROPDOWN -->
             {% if user.is_authenticated %}
             <div id="notifDropdown"
               class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
-
               <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
 
               {% for n in notif_last %}
-              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-gray-50">
+              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-[#f0fdf4] transition">
                 <p class="text-sm text-gray-800">{{ n.message }}</p>
                 <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
               </a>
@@ -185,403 +213,712 @@
               {% endfor %}
             </div>
             {% endif %}
-
           </div>
         </div>
-
-        <script>
-          document.addEventListener("DOMContentLoaded", () => {
-            const btn = document.getElementById("btnBell");
-            const dropdown = document.getElementById("notifDropdown");
-
-            if (!btn || !dropdown) return;
-
-            // abrir/cerrar al click
-            btn.addEventListener("click", (e) => {
-              e.stopPropagation();
-              dropdown.classList.toggle("hidden");
-            });
-
-            // click afuera => cerrar
-            document.addEventListener("click", () => {
-              dropdown.classList.add("hidden");
-            });
-
-            // evitar que click dentro del dropdown lo cierre antes de abrir links
-            dropdown.addEventListener("click", (e) => {
-              e.stopPropagation();
-            });
-          });
-        </script>
-
       </div>
     </nav>
 
+    <!-- Mobile menu (drawer) -->
+    <div id="mobileMenuOverlay" class="hidden fixed inset-0 bg-black/40 z-50"></div>
+
+    <aside id="mobileMenu"
+      class="fixed top-0 right-0 h-full w-[86%] max-w-sm bg-white z-[60] shadow-2xl translate-x-full transition-transform duration-300">
+      <div class="p-5 border-b flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src="{% static 'img/logo1.png' %}" class="w-10 h-10 rounded-full object-cover" alt="CampoMarkt">
+          <div>
+            <p class="font-extrabold text-[#166534] leading-tight">CAMPOMARKT</p>
+            <p class="text-xs text-gray-500">Menos intermediarios, más campo</p>
+          </div>
+        </div>
+        <button id="btnCloseMenu" class="p-2 rounded-xl hover:bg-gray-100" aria-label="Cerrar menú">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-5">
+        <!-- User block -->
+        <div class="bg-[#f0fdf4] border border-green-200 rounded-2xl p-4">
+          {% if user.is_authenticated %}
+          <p class="text-sm text-gray-600">Conectado como</p>
+          <a href="{% url 'mi_perfil' %}" class="mt-1 inline-flex items-center gap-2 font-bold text-[#166534]">
+            {{ user.first_name|default:user.username|default:user.email }}
+            <span class="text-lg">👤</span>
+          </a>
+          {% else %}
+          <p class="font-bold text-gray-800">👋 Hola</p>
+          <p class="text-sm text-gray-600 mt-1">Inicia sesión para guardar favoritos.</p>
+          <div class="flex gap-2 mt-3">
+            <a href="{% url 'login_page' %}"
+              class="flex-1 text-center bg-[#166534] text-white px-4 py-2 rounded-xl font-semibold hover:bg-[#14532d] transition">
+              Entrar
+            </a>
+            <a href="{% url 'register_page' %}"
+              class="flex-1 text-center bg-[#22c55e] text-white px-4 py-2 rounded-xl font-semibold hover:bg-[#16a34a] transition">
+              Registro
+            </a>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Links -->
+        <nav class="mt-5">
+          <p class="text-xs uppercase tracking-widest text-gray-400 mb-3">Menú</p>
+
+          <a href="{% url 'main_page' %}"
+            class="flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Inicio</span>
+            <span>🏠</span>
+          </a>
+
+          <div class="mt-2">
+            <div class="flex items-center justify-between px-4 py-3 rounded-2xl bg-[#f0fdf4] border border-green-200">
+              <span class="font-extrabold text-[#166534]">Productos</span>
+              <span>🛒</span>
+            </div>
+          </div>
+
+          <a href="{% url 'listar_ofertas' %}"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Ofertas</span>
+            <span>🔥</span>
+          </a>
+
+          <a href="{% url 'nosotros' %}"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Nosotros</span>
+            <span>👥</span>
+          </a>
+
+          {% if user.is_authenticated %}
+          <a href="{% url 'mis_favoritos' %}"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Favoritos</span>
+            <span>❤️</span>
+          </a>
+          {% endif %}
+
+          <a href="#novedades"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border"
+            onclick="closeMobileMenu()">
+            <span class="font-semibold text-gray-800">Novedades</span>
+            <span>✨</span>
+          </a>
+
+          {% if request.user.is_authenticated and request.user.rol == "productor" %}
+          <a href="{% url 'agregar_producto' %}"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Publicar producto</span>
+            <span>➕</span>
+          </a>
+          {% endif %}
+        </nav>
+
+        <!-- Mobile notifications dropdown (simple) -->
+        {% if user.is_authenticated %}
+        <div class="mt-5">
+          <p class="text-xs uppercase tracking-widest text-gray-400 mb-3">Notificaciones</p>
+          <div class="bg-white border rounded-2xl overflow-hidden">
+            {% for n in notif_last %}
+            <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-[#f0fdf4] transition border-b">
+              <p class="text-sm text-gray-800">{{ n.message }}</p>
+              <p class="text-xs text-gray-500 mt-1">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+            </a>
+            {% empty %}
+            <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </aside>
+
+    <!-- Scripts menú mobile + search toggle + bell desktop -->
+    <script>
+      function openMobileMenu() {
+        const overlay = document.getElementById("mobileMenuOverlay");
+        const menu = document.getElementById("mobileMenu");
+        overlay.classList.remove("hidden");
+        menu.classList.remove("translate-x-full");
+        document.body.style.overflow = "hidden";
+      }
+      function closeMobileMenu() {
+        const overlay = document.getElementById("mobileMenuOverlay");
+        const menu = document.getElementById("mobileMenu");
+        overlay.classList.add("hidden");
+        menu.classList.add("translate-x-full");
+        document.body.style.overflow = "";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const btnHam = document.getElementById("btnHamburger");
+        const btnClose = document.getElementById("btnCloseMenu");
+        const overlay = document.getElementById("mobileMenuOverlay");
+
+        btnHam?.addEventListener("click", openMobileMenu);
+        btnClose?.addEventListener("click", closeMobileMenu);
+        overlay?.addEventListener("click", closeMobileMenu);
+
+        // Mobile search toggle
+        const btnMobileSearch = document.getElementById("btnMobileSearch");
+        const mobileSearchBar = document.getElementById("mobileSearchBar");
+        btnMobileSearch?.addEventListener("click", () => {
+          mobileSearchBar?.classList.toggle("hidden");
+        });
+
+        // Desktop bell dropdown
+        const btnBell = document.getElementById("btnBell");
+        const dropdown = document.getElementById("notifDropdown");
+        if (btnBell && dropdown) {
+          btnBell.addEventListener("click", (e) => { e.stopPropagation(); dropdown.classList.toggle("hidden"); });
+          document.addEventListener("click", () => dropdown.classList.add("hidden"));
+          dropdown.addEventListener("click", (e) => e.stopPropagation());
+        }
+
+        // Mobile bell opens menu (si quieres dropdown aparte, lo hacemos)
+        const btnBellMobile = document.getElementById("btnBellMobile");
+        btnBellMobile?.addEventListener("click", () => {
+          // abre menú y baja a notificaciones
+          openMobileMenu();
+          setTimeout(() => {
+            const n = document.querySelector("aside#mobileMenu p + div");
+            // no forzamos scroll si no existe
+          }, 50);
+        });
+
+        // Cerrar menú con ESC
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") closeMobileMenu();
+        });
+      });
+    </script>
+
+    <!-- Toasts Django -->
+    {% if messages %}
+    <div id="alert-container" class="fixed top-6 right-6 z-[70] space-y-3">
+      {% for message in messages %}
+      <div class="alert-msg px-6 py-4 rounded-xl shadow-xl text-white font-semibold
+        {% if message.tags == 'success' %} bg-emerald-600
+        {% elif message.tags == 'error' %} bg-red-500
+        {% else %} bg-gray-700 {% endif %}">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
   </header>
 
+  <!-- ================= CONTENIDO (RESPONSIVE YA) ================= -->
+  <main class="flex-grow">
+    <!-- HERO -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      <div class="grid lg:grid-cols-2 gap-8 sm:gap-10 items-center">
+        <div>
+          <span
+            class="inline-block bg-[#dcfce7] text-[#166534] px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-green-200">
+            🛒 Mercado directo, fresco y local
+          </span>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#166534] leading-tight">
+            Explora productos del campo
+          </h1>
+          <p class="mt-4 text-gray-700 text-base sm:text-lg">
+            Filtra por categoría, busca por nombre y ordena por precio. Además, guarda tus favoritos sin recargar.
+          </p>
 
-  <!-- CONTENIDO -->
-  <main class="flex-grow max-w-7xl mx-auto px-6 py-10 ">
+          <div class="grid grid-cols-3 gap-3 sm:gap-4 mt-6 sm:mt-7">
+            <div class="bg-white border border-green-200 rounded-2xl p-3 sm:p-4 text-center hover:shadow-md transition">
+              <p class="text-xl sm:text-2xl font-bold text-[#166534]" id="kpiItems">0</p>
+              <p class="text-[11px] sm:text-xs text-gray-600 mt-1">Visibles</p>
+            </div>
+            <div class="bg-white border border-green-200 rounded-2xl p-3 sm:p-4 text-center hover:shadow-md transition">
+              <p class="text-xl sm:text-2xl font-bold text-emerald-700" id="kpiCats">0</p>
+              <p class="text-[11px] sm:text-xs text-gray-600 mt-1">Categorías</p>
+            </div>
+            <div class="bg-white border border-green-200 rounded-2xl p-3 sm:p-4 text-center hover:shadow-md transition">
+              <p class="text-xl sm:text-2xl font-bold text-green-700" id="kpiFavs">0</p>
+              <p class="text-[11px] sm:text-xs text-gray-600 mt-1">Favoritos</p>
+            </div>
+          </div>
 
-    <!-- Filtros y categorías -->
-    <section class="py-16 bg-[color:var(--peach)]">
-      <div class="max-w-7xl mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">
-          Explora nuestras categorías
-        </h2>
+          <div class="flex flex-wrap gap-3 mt-6 sm:mt-7">
+            <a href="#productos"
+              class="bg-[#22c55e] text-white px-7 sm:px-8 py-3 rounded-full text-base sm:text-lg hover:bg-[#16a34a] transition shadow-lg">
+              👇 Ver productos
+            </a>
+            <button id="btnTop"
+              class="bg-white border border-green-200 text-[#166534] px-7 sm:px-8 py-3 rounded-full text-base sm:text-lg hover:bg-[#f0fdf4] transition shadow">
+              ⬆️ Subir
+            </button>
+          </div>
+        </div>
 
-        <!-- Filtros -->
-        <div class="flex justify-center mb-10">
-          <form method="get" class="bg-white rounded-xl shadow-md px-8 py-6 w-full max-w-5xl">
+        <div class="relative">
+          <img src="https://libbys.es/wordpress/wp-content/uploads/2018/10/estadosfruta.jpg"
+            class="rounded-3xl shadow-2xl w-full object-cover ring-1 ring-black/5" alt="Productos del campo">
+          <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur rounded-2xl p-4 shadow-lg border border-gray-100">
+            <p class="font-semibold text-gray-800">🌿 Frescura garantizada</p>
+            <p class="text-sm text-gray-600">Compra directo al productor</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center">
-              <!-- Buscar por nombre -->
+    <!-- FILTROS -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-10">
+      <div class="bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7] border border-green-200 rounded-3xl p-5 sm:p-8 shadow-lg">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-[#166534]">🔎 Filtros</h2>
+            <p class="text-gray-700 mt-1">Refina la búsqueda rápido y sin enredos.</p>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <button
+              class="chipBtn bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow"
+              data-chip="all">Todos</button>
+            <button
+              class="chipBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
+              data-chip="fruta">🍍 Fruta</button>
+            <button
+              class="chipBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
+              data-chip="verdura">🥦 Verdura</button>
+            <button
+              class="chipBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
+              data-chip="tuberculo">🥔 Tubérculo</button>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <form method="get" class="bg-white rounded-2xl shadow-md px-5 sm:px-8 py-6 border border-green-100">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
               <div class="w-full">
-                <label class="block text-sm font-medium text-gray-700">Buscar producto</label>
-                <input type="text" name="busqueda" placeholder="Ej: manzana" value="{{ busqueda|default:'' }}" class="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2
-                              focus:ring-green-500 focus:border-green-500">
+                <label class="block text-sm font-semibold text-gray-700">Buscar producto</label>
+                <input id="inpNombre" type="text" name="busqueda" placeholder="Ej: manzana"
+                  value="{{ busqueda|default:'' }}"
+                  class="w-full mt-1 border border-green-200 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-green-300">
               </div>
 
-              <!-- Categoría -->
               <div class="w-full">
-                <label class="block text-sm font-medium text-gray-700">Categoría</label>
-                <select name="categoria" class="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2
-               focus:ring-green-500 focus:border-green-500">
+                <label class="block text-sm font-semibold text-gray-700">Categoría</label>
+                <select id="selCategoria" name="categoria"
+                  class="w-full mt-1 border border-green-200 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-green-300">
                   <option value="">Todas</option>
-
                   {% for cat in categorias %}
                   <option value="{{ cat.nombre }}" {% if categoria_seleccionada == cat.nombre %} selected{% endif %}>
                     {{ cat.nombre }}
                   </option>
                   {% endfor %}
                 </select>
-
-
               </div>
 
-              <!-- Orden -->
               <div class="w-full">
-                <label class="block text-sm font-medium text-gray-700">Ordenar por</label>
-                <select name="orden" class="w-full mt-1 border border-gray-300 rounded-lg px-4 py-2
-               focus:ring-green-500 focus:border-green-500">
+                <label class="block text-sm font-semibold text-gray-700">Ordenar por</label>
+                <select name="orden"
+                  class="w-full mt-1 border border-green-200 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-green-300">
                   <option value="">Por defecto</option>
-
-                  <option value="precio_asc" {% if orden == 'precio_asc' %}selected{% endif %}>
-                    Precio: menor a mayor
-                  </option>
-
-                  <option value="precio_desc" {% if orden == 'precio_desc' %}selected{% endif %}>
-                    Precio: mayor a menor
-                  </option>
+                  <option value="precio_asc" {% if orden == 'precio_asc' %}selected{% endif %}>Precio: menor a mayor</option>
+                  <option value="precio_desc" {% if orden == 'precio_desc' %}selected{% endif %}>Precio: mayor a menor</option>
                 </select>
-
               </div>
             </div>
 
-            <!-- Botones centrados -->
-            <div class="flex justify-center gap-4 mt-6">
-              <a href="{% url 'listar_productos' %}" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium
-                        hover:bg-gray-300 transition">
+            <div class="flex flex-col sm:flex-row justify-center gap-3 mt-6">
+              <a href="{% url 'listar_productos' %}"
+                class="px-6 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-200 transition text-center">
                 Limpiar filtros
               </a>
-              <button type="submit" class="px-6 py-2 bg-[color:var(--green)] text-white rounded-lg text-sm font-semibold
-                             hover:brightness-90 transition">
+              <button type="submit"
+                class="px-6 py-2 bg-[#166534] text-white rounded-xl text-sm font-semibold hover:bg-[#14532d] transition shadow">
                 Buscar
               </button>
             </div>
-
           </form>
-        </div>
 
-        <!-- Tarjetas de categorías -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Categoría Frutas -->
-          <div class="flex flex-col items-center text-center bg-white rounded-lg shadow-lg overflow-hidden">
-            <img src="https://libbys.es/wordpress/wp-content/uploads/2018/10/estadosfruta.jpg" alt="Frutas"
-              class="w-full h-56 object-cover">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-gray-800">Frutas</h3>
-              <p class="text-gray-600">
-                Frescas y naturales, directo del campo a tu mesa.
-              </p>
-              <button onclick="filtrarCategoria('fruta')"
-                class="mt-4 inline-block text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-full">
-                Ver más
-              </button>
-
+          <div class="mt-6 bg-white rounded-2xl border border-green-100 shadow-sm p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h3 class="font-bold text-gray-900">⚡ Filtro en vivo</h3>
+                <p class="text-sm text-gray-600">Se filtran tarjetas sin recargar.</p>
+              </div>
+              <div class="flex gap-2 w-full sm:w-auto">
+                <input id="liveSearch" type="text" placeholder="Filtrar por nombre..."
+                  class="w-full sm:w-72 border border-green-200 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-green-300">
+                <button id="clearLive"
+                  class="bg-[#22c55e] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#16a34a] transition shadow shrink-0">
+                  Limpiar
+                </button>
+              </div>
             </div>
-          </div>
 
-          <!-- Categoría Tubérculos -->
-          <div class="flex flex-col items-center text-center bg-white rounded-lg shadow-lg overflow-hidden">
-            <img
-              src="https://media.istockphoto.com/id/1179964582/es/foto/ra%C3%ADces-org%C3%A1nicas-legumbres-y-tub%C3%A9rculos.jpg?s=612x612&w=0&k=20&c=bg7fpKQxthWvDbGYlKFE4BwWXCGCcHoA6l2gg0l-fHg="
-              alt="Tubérculos" class="w-full h-56 object-cover">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-gray-800">Tubérculos</h3>
-              <p class="text-gray-600">
-                Descubre los mejores tubérculos para tu cocina.
-              </p>
-              <button onclick="filtrarCategoria('tuberculo')"
-                class="mt-4 inline-block text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-full">
-                Ver más
-              </button>
-
-            </div>
-          </div>
-
-          <!-- Categoría Verduras -->
-          <div class="flex flex-col items-center text-center bg-white rounded-lg shadow-lg overflow-hidden">
-            <img
-              src="https://verduras.consumer.es/sites/verduras/files/styles/max_2600x2600/public/images/verduras.webp?itok=XWwowr2t"
-              alt="Verduras" class="w-full h-56 object-cover">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-gray-800">Verduras</h3>
-              <p class="text-gray-600">
-                Variedad de verduras frescas y saludables.
-              </p>
-              <button onclick="filtrarCategoria('verdura')"
-                class="mt-4 inline-block text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-full">
-                Ver más
-              </button>
-
-            </div>
+            <p class="text-xs text-gray-500 mt-3">
+              Mostrando: <span id="countLive" class="font-semibold text-gray-700">0</span> productos
+            </p>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- CATEGORÍAS -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-12" id="novedades">
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-[#166534]">Compra por categoría</h2>
+        <p class="text-gray-600 mt-1">Toca una categoría y filtramos con tu AJAX.</p>
+      </div>
 
-    <!-- Productos publicados -->
-
-
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">
-      Productos publicados
-    </h2>
-
-    <div id="contenedor-productos" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-
-      {% for p in productos %}
-      <article class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 flex flex-col">
-        <!-- Imagen -->
-        {% if p.imagen_principal %}
-        <img src="{{ p.imagen_principal.url }}" alt="{{ p.nombre }}" class="h-40 w-full object-cover">
-        {% else %}
-        <div class="h-40 w-full flex items-center justify-center bg-gray-100 text-gray-400 text-sm">
-          Sin imagen
-        </div>
-        {% endif %}
-
-        <!-- Contenido -->
-        <div class="p-4 flex-1 flex flex-col">
-          <div class="flex items-start justify-between gap-2 mb-1">
-            <h4 class="font-bold text-lg text-gray-800">
-              {{ p.nombre }}
-            </h4>
-
-            {% if p.categoria %}
-            <span class="text-xs px-2 py-1 rounded-full bg-[color:var(--green)]
-                               text-white whitespace-nowrap">
-              {{ p.categoria.nombre }}
-            </span>
-            {% endif %}
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-8">
+        <div
+          class="group bg-white rounded-3xl shadow-md overflow-hidden border border-green-100 hover:shadow-2xl transition hover:-translate-y-0.5">
+          <img src="https://libbys.es/wordpress/wp-content/uploads/2018/10/estadosfruta.jpg" alt="Frutas"
+            class="w-full h-52 sm:h-56 object-cover group-hover:scale-[1.02] transition duration-500">
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-extrabold text-gray-900">Frutas</h3>
+            <p class="text-gray-600 mt-1">Frescas y naturales, directo del campo a tu mesa.</p>
+            <button onclick="filtrarCategoria('fruta')"
+              class="mt-4 inline-flex items-center justify-center gap-2 text-white bg-[#22c55e] hover:bg-[#16a34a] px-5 py-2.5 rounded-full font-semibold shadow">
+              Ver más <span class="text-lg">→</span>
+            </button>
           </div>
+        </div>
 
-          {% if p.descripcion %}
-          <p class="text-sm text-gray-600 mb-2">
-            {{ p.descripcion|truncatechars:100 }}
-          </p>
+        <div
+          class="group bg-white rounded-3xl shadow-md overflow-hidden border border-green-100 hover:shadow-2xl transition hover:-translate-y-0.5">
+          <img
+            src="https://media.istockphoto.com/id/1179964582/es/foto/ra%C3%ADces-org%C3%A1nicas-legumbres-y-tub%C3%A9rculos.jpg?s=612x612&w=0&k=20&c=bg7fpKQxthWvDbGYlKFE4BwWXCGCcHoA6l2gg0l-fHg="
+            alt="Tubérculos" class="w-full h-52 sm:h-56 object-cover group-hover:scale-[1.02] transition duration-500">
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-extrabold text-gray-900">Tubérculos</h3>
+            <p class="text-gray-600 mt-1">Descubre los mejores tubérculos para tu cocina.</p>
+            <button onclick="filtrarCategoria('tuberculo')"
+              class="mt-4 inline-flex items-center justify-center gap-2 text-white bg-[#22c55e] hover:bg-[#16a34a] px-5 py-2.5 rounded-full font-semibold shadow">
+              Ver más <span class="text-lg">→</span>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="group bg-white rounded-3xl shadow-md overflow-hidden border border-green-100 hover:shadow-2xl transition hover:-translate-y-0.5">
+          <img
+            src="https://verduras.consumer.es/sites/verduras/files/styles/max_2600x2600/public/images/verduras.webp?itok=XWwowr2t"
+            alt="Verduras" class="w-full h-52 sm:h-56 object-cover group-hover:scale-[1.02] transition duration-500">
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-extrabold text-gray-900">Verduras</h3>
+            <p class="text-gray-600 mt-1">Variedad de verduras frescas y saludables.</p>
+            <button onclick="filtrarCategoria('verdura')"
+              class="mt-4 inline-flex items-center justify-center gap-2 text-white bg-[#22c55e] hover:bg-[#16a34a] px-5 py-2.5 rounded-full font-semibold shadow">
+              Ver más <span class="text-lg">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTOS -->
+    <section id="productos" class="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Productos publicados</h2>
+          <p class="text-gray-600 mt-1">Tip: usa el filtro en vivo para ver rápido.</p>
+        </div>
+
+        <div class="bg-white border border-green-100 rounded-2xl px-4 py-3 shadow-sm">
+          <p class="text-sm text-gray-700 font-semibold">Vista</p>
+          <div class="flex gap-2 mt-2">
+            <button id="grid4"
+              class="px-3 py-1.5 rounded-xl text-sm font-semibold bg-[#22c55e] text-white hover:bg-[#16a34a] transition">
+              Grid
+            </button>
+            <button id="grid2"
+              class="px-3 py-1.5 rounded-xl text-sm font-semibold bg-white border border-green-200 text-[#166534] hover:bg-[#f0fdf4] transition">
+              Grande
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="contenedor-productos" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {% for p in productos %}
+        <article
+          class="productCard bg-white rounded-3xl shadow-md overflow-hidden border border-green-100 flex flex-col hover:shadow-2xl transition hover:-translate-y-0.5"
+          data-name="{{ p.nombre|lower }}"
+          data-cat="{% if p.categoria %}{{ p.categoria.nombre|lower }}{% endif %}">
+          {% if p.imagen_principal %}
+          <img src="{{ p.imagen_principal.url }}" alt="{{ p.nombre }}" class="h-44 w-full object-cover">
+          {% else %}
+          <div class="h-44 w-full flex items-center justify-center bg-gray-100 text-gray-400 text-sm">Sin imagen</div>
           {% endif %}
 
-          <!-- Info técnica -->
-          <div class="text-xs text-gray-500 mb-3 space-y-0.5">
-            {% if user.is_authenticated %}
-            <p>
-              <strong>Productor:</strong>
-              {% if p.productor and p.productor.username %}
-              <a href="{% url 'perfil_productor_publico' p.productor.username %}"
-                class="text-green-700 font-semibold hover:underline">
-                {{ p.productor.username }}
-              </a>
-              {% else %}
-              <span class="italic text-gray-400">Sin productor asignado</span>
+          <div class="p-5 flex-1 flex flex-col">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <h4 class="font-extrabold text-lg text-gray-900">{{ p.nombre }}</h4>
+              {% if p.categoria %}
+              <span class="text-xs px-2 py-1 rounded-full bg-[#166534] text-white whitespace-nowrap">
+                {{ p.categoria.nombre }}
+              </span>
               {% endif %}
-            </p>
+            </div>
 
+            {% if p.descripcion %}
+            <p class="text-sm text-gray-600 mb-3">{{ p.descripcion|truncatechars:100 }}</p>
             {% endif %}
 
-
-            {% if p.tipo_cultivo %}
-            <p><strong>Cultivo:</strong> {{ p.tipo_cultivo }}</p>
-            {% endif %}
-
-            {% if p.variedad %}
-            <p><strong>Variedad:</strong> {{ p.variedad }}</p>
-            {% endif %}
-
-            {% if p.presentacion %}
-            <p><strong>Presentación:</strong> {{ p.presentacion }}</p>
-            {% endif %}
-          </div>
-
-          <!-- Precio / stock / botón + favorito -->
-          <div class="mt-auto flex items-center justify-between gap-2">
-            <!-- Precio -->
-            <div class="flex flex-col">
-              <span class="font-bold text-[color:var(--orange)] text-base">
-                $ {{ p.precio_unitario }}
-              </span>
-              <span class="text-xs text-gray-500">
-                /
-                {% if p.get_unidad_medida_display %}
-                {{ p.get_unidad_medida_display }}
+            <div class="text-xs text-gray-500 mb-4 space-y-1">
+              {% if user.is_authenticated %}
+              <p>
+                <strong>Productor:</strong>
+                {% if p.productor and p.productor.username %}
+                <a href="{% url 'perfil_productor_publico' p.productor.username %}"
+                  class="text-[#166534] font-semibold hover:underline">{{ p.productor.username }}</a>
                 {% else %}
-                {{ p.unidad_medida }}
+                <span class="italic text-gray-400">Sin productor</span>
                 {% endif %}
-              </span>
-              <span class="text-xs text-gray-500">
-                Stock: {{ p.cantidad_disponible }}
-              </span>
+              </p>
+              {% endif %}
+              {% if p.tipo_cultivo %}<p><strong>Cultivo:</strong> {{ p.tipo_cultivo }}</p>{% endif %}
+              {% if p.variedad %}<p><strong>Variedad:</strong> {{ p.variedad }}</p>{% endif %}
+              {% if p.presentacion %}<p><strong>Presentación:</strong> {{ p.presentacion }}</p>{% endif %}
             </div>
 
-            <!-- Favorito + Ver detalles -->
-            <div class="flex flex-col items-end gap-2">
-              <!-- BOTÓN FAVORITO EN LISTA (SIN RECARGAR) -->
-              <form method="post" action="{% url 'toggle_favorito' p.id %}" data-producto-id="{{ p.id }}"
-                onsubmit="toggleFavoritoLista(event)">
+            <div class="mt-auto flex items-center justify-between gap-3">
+              <div class="flex flex-col">
+                <span class="font-extrabold text-emerald-700 text-base">$ {{ p.precio_unitario }}</span>
+                <span class="text-xs text-gray-500">/
+                  {% if p.get_unidad_medida_display %}
+                  {{ p.get_unidad_medida_display }}
+                  {% else %}
+                  {{ p.unidad_medida }}
+                  {% endif %}
+                </span>
+                <span class="text-xs text-gray-500">Stock: {{ p.cantidad_disponible }}</span>
+              </div>
 
-                {% csrf_token %}
-                <button type="submit" id="btn-fav-{{ p.id }}"
-                  data-favorito="{% if p.es_favorito_usuario %}true{% else %}false{% endif %}" class="flex items-center gap-1 px-3 py-1 rounded-full border text-xs font-semibold
-                               {% if p.es_favorito_usuario %}
-                                 bg-red-100 text-red-600 border-red-400 hover:bg-red-200
-                               {% else %}
-                                 bg-white text-gray-700 border-gray-300 hover:bg-gray-100
-                               {% endif %}">
-                  <span class="text-base">
-                    {% if p.es_favorito_usuario %}❤️{% else %}🤍{% endif %}
-                  </span>
-                  <span>
-                    {% if p.es_favorito_usuario %}
-                    Quitar
-                    {% else %}
-                    Favorito
-                    {% endif %}
-                  </span>
-                </button>
-              </form>
+              <div class="flex flex-col items-end gap-2">
+                <form method="post" action="{% url 'toggle_favorito' p.id %}" data-producto-id="{{ p.id }}"
+                  onsubmit="toggleFavoritoLista(event)">
+                  {% csrf_token %}
+                  <button type="submit" id="btn-fav-{{ p.id }}"
+                    data-favorito="{% if p.es_favorito_usuario %}true{% else %}false{% endif %}"
+                    class="favBtn flex items-center gap-1 px-3 py-1 rounded-full border text-xs font-semibold
+                      {% if p.es_favorito_usuario %}
+                        bg-red-100 text-red-600 border-red-400 hover:bg-red-200
+                      {% else %}
+                        bg-white text-gray-700 border-gray-300 hover:bg-gray-100
+                      {% endif %}">
+                    <span class="text-base">{% if p.es_favorito_usuario %}❤️{% else %}🤍{% endif %}</span>
+                    <span>{% if p.es_favorito_usuario %}Quitar{% else %}Favorito{% endif %}</span>
+                  </button>
+                </form>
 
-
-
-
-
-              <!-- Ver detalles -->
-              <a href="{% url 'detalle_producto' p.id %}" class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-semibold
-                            text-white bg-[color:var(--green)] hover:brightness-90">
-                Ver detalles
-              </a>
+                <a href="{% url 'detalle_producto' p.id %}"
+                  class="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#22c55e] hover:bg-[#16a34a] transition shadow">
+                  Ver detalles
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </article>
-      {% endfor %}
-    </div>
-    {% for p in productos %}
-
-    {% empty %}
-    <p class="text-sm text-gray-500 italic">
-      Aún no hay productos registrados.
-    </p>
-    {% endfor %}
-
+        </article>
+        {% empty %}
+        <p class="text-sm text-gray-500 italic">Aún no hay productos registrados.</p>
+        {% endfor %}
+      </div>
+    </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-[#f37021] text-black mt-10">
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-[#166534] text-white mt-10">
     <div class="max-w-6xl mx-auto px-6 py-10">
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start text-center md:text-left">
-
-        <!-- SERVICIOS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start text-center md:text-left">
         <div class="md:pl-6">
-          <h3 class="font-bold text-xl mb-4">SERVICIOS</h3>
-          <ul class="space-y-2 text-sm">
+          <h3 class="font-extrabold text-xl mb-4">SERVICIOS</h3>
+          <ul class="space-y-2 text-sm text-white/90">
             <li>Asesorías</li>
             <li>Acerca de nosotros</li>
             <li>Contáctanos</li>
           </ul>
         </div>
 
-        <!-- REDES SOCIALES -->
         <div class="flex flex-col items-center">
-          <h3 class="font-bold text-xl mb-4">Redes sociales</h3>
-
+          <h3 class="font-extrabold text-xl mb-4">Redes sociales</h3>
           <div class="flex gap-5">
-            <!-- WHATSAPP -->
             <a href="https://wa.me/573212279231?text=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20mas%20informacion%20por%20favor"
               target="_blank" class="hover:scale-110 transition">
               <img
                 src="https://thumbs.dreamstime.com/b/logotipo-de-whatsapp-verde-para-web-y-app-ui-aislado-en-fondo-blanco-png-transparente-265016409.jpg"
-                class="w-14 h-14 rounded-xl shadow-md" alt="WhatsApp">
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="WhatsApp">
             </a>
-
-            <!-- FACEBOOK -->
             <a href="https://m.me/61584277056410?ref=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20más%20información"
               target="_blank" class="hover:scale-110 transition">
               <img
                 src="https://static.vecteezy.com/system/resources/previews/018/910/719/non_2x/facebook-logo-facebook-icon-free-free-vector.jpg"
-                class="w-14 h-14 rounded-xl shadow-md" alt="Facebook">
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="Facebook">
             </a>
-
-            <!-- INSTAGRAM -->
             <a href="https://instagram.com/CAMPOMARKT" target="_blank" class="hover:scale-110 transition">
               <img src="https://img.freepik.com/psd-premium/logotipo-aplicacion-instagram_23-2151544088.jpg"
-                class="w-14 h-14 rounded-xl shadow-md" alt="Instagram">
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="Instagram">
             </a>
           </div>
 
-          <!-- Texto debajo iconos -->
-          <div class="flex gap-8 mt-2 text-sm font-medium">
+          <div class="flex gap-8 mt-2 text-sm font-medium text-white/90">
             <span>WhatsApp</span>
             <span>Facebook</span>
             <span>Instagram</span>
           </div>
         </div>
 
-        <!-- SEGURIDAD -->
         <div class="md:pr-6">
-          <a href="{% url 'seguridad_aw' %}" class="hover:text-orange-300 px-2">Seguridad</a>
-          <p class="text-sm leading-relaxed">
+          <a href="{% url 'seguridad_aw' %}" class="hover:text-[#86efac] px-2 font-semibold transition">Seguridad</a>
+          <p class="text-sm leading-relaxed text-white/90 mt-2">
             Nuestra aplicación de seguridad está diseñada para ofrecer a los usuarios una protección integral y
             tranquilidad en el mundo digital y físico. Con un enfoque en la simplicidad y la eficiencia, esta
             herramienta intuitiva empodera a individuos y empresas para salvaguardar sus activos, información y seres
             queridos.
           </p>
         </div>
-
       </div>
     </div>
   </footer>
 
-
-
-  <!-- MENSAJE FLOTANTE PARA LISTA -->
+  <!-- MENSAJE FLOTANTE FAVORITO -->
   <div id="mensaje-favorito-lista"
-    class="hidden fixed bottom-5 right-5 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg text-sm">
+    class="hidden fixed bottom-5 right-5 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-lg text-sm border border-white/10">
   </div>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script>
+    // Toasts Django
+    setTimeout(() => {
+      document.querySelectorAll('.alert-msg').forEach(el => {
+        el.style.transition = "all 0.7s ease";
+        el.style.opacity = "0";
+        el.style.transform = "translateX(100px)";
+        setTimeout(() => el.remove(), 700);
+      });
+    }, 3500);
+
+    // Scroll top
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById("btnTop");
+      btn?.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+    });
+  </script>
+
+  <script>
+    // Vista Grid / Grande
+    document.addEventListener("DOMContentLoaded", () => {
+      const cont = document.getElementById("contenedor-productos");
+      const b4 = document.getElementById("grid4");
+      const b2 = document.getElementById("grid2");
+      if (!cont || !b4 || !b2) return;
+
+      function setActive(btnOn, btnOff) {
+        btnOn.className = "px-3 py-1.5 rounded-xl text-sm font-semibold bg-[#22c55e] text-white hover:bg-[#16a34a] transition";
+        btnOff.className = "px-3 py-1.5 rounded-xl text-sm font-semibold bg-white border border-green-200 text-[#166534] hover:bg-[#f0fdf4] transition";
+      }
+
+      b4.addEventListener("click", () => {
+        cont.className = "grid gap-5 sm:grid-cols-2 lg:grid-cols-4";
+        setActive(b4, b2);
+      });
+
+      b2.addEventListener("click", () => {
+        cont.className = "grid gap-5 sm:grid-cols-1 lg:grid-cols-2";
+        setActive(b2, b4);
+      });
+    });
+  </script>
+
+  <script>
+    // Chips rápidos -> set select categoría del form
+    document.addEventListener("DOMContentLoaded", () => {
+      const chipBtns = document.querySelectorAll(".chipBtn");
+      const sel = document.getElementById("selCategoria");
+
+      chipBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const chip = btn.dataset.chip;
+
+          chipBtns.forEach(b => b.className =
+            "chipBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
+          );
+          btn.className =
+            "chipBtn bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow";
+
+          if (!sel) return;
+          if (chip === "all") sel.value = "";
+          else {
+            const opt = Array.from(sel.options).find(o => (o.value || "").toLowerCase().includes(chip));
+            if (opt) sel.value = opt.value;
+          }
+          sel.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+      });
+    });
+  </script>
+
+  <script>
+    // Filtro en vivo
+    document.addEventListener("DOMContentLoaded", () => {
+      const input = document.getElementById("liveSearch");
+      const clear = document.getElementById("clearLive");
+      const count = document.getElementById("countLive");
+      const cards = () => Array.from(document.querySelectorAll(".productCard"));
+      const kpiItems = document.getElementById("kpiItems");
+
+      function updateCounts() {
+        const visible = cards().filter(c => c.style.display !== "none").length;
+        if (count) count.textContent = visible;
+        if (kpiItems) kpiItems.textContent = visible;
+      }
+
+      function applyFilter() {
+        const q = (input?.value || "").trim().toLowerCase();
+        cards().forEach(card => {
+          const name = (card.dataset.name || "");
+          card.style.display = (!q || name.includes(q)) ? "flex" : "none";
+        });
+        updateCounts();
+      }
+
+      input?.addEventListener("input", applyFilter);
+      clear?.addEventListener("click", () => { if (input) input.value = ""; applyFilter(); });
+
+      updateCounts();
+    });
+  </script>
+
+  <script>
+    // KPIs iniciales (conteo productos/categorías/favoritos)
+    document.addEventListener("DOMContentLoaded", () => {
+      const kpiItems = document.getElementById("kpiItems");
+      const kpiCats = document.getElementById("kpiCats");
+      const kpiFavs = document.getElementById("kpiFavs");
+
+      const cards = Array.from(document.querySelectorAll(".productCard"));
+      const visible = cards.filter(c => c.style.display !== "none").length;
+
+      const cats = new Set(cards.map(c => (c.dataset.cat || "").trim()).filter(Boolean));
+      const favs = Array.from(document.querySelectorAll(".favBtn"))
+        .filter(b => b.getAttribute("data-favorito") === "true").length;
+
+      if (kpiItems) kpiItems.textContent = visible;
+      if (kpiCats) kpiCats.textContent = cats.size || 0;
+      if (kpiFavs) kpiFavs.textContent = favs || 0;
+    });
+  </script>
+
+  <!-- ✅ TU AJAX ORIGINAL (filtrarCategoria) -->
   <script>
     function filtrarCategoria(categoria) {
       fetch(`/producto/ajax-filtrar/?categoria=${categoria}`)
         .then(async (res) => {
-
-          // ✅ Si no está logueado, el backend debe responder 401 con JSON {url: "..."}
           if (res.status === 401) {
             const data = await res.json();
             window.location.href =
               data.url + "?next=" + encodeURIComponent(window.location.pathname);
             return null;
           }
-
           return res.json();
         })
         .then(data => {
@@ -592,59 +929,75 @@
 
           if (data.productos.length === 0) {
             contenedor.innerHTML = `
-          <div class="col-span-4 flex justify-center items-center">
-            <div class="bg-white shadow-xl rounded-2xl p-10 text-center border border-gray-200 max-w-lg w-full">
-
-              <div class="text-6xl mb-4">🛒</div>
-
-              <h2 class="text-2xl font-bold text-gray-700 mb-2">
-                Ups... no hay productos aquí
-              </h2>
-
-              <p class="text-gray-500 mb-6">
-                Aún no hay productos publicados en esta categoría.
-                Intenta con otra o vuelve más tarde.
-              </p>
-
-              <button onclick="window.location.reload()"
-                class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full shadow-md transition">
-                Ver todos los productos
-              </button>
-
-            </div>
-          </div>
-        `;
+              <div class="col-span-4 flex justify-center items-center">
+                <div class="bg-white shadow-xl rounded-3xl p-10 text-center border border-green-100 max-w-lg w-full">
+                  <div class="text-6xl mb-4">🛒</div>
+                  <h2 class="text-2xl font-extrabold text-gray-800 mb-2">Ups... no hay productos aquí</h2>
+                  <p class="text-gray-600 mb-6">
+                    Aún no hay productos publicados en esta categoría.
+                    Intenta con otra o vuelve más tarde.
+                  </p>
+                  <button onclick="window.location.reload()"
+                    class="bg-[#22c55e] hover:bg-[#16a34a] text-white px-6 py-3 rounded-full shadow-md transition font-semibold">
+                    Ver todos los productos
+                  </button>
+                </div>
+              </div>
+            `;
+            contenedor.scrollIntoView({ behavior: "smooth" });
             return;
           }
 
           data.productos.forEach(p => {
             contenedor.innerHTML += `
-          <div class="bg-white rounded-2xl shadow-md overflow-hidden border flex flex-col">
-            <img src="${p.imagen}" class="h-40 w-full object-cover"/>
-            <div class="p-4 flex flex-col flex-1">
-              <h4 class="font-bold text-lg">${p.nombre}</h4>
-              <p class="text-sm text-gray-600 mb-2">$ ${p.precio} / ${p.unidad}</p>
-
-              <div class="mt-auto">
-                <a href="/producto/${p.id}/"
-                   class="inline-block bg-green-600 text-white px-3 py-1 rounded text-sm">
-                   Ver detalles
-                </a>
-              </div>
-            </div>
-          </div>
-        `;
+              <article class="productCard bg-white rounded-3xl shadow-md overflow-hidden border border-green-100 flex flex-col hover:shadow-2xl transition hover:-translate-y-0.5"
+                data-name="${(p.nombre || '').toLowerCase()}" data-cat="${(p.categoria || '').toLowerCase()}">
+                <img src="${p.imagen}" class="h-44 w-full object-cover"/>
+                <div class="p-5 flex flex-col flex-1">
+                  <div class="flex items-start justify-between gap-2 mb-1">
+                    <h4 class="font-extrabold text-lg text-gray-900">${p.nombre}</h4>
+                    ${p.categoria ? `<span class="text-xs px-2 py-1 rounded-full bg-[#166534] text-white whitespace-nowrap">${p.categoria}</span>` : ""}
+                  </div>
+                  <p class="text-sm text-gray-600 mb-4">$ ${p.precio} / ${p.unidad}</p>
+                  <div class="mt-auto">
+                    <a href="/producto/${p.id}/"
+                      class="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#22c55e] hover:bg-[#16a34a] transition shadow">
+                      Ver detalles
+                    </a>
+                  </div>
+                </div>
+              </article>
+            `;
           });
+
+          // actualizar conteos rápidos
+          const cards = Array.from(document.querySelectorAll(".productCard"));
+          const kpiItems = document.getElementById("kpiItems");
+          const count = document.getElementById("countLive");
+          const visible = cards.filter(c => c.style.display !== "none").length;
+          if (kpiItems) kpiItems.textContent = visible;
+          if (count) count.textContent = visible;
 
           contenedor.scrollIntoView({ behavior: "smooth" });
         })
-        .catch(err => {
-          console.error("Error en filtrarCategoria:", err);
-        });
+        .catch(err => console.error("Error en filtrarCategoria:", err));
     }
   </script>
 
+  <!-- ✅ TU AJAX ORIGINAL (toggleFavoritoLista) + toast bonito -->
   <script>
+    function showToast(text, ok = true) {
+      const box = document.getElementById("mensaje-favorito-lista");
+      if (!box) return;
+      box.textContent = text;
+      box.classList.remove("hidden");
+      box.className = "fixed bottom-5 right-5 text-white px-4 py-3 rounded-xl shadow-lg text-sm border border-white/10 " +
+        (ok ? "bg-emerald-600" : "bg-red-600");
+
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => box.classList.add("hidden"), 2200);
+    }
+
     function toggleFavoritoLista(event) {
       event.preventDefault();
 
@@ -660,7 +1013,6 @@
         },
       })
         .then(async (res) => {
-          // ✅ si no hay sesión → redirigir a login
           if (res.status === 401) {
             const data = await res.json();
             window.location.href =
@@ -673,19 +1025,28 @@
           if (!data) return;
 
           if (data.es_favorito) {
-            btn.className = "flex items-center gap-1 px-3 py-1 rounded-full border text-xs font-semibold bg-red-100 text-red-600 border-red-400 hover:bg-red-200";
+            btn.className = "favBtn flex items-center gap-1 px-3 py-1 rounded-full border text-xs font-semibold bg-red-100 text-red-600 border-red-400 hover:bg-red-200";
+            btn.setAttribute("data-favorito", "true");
             btn.innerHTML = "❤️ <span>Quitar</span>";
+            showToast("✅ Agregado a favoritos");
           } else {
-            btn.className = "flex items-center gap-1 px-3 py-1 rounded-full border text-xs font-semibold bg-white text-gray-700 border-gray-300 hover:bg-gray-100";
+            btn.className = "favBtn flex items-center gap-1 px-3 py-1 rounded-full border text-xs font-semibold bg-white text-gray-700 border-gray-300 hover:bg-gray-100";
+            btn.setAttribute("data-favorito", "false");
             btn.innerHTML = "🤍 <span>Favorito</span>";
+            showToast("🗑️ Quitado de favoritos");
           }
+
+          const favs = Array.from(document.querySelectorAll(".favBtn"))
+            .filter(b => b.getAttribute("data-favorito") === "true").length;
+          const kpiFavs = document.getElementById("kpiFavs");
+          if (kpiFavs) kpiFavs.textContent = favs;
         })
-        .catch(err => console.error("Error toggleFavoritoLista:", err));
+        .catch(err => {
+          console.error("Error toggleFavoritoLista:", err);
+          showToast("⚠️ Error al actualizar favorito", false);
+        });
     }
   </script>
-
-
-
 
 </body>
 

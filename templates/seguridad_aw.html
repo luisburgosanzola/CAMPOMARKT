@@ -1,6 +1,6 @@
+{% load static %}
 <!doctype html>
 <html lang="es">
-{% load static %}
 
 <head>
   <meta charset="utf-8">
@@ -9,100 +9,110 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    :root {
-      --orange: #f37021;
-      --green: #15803d;
-      --peach: #fbeadf;
-      --dark: #1f2933;
-    }
-
     body {
-      background: radial-gradient(circle at top left, #fff7ed 0, #fde7d9 35%, #fbeadf 70%, #f5f5f5 100%);
+      background: radial-gradient(circle at top left, #ffffff 0, #f0fdf4 35%, #dcfce7 70%, #f6fbf7 100%);
     }
   </style>
 </head>
 
-<body class="min-h-screen flex flex-col antialiased text-gray-800">
+<body class="min-h-screen flex flex-col antialiased text-gray-800 bg-[#f6fbf7] font-sans">
 
-  <!-- ================= HEADER ================= -->
+  <!-- ================= HEADER (Mismo estilo del MAIN) ================= -->
   <header>
-    <!-- Parte superior naranja -->
-    <div class="bg-[#f37021] flex justify-between items-center px-6 md:px-14 py-4">
-      <!-- Logo e Identidad -->
+    <!-- Top bar verde pro -->
+    <div class="bg-[#166534] flex justify-between items-center px-6 md:px-14 py-4 shadow-lg">
+      <!-- Logo -->
       <div class="flex items-center space-x-3">
         <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt"
-          class="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover" />
-        <span class="text-white font-bold text-2xl md:text-3xl tracking-wide">
+          class="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover ring-4 ring-white/30" />
+        <span class="text-white font-extrabold text-2xl md:text-3xl tracking-wide">
           CAMPOMARKT
         </span>
       </div>
 
       <!-- Usuario + Buscador -->
       <div class="flex flex-col items-end space-y-2">
-        <!-- Usuario -->
         {% if user.is_authenticated %}
         <a href="{% url 'mi_perfil' %}"
-          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
-          <span class="text-sm font-semibold text-gray-800">
+          class="flex items-center space-x-2 bg-white/15 backdrop-blur rounded-full px-4 py-1.5 hover:bg-white/25 transition shadow-sm border border-white/20">
+          <span class="text-sm font-semibold text-white">
             {{ user.first_name|default:user.username|default:user.email }}
           </span>
-          {% else %}
-          <a href="{% url 'login_page' %}"
-            class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
-            <span class="text-sm font-semibold text-gray-800">
-              Iniciar sesión
-            </span>
-            {% endif %}
 
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6 text-white/90">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+          </svg>
+        </a>
+        {% else %}
+        <div class="flex items-center space-x-2">
+          <a href="{% url 'login_page' %}"
+            class="flex items-center space-x-2 bg-white/15 backdrop-blur rounded-full px-4 py-1.5 hover:bg-white/25 transition shadow-sm border border-white/20">
+            <span class="text-sm font-semibold text-white">Iniciar sesión</span>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="w-6 h-6 text-gray-700">
+              stroke="currentColor" class="w-6 h-6 text-white/90">
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
             </svg>
           </a>
 
-          <!-- Campo de búsqueda -->
-          <form action="{% url 'buscar_global' %}" method="get"
-            class="flex items-center bg-orange-100 rounded-full px-4 py-1.5">
-            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
-              class="bg-transparent outline-none text-sm placeholder-gray-600 w-52" />
+          <a href="{% url 'register_page' %}"
+            class="bg-[#22c55e] text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow">
+            Registrarse
+          </a>
+        </div>
+        {% endif %}
 
-            <button type="submit" aria-label="Buscar">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
-          </form>
-
+        <!-- Buscador -->
+        <form action="{% url 'buscar_global' %}" method="get"
+          class="flex items-center bg-white/15 backdrop-blur rounded-full px-4 py-1.5 border border-white/20 shadow-sm">
+          <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
+            class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-44 md:w-52" />
+          <button type="submit" aria-label="Buscar">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90 hover:text-white transition" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </form>
       </div>
     </div>
 
-    <!-- Barra de navegación verde -->
-    <nav class="bg-[#81BC5D] text-white py-3 md:py-4">
+    <!-- Nav bar verde fino -->
+    <nav class="bg-[#14532d] text-white py-4 shadow">
       <div class="relative max-w-7xl mx-auto flex justify-center items-center px-4 md:px-6">
-        <ul class="flex flex-wrap items-center text-xs md:text-sm font-semibold uppercase tracking-wide gap-1">
-          <li><a href="{% url 'main_page' %}" class="hover:text-orange-300 px-2">Inicio</a></li>
-
-          <li class="hidden md:flex items-center"><span class="mx-2">|</span></li>
-          <li><a href="{% url 'listar_productos' %}" class="hover:text-orange-300 px-2">Productos</a></li>
-
-          <li class="hidden md:flex items-center"><span class="mx-2">|</span></li>
-          <li class="flex items-center">
-            <span class="mx-3">|</span>
-            <a href="{% url 'listar_ofertas' %}" class="hover:text-orange-300 px-2">Ofertas</a>
-
-          </li>
-          <li class="hidden md:flex items-center"><span class="mx-2">|</span></li>
-          <li><a href="{% url 'nosotros' %}" class="hover:text-orange-300 px-2">Nosotros</a></li>
-
-          <li class="hidden md:flex items-center"><span class="mx-2">|</span></li>
-          <li><a href="{% url 'mis_favoritos' %}" class="hover:text-orange-300 px-2">Favoritos</a></li>
-
-          <li class="hidden md:flex items-center"><span class="mx-2">|</span></li>
+        <ul class="flex flex-wrap items-center text-xs md:text-sm font-semibold uppercase tracking-wide">
           <li>
-            <span class="px-2 text-orange-100 bg-white/10 rounded-full border border-white/30">
+            <a href="{% url 'main_page' %}" class="hover:text-[#86efac] px-2 transition">Inicio</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'listar_productos' %}" class="hover:text-[#86efac] px-2 transition">Productos</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'listar_ofertas' %}" class="hover:text-[#86efac] px-2 transition">Ofertas</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'nosotros' %}" class="hover:text-[#86efac] px-2 transition">Nosotros</a>
+          </li>
+
+          {% if user.is_authenticated %}
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'mis_favoritos' %}" class="hover:text-[#86efac] px-2 transition">Favoritos</a>
+          </li>
+          {% endif %}
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <span class="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[#bbf7d0]">
               Seguridad
             </span>
           </li>
@@ -111,32 +121,28 @@
         <!-- Campana -->
         <div class="absolute right-2">
           <div class="relative">
-
-            <!-- BOTÓN CAMPANA -->
             <button id="btnBell" type="button" class="relative">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-6 h-6 text-white hover:text-orange-300 cursor-pointer">
+                stroke="currentColor" class="w-6 h-6 text-white hover:text-[#86efac] cursor-pointer transition">
                 <path stroke-linecap="round" stroke-linejoin="round"
                   d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
               </svg>
 
               {% if user.is_authenticated and notif_unread > 0 %}
               <span
-                class="absolute -top-1 -right-1 bg-red-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">
+                class="absolute -top-1 -right-1 bg-emerald-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center shadow">
                 {{ notif_unread }}
               </span>
               {% endif %}
             </button>
 
-            <!-- DROPDOWN -->
             {% if user.is_authenticated %}
             <div id="notifDropdown"
               class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
-
               <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
 
               {% for n in notif_last %}
-              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-gray-50">
+              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-[#f0fdf4] transition">
                 <p class="text-sm text-gray-800">{{ n.message }}</p>
                 <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
               </a>
@@ -145,7 +151,6 @@
               {% endfor %}
             </div>
             {% endif %}
-
           </div>
         </div>
 
@@ -153,286 +158,553 @@
           document.addEventListener("DOMContentLoaded", () => {
             const btn = document.getElementById("btnBell");
             const dropdown = document.getElementById("notifDropdown");
-
             if (!btn || !dropdown) return;
 
-            // abrir/cerrar al click
             btn.addEventListener("click", (e) => {
               e.stopPropagation();
               dropdown.classList.toggle("hidden");
             });
 
-            // click afuera => cerrar
-            document.addEventListener("click", () => {
-              dropdown.classList.add("hidden");
-            });
-
-            // evitar que click dentro del dropdown lo cierre antes de abrir links
-            dropdown.addEventListener("click", (e) => {
-              e.stopPropagation();
-            });
+            document.addEventListener("click", () => dropdown.classList.add("hidden"));
+            dropdown.addEventListener("click", (e) => e.stopPropagation());
           });
         </script>
-
       </div>
     </nav>
+
+    <!-- Toasts Django -->
+    {% if messages %}
+    <div id="alert-container" class="fixed top-6 right-6 z-50 space-y-3">
+      {% for message in messages %}
+      <div class="alert-msg px-6 py-4 rounded-xl shadow-xl text-white font-semibold
+        {% if message.tags == 'success' %} bg-emerald-600
+        {% elif message.tags == 'error' %} bg-red-500
+        {% else %} bg-gray-700 {% endif %}">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
   </header>
 
   <!-- ================= CONTENIDO ================= -->
-  <main class="flex-grow">
+  <main class="flex-grow bg-white py-12">
 
-    <!-- HERO CON IMAGEN -->
-    <section class="relative">
-      <div class="h-60 md:h-72 lg:h-80 w-full overflow-hidden">
-        <div class="w-full h-full bg-center bg-cover"
-          style="background-image: linear-gradient(120deg, rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
-                     url('https://www.bbva.com/wp-content/uploads/2021/06/sostenibilidad-BBVA-horticultura-agricultura-alimentacion.jpg');">
-        </div>
-      </div>
-
-      <div class="absolute inset-0 flex items-center justify-center">
-        <div class="text-center px-4">
-          <p class="text-sm md:text-base text-orange-200 font-semibold tracking-[0.1em] uppercase">
-            Nos preocupa tu seguridad
-          </p>
-          <h1 class="mt-2 text-3xl md:text-4xl font-extrabold text-white drop-shadow">
-            Seguridad en el campo y en CampoMarkt
-          </h1>
-          <p class="mt-3 max-w-3xl mx-auto text-sm md:text-base text-gray-100">
-            Protegemos a las personas, al ambiente y la información mientras conectamos productores
-            y compradores de todo el país.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTENIDO PRINCIPAL -->
-    <section class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-10 md:py-14">
-      <!-- Intro -->
-      <div class="grid md:grid-cols-3 gap-8 mb-10">
-        <div class="md:col-span-2">
-          <h2 class="text-2xl md:text-3xl font-bold text-[color:var(--dark)] mb-3">
-            Factores clave de seguridad en la producción agrícola
-          </h2>
-          <p class="text-sm md:text-base text-gray-700 leading-relaxed">
-            En la agricultura colombiana, la seguridad es un pilar fundamental: protege a los
-            trabajadores, cuida el medio ambiente y garantiza alimentos sanos para los consumidores.
-            En CampoMarkt promovemos prácticas seguras en el campo y también dentro de nuestra
-            plataforma digital.
-          </p>
+    <!-- HERO seguridad (mismo vibe del main) -->
+    <section class="max-w-7xl mx-auto px-6 mb-16">
+      <div
+        class="relative overflow-hidden rounded-3xl border border-green-200 shadow-2xl bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7]">
+        <div class="absolute inset-0 opacity-20"
+          style="background-image:url('https://agriculturadigital.cepal.org/sites/default/files/2023-04/Gesti%C3%B3n%20Integral%201.jpeg'); background-size:cover; background-position:center;">
         </div>
 
-        <div class="bg-white/90 rounded-2xl shadow-lg border border-green-100 p-4 flex items-center gap-3">
-          <div class="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-700 text-2xl">
-            🛡️
-          </div>
-          <p class="text-sm text-gray-700">
-            Nuestro objetivo es que productores y compradores hagan negocios
-            en un entorno confiable, transparente y seguro.
-          </p>
-        </div>
-      </div>
+        <div class="relative p-8 md:p-12">
+          <span
+            class="inline-block bg-white/80 text-[#166534] px-4 py-2 rounded-full text-sm font-semibold mb-4 border border-green-200">
+            🛡️ Seguridad integral: campo + plataforma
+          </span>
 
-      <!-- Tarjetas de seguridad agronómica -->
-      <div class="grid md:grid-cols-2 gap-6 mb-10">
-        <!-- I. Maquinaria -->
-        <article class="bg-white/90 rounded-2xl shadow-md border border-orange-100 p-6 flex flex-col gap-3">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-bold text-[color:var(--dark)]">
-              I. Seguridad en el manejo de maquinaria y herramientas
-            </h3>
-            <span class="text-2xl">🚜</span>
-          </div>
-          <p class="text-sm text-gray-700">
-            El uso inadecuado de equipos agrícolas es una de las principales causas de
-            accidentes en el campo. Algunas medidas clave son:
-          </p>
-          <ul class="text-sm text-gray-700 space-y-1 list-disc list-inside">
-            <li>Capacitación periódica en uso correcto de maquinaria y elementos de corte.</li>
-            <li>Uso obligatorio de elementos de protección personal (EPP): casco, guantes, botas,
-              gafas, protectores auditivos.</li>
-            <li>Mantenimiento preventivo de tractores, motobombas, guadañas y otras máquinas.</li>
-            <li>Áreas de trabajo señalizadas y libres de obstáculos.</li>
-          </ul>
-        </article>
-
-        <!-- II. Químicos -->
-        <article class="bg-white/90 rounded-2xl shadow-md border border-green-100 p-6 flex flex-col gap-3">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-bold text-[color:var(--dark)]">
-              II. Manejo seguro de productos químicos
-            </h3>
-            <span class="text-2xl">🧪</span>
-          </div>
-          <p class="text-sm text-gray-700">
-            Los plaguicidas y fertilizantes deben aplicarse con responsabilidad
-            para cuidar al aplicador, a los consumidores y al entorno.
-          </p>
-          <ul class="text-sm text-gray-700 space-y-1 list-disc list-inside">
-            <li>Leer y respetar siempre la etiqueta y la ficha técnica del producto.</li>
-            <li>Preparar las mezclas en lugares ventilados, usando traje de protección completo.</li>
-            <li>Almacenar químicos en bodegas exclusivas, con señalización y bajo llave.</li>
-            <li>Respetar los periodos de carencia antes de cosechar para consumo.</li>
-          </ul>
-        </article>
-
-        <!-- III. Agronómicos y ambientales -->
-        <article class="bg-white/90 rounded-2xl shadow-md border border-sky-100 p-6 flex flex-col gap-3">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-bold text-[color:var(--dark)]">
-              III. Aspectos agronómicos y ambientales
-            </h3>
-            <span class="text-2xl">🌱</span>
-          </div>
-          <p class="text-sm text-gray-700">
-            Un sistema productivo sostenible cuida el suelo, el agua y la biodiversidad:
-          </p>
-          <ul class="text-sm text-gray-700 space-y-1 list-disc list-inside">
-            <li>Análisis de suelo periódicos para dosificar correctamente los fertilizantes.</li>
-            <li>Uso eficiente del agua: riego por goteo, programación según clima y cultivo.</li>
-            <li>Manejo Integrado de Plagas (MIP): combinar control biológico, cultural y químico.</li>
-            <li>Protección de fuentes hídricas, barreras vivas y corredores de biodiversidad.</li>
-          </ul>
-        </article>
-
-        <!-- IV. Marco legal Colombia -->
-        <article class="bg-white/90 rounded-2xl shadow-md border border-purple-100 p-6 flex flex-col gap-3">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-bold text-[color:var(--dark)]">
-              IV. Aspectos legales y normativos en Colombia
-            </h3>
-            <span class="text-2xl">📜</span>
-          </div>
-          <p class="text-sm text-gray-700">
-            El cumplimiento de la normatividad protege al trabajador y da respaldo al productor:
-          </p>
-          <ul class="text-sm text-gray-700 space-y-1 list-disc list-inside">
-            <li>Cumplir la normatividad de riesgos laborales (ARL) y seguridad en el trabajo.</li>
-            <li>Mantener registros de aplicación de agroquímicos y hojas de vida de maquinaria.</li>
-            <li>Respetar la legislación ambiental sobre uso del suelo, vertimientos y residuos.</li>
-            <li>Seguir las Buenas Prácticas Agrícolas (BPA) recomendadas por el ICA y el MinAgricultura.</li>
-          </ul>
-        </article>
-      </div>
-
-      <!-- Seguridad de datos en CampoMarkt -->
-      <section class="mt-8">
-        <div class="flex flex-col md:flex-row items-start gap-6">
-          <div class="w-full md:w-7/12 bg-white/90 rounded-2xl shadow-md border border-gray-200 p-6">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-full bg-[color:var(--green)]/10 flex items-center justify-center">
-                <span class="text-xl">🔐</span>
-              </div>
-              <h3 class="text-lg font-bold text-[color:var(--dark)]">
-                V. Seguridad de la información en CampoMarkt
-              </h3>
-            </div>
-
-            <p class="text-sm text-gray-700 mb-3">
-              Además de la seguridad en el campo, protegemos tus datos dentro de la plataforma:
-            </p>
-
-            <div class="grid sm:grid-cols-2 gap-3 text-sm text-gray-700">
-              <div>
-                <h4 class="font-semibold text-[color:var(--dark)] mb-1">Integridad y fiabilidad</h4>
-                <p>Validamos la información que se registra para evitar errores y datos incoherentes.</p>
-              </div>
-              <div>
-                <h4 class="font-semibold text-[color:var(--dark)] mb-1">Autenticación y autorización</h4>
-                <p>Solo usuarios registrados pueden acceder a su cuenta y publicar productos.</p>
-              </div>
-              <div>
-                <h4 class="font-semibold text-[color:var(--dark)] mb-1">Protección de datos sensibles</h4>
-                <p>Cuidamos la información de contacto de productores y compradores.</p>
-              </div>
-              <div>
-                <h4 class="font-semibold text-[color:var(--dark)] mb-1">Copias de seguridad</h4>
-                <p>Mantenemos respaldos periódicos para recuperar la información ante fallos.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="w-full md:w-5/12">
-            <div
-              class="bg-gradient-to-br from-[#f37021] to-[#81BC5D] rounded-2xl shadow-lg text-white p-6 flex flex-col gap-3">
-              <h3 class="text-lg font-bold">¿Necesitas asesoría en seguridad?</h3>
-              <p class="text-sm text-orange-50">
-                Si deseas recomendaciones para mejorar la seguridad de tu cultivo o necesitas
-                orientación sobre el uso de CampoMarkt, puedes escribirnos directamente.
+          <div class="grid md:grid-cols-2 gap-10 items-center">
+            <div>
+              <h1 class="text-4xl md:text-5xl font-extrabold text-[#166534] leading-tight">
+                Tu tranquilidad es parte del cultivo
+              </h1>
+              <p class="mt-4 text-gray-700 text-lg">
+                Buenas prácticas en el campo y protección digital en CampoMarkt:
+                menos riesgos, más confianza y mejores decisiones.
               </p>
-              <a href="https://wa.me/573212279231?text=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20informaci%C3%B3n%20sobre%20seguridad"
-                target="_blank"
-                class="inline-flex items-center justify-center mt-2 px-4 py-2 rounded-full bg-white text-[color:var(--green)] font-semibold text-sm shadow hover:bg-orange-50">
-                Hablar con un asesor 📨
-              </a>
+
+              <div class="mt-6 flex flex-wrap gap-3">
+                <a href="#kit"
+                  class="bg-[#22c55e] text-white px-7 py-3 rounded-full font-semibold hover:bg-[#16a34a] transition shadow-lg">
+                  ✅ Ver kit de seguridad
+                </a>
+                <a href="#checklist"
+                  class="bg-white/70 text-[#166534] px-7 py-3 rounded-full font-semibold hover:bg-white transition shadow border border-green-200">
+                  📋 Checklist interactivo
+                </a>
+              </div>
+
+              <!-- KPIs tipo main -->
+              <div class="grid grid-cols-3 gap-3 mt-8">
+                <div class="bg-white/80 border border-green-200 rounded-2xl p-4 text-center hover:shadow-md transition">
+                  <p class="text-2xl font-bold text-[#166534]" id="kpiRiesgo">0%</p>
+                  <p class="text-xs text-gray-600 mt-1">Riesgo reducido</p>
+                </div>
+                <div class="bg-white/80 border border-green-200 rounded-2xl p-4 text-center hover:shadow-md transition">
+                  <p class="text-2xl font-bold text-emerald-700" id="kpiBpa">0</p>
+                  <p class="text-xs text-gray-600 mt-1">Prácticas clave</p>
+                </div>
+                <div class="bg-white/80 border border-green-200 rounded-2xl p-4 text-center hover:shadow-md transition">
+                  <p class="text-2xl font-bold text-green-700" id="kpiConfianza">0%</p>
+                  <p class="text-xs text-gray-600 mt-1">+Confianza</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="relative">
+              <div class="bg-white/85 backdrop-blur rounded-3xl p-6 shadow-lg border border-green-100">
+                <h3 class="text-xl font-bold text-gray-900">⚡ Acciones rápidas</h3>
+                <p class="text-sm text-gray-600 mt-1">Toca para ver recomendaciones prácticas.</p>
+
+                <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button data-tip="epp"
+                    class="tipBtn w-full text-left bg-[#f0fdf4] border border-green-200 rounded-2xl p-4 hover:shadow-md transition">
+                    <p class="font-semibold text-gray-900">👷 EPP obligatorio</p>
+                    <p class="text-xs text-gray-600 mt-1">Casco, guantes, gafas, botas</p>
+                  </button>
+                  <button data-tip="quimicos"
+                    class="tipBtn w-full text-left bg-[#f0fdf4] border border-green-200 rounded-2xl p-4 hover:shadow-md transition">
+                    <p class="font-semibold text-gray-900">🧪 Manejo de químicos</p>
+                    <p class="text-xs text-gray-600 mt-1">Etiqueta, bodega, carencia</p>
+                  </button>
+                  <button data-tip="maquinaria"
+                    class="tipBtn w-full text-left bg-[#f0fdf4] border border-green-200 rounded-2xl p-4 hover:shadow-md transition">
+                    <p class="font-semibold text-gray-900">🚜 Maquinaria segura</p>
+                    <p class="text-xs text-gray-600 mt-1">Mantenimiento y señalización</p>
+                  </button>
+                  <button data-tip="digital"
+                    class="tipBtn w-full text-left bg-[#f0fdf4] border border-green-200 rounded-2xl p-4 hover:shadow-md transition">
+                    <p class="font-semibold text-gray-900">🔐 Seguridad digital</p>
+                    <p class="text-xs text-gray-600 mt-1">Contraseñas y verificación</p>
+                  </button>
+                </div>
+
+                <div id="tipBox"
+                  class="mt-4 hidden bg-white rounded-2xl p-4 border border-green-100 shadow-sm">
+                  <p class="text-sm text-gray-800 font-semibold" id="tipTitle"></p>
+                  <p class="text-sm text-gray-700 mt-1" id="tipText"></p>
+                </div>
+              </div>
+
+              <div class="absolute -bottom-4 -right-4 hidden md:block">
+                <div class="bg-[#166534] text-white px-4 py-2 rounded-2xl shadow-lg">
+                  <p class="text-sm font-semibold">🌿 Campo seguro = negocio seguro</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KIT de seguridad (cards estilo main) -->
+    <section id="kit" class="max-w-7xl mx-auto px-6 mb-16">
+      <div class="flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <h2 class="text-3xl font-bold text-[#166534]">🧰 Kit de seguridad recomendado</h2>
+          <p class="text-gray-600 mt-1">Buenas prácticas para campo + plataforma.</p>
+        </div>
+
+        <div class="flex gap-2">
+          <button id="btnExpandAll"
+            class="bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow">
+            Expandir todo
+          </button>
+          <button id="btnCollapseAll"
+            class="bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition">
+            Colapsar
+          </button>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 mt-8">
+        <!-- Card 1 -->
+        <article class="acc bg-white rounded-3xl shadow-md border border-green-100 overflow-hidden">
+          <button class="accBtn w-full text-left p-6 flex items-start justify-between gap-4 hover:bg-[#f0fdf4] transition">
+            <div>
+              <h3 class="text-lg font-bold text-gray-900">🚜 Maquinaria y herramientas</h3>
+              <p class="text-sm text-gray-600 mt-1">Prevención de accidentes, mantenimiento y señalización.</p>
+            </div>
+            <span class="accIcon text-2xl">➕</span>
+          </button>
+          <div class="accBody hidden px-6 pb-6">
+            <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside">
+              <li>Capacitación periódica de uso y riesgos.</li>
+              <li>EPP: casco, guantes, gafas, botas y protección auditiva.</li>
+              <li>Mantenimiento preventivo y checklist antes de operar.</li>
+              <li>Zonas señalizadas y libres de obstáculos.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="acc bg-white rounded-3xl shadow-md border border-green-100 overflow-hidden">
+          <button class="accBtn w-full text-left p-6 flex items-start justify-between gap-4 hover:bg-[#f0fdf4] transition">
+            <div>
+              <h3 class="text-lg font-bold text-gray-900">🧪 Manejo seguro de químicos</h3>
+              <p class="text-sm text-gray-600 mt-1">Aplicación responsable para cuidar salud y ambiente.</p>
+            </div>
+            <span class="accIcon text-2xl">➕</span>
+          </button>
+          <div class="accBody hidden px-6 pb-6">
+            <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside">
+              <li>Lee etiqueta y ficha técnica; respeta dosis.</li>
+              <li>Mezclas en lugares ventilados; traje de protección.</li>
+              <li>Bodega exclusiva, señalizada, bajo llave.</li>
+              <li>Respeta periodos de carencia antes de cosechar.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="acc bg-white rounded-3xl shadow-md border border-green-100 overflow-hidden">
+          <button class="accBtn w-full text-left p-6 flex items-start justify-between gap-4 hover:bg-[#f0fdf4] transition">
+            <div>
+              <h3 class="text-lg font-bold text-gray-900">🌱 Suelo, agua y ambiente</h3>
+              <p class="text-sm text-gray-600 mt-1">Sostenibilidad para reducir riesgos y pérdidas.</p>
+            </div>
+            <span class="accIcon text-2xl">➕</span>
+          </button>
+          <div class="accBody hidden px-6 pb-6">
+            <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside">
+              <li>Análisis de suelo para dosificar fertilización.</li>
+              <li>Uso eficiente del agua (goteo, programación).</li>
+              <li>Manejo Integrado de Plagas (MIP).</li>
+              <li>Protección de fuentes hídricas y barreras vivas.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="acc bg-white rounded-3xl shadow-md border border-green-100 overflow-hidden">
+          <button class="accBtn w-full text-left p-6 flex items-start justify-between gap-4 hover:bg-[#f0fdf4] transition">
+            <div>
+              <h3 class="text-lg font-bold text-gray-900">🔐 Seguridad digital (CampoMarkt)</h3>
+              <p class="text-sm text-gray-600 mt-1">Protege tu cuenta, datos y publicaciones.</p>
+            </div>
+            <span class="accIcon text-2xl">➕</span>
+          </button>
+          <div class="accBody hidden px-6 pb-6">
+            <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside">
+              <li>Contraseñas fuertes y únicas (no reutilizar).</li>
+              <li>Cierra sesión en equipos compartidos.</li>
+              <li>No compartas códigos, enlaces ni datos sensibles.</li>
+              <li>Revisa notificaciones y actividad sospechosa.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CHECKLIST interactivo -->
+    <section id="checklist" class="max-w-7xl mx-auto px-6 mb-16">
+      <div class="bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7] border border-green-200 rounded-3xl p-8 shadow-lg">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 class="text-3xl font-bold text-[#166534]">📋 Checklist interactivo</h2>
+            <p class="text-gray-700 mt-2 max-w-3xl">
+              Marca lo que ya cumples y mira tu progreso en tiempo real.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-4 shadow border border-green-100 w-full sm:w-auto">
+            <p class="text-sm font-semibold text-gray-700 mb-1">Progreso</p>
+            <div class="w-64">
+              <div class="h-3 bg-gray-100 rounded-full overflow-hidden border">
+                <div id="bar" class="h-3 bg-[#22c55e] w-0 transition-all duration-500"></div>
+              </div>
+              <p class="text-xs text-gray-600 mt-2">
+                <span id="pct">0%</span> completado · <span id="done">0</span>/<span id="total">0</span> items
+              </p>
             </div>
           </div>
         </div>
-      </section>
+
+        <div class="grid lg:grid-cols-2 gap-8 mt-10">
+          <div class="bg-white rounded-2xl p-6 shadow border border-green-100">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Campo (operación)</h3>
+            <div class="space-y-3" id="listCampo">
+              <!-- items JS -->
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 shadow border border-green-100">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Plataforma (digital)</h3>
+            <div class="space-y-3" id="listDigital">
+              <!-- items JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-10 bg-white rounded-2xl p-6 border border-green-100 shadow">
+          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-2xl font-bold text-[#166534]">✅ Recomendación automática</h3>
+              <p class="text-gray-700 mt-1 text-sm" id="recoText">
+                Marca items para recibir una recomendación.
+              </p>
+            </div>
+
+            <a href="https://wa.me/573212279231?text=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20informaci%C3%B3n%20sobre%20seguridad"
+              target="_blank"
+              class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#166534] text-white font-semibold hover:bg-[#14532d] transition shadow">
+              📲 Hablar con un asesor
+            </a>
+          </div>
+        </div>
+      </div>
     </section>
+
+    <!-- CTA final -->
+    <section class="max-w-7xl mx-auto px-6">
+      <div class="bg-[#166534] text-white p-8 rounded-3xl text-center shadow-xl">
+        <h3 class="text-3xl font-extrabold mb-3">¿Quieres vender con confianza en CampoMarkt?</h3>
+        <p class="text-white/90 max-w-2xl mx-auto mb-6">
+          Aplica buenas prácticas de seguridad y mantén tu cuenta protegida. Menos riesgos, más ventas.
+        </p>
+        <a href="{% url 'main_page' %}"
+          class="inline-block bg-white text-[#166534] px-8 py-3 rounded-full hover:bg-[#f0fdf4] font-semibold transition shadow">
+          🌱 Volver al inicio
+        </a>
+      </div>
+    </section>
+
   </main>
 
-  <!-- ================= FOOTER ================= -->
-  <footer class="bg-[#f37021] text-black mt-10">
+  <!-- ================= FOOTER (Mismo estilo del MAIN) ================= -->
+  <footer class="bg-[#166534] text-white mt-10">
     <div class="max-w-6xl mx-auto px-6 py-10">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start text-center md:text-left">
-        <!-- SERVICIOS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start text-center md:text-left">
+
         <div class="md:pl-6">
-          <h3 class="font-bold text-xl mb-4">SERVICIOS</h3>
-          <ul class="space-y-2 text-sm">
+          <h3 class="font-extrabold text-xl mb-4">SERVICIOS</h3>
+          <ul class="space-y-2 text-sm text-white/90">
             <li>Asesorías</li>
             <li>Acerca de nosotros</li>
             <li>Contáctanos</li>
           </ul>
         </div>
 
-        <!-- REDES SOCIALES -->
         <div class="flex flex-col items-center">
-          <h3 class="font-bold text-xl mb-4">Redes sociales</h3>
+          <h3 class="font-extrabold text-xl mb-4">Redes sociales</h3>
           <div class="flex gap-5">
-            <!-- WHATSAPP -->
             <a href="https://wa.me/573212279231?text=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20mas%20informacion%20por%20favor"
               target="_blank" class="hover:scale-110 transition">
               <img
                 src="https://thumbs.dreamstime.com/b/logotipo-de-whatsapp-verde-para-web-y-app-ui-aislado-en-fondo-blanco-png-transparente-265016409.jpg"
-                class="w-14 h-14 rounded-xl shadow-md" alt="WhatsApp">
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="WhatsApp">
             </a>
 
-            <!-- FACEBOOK -->
             <a href="https://m.me/61584277056410?ref=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20más%20información"
               target="_blank" class="hover:scale-110 transition">
               <img
                 src="https://static.vecteezy.com/system/resources/previews/018/910/719/non_2x/facebook-logo-facebook-icon-free-free-vector.jpg"
-                class="w-14 h-14 rounded-xl shadow-md" alt="Facebook">
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="Facebook">
             </a>
 
-            <!-- INSTAGRAM -->
             <a href="https://instagram.com/CAMPOMARKT" target="_blank" class="hover:scale-110 transition">
               <img src="https://img.freepik.com/psd-premium/logotipo-aplicacion-instagram_23-2151544088.jpg"
-                class="w-14 h-14 rounded-xl shadow-md" alt="Instagram">
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="Instagram">
             </a>
           </div>
 
-          <div class="flex gap-8 mt-2 text-sm font-medium">
+          <div class="flex gap-8 mt-2 text-sm font-medium text-white/90">
             <span>WhatsApp</span>
             <span>Facebook</span>
             <span>Instagram</span>
           </div>
         </div>
 
-        <!-- SEGURIDAD TEXTO -->
         <div class="md:pr-6">
-          <h3 class="font-bold text-xl mb-4">Seguridad</h3>
-          <p class="text-sm leading-relaxed">
+          <a href="{% url 'seguridad_aw' %}" class="hover:text-[#86efac] px-2 font-semibold transition">Seguridad</a>
+          <p class="text-sm leading-relaxed text-white/90 mt-2">
             Nuestra aplicación de seguridad está diseñada para ofrecer a los usuarios una protección integral y
             tranquilidad en el mundo digital y físico. Con un enfoque en la simplicidad y la eficiencia, esta
             herramienta intuitiva empodera a individuos y empresas para salvaguardar sus activos, información y seres
             queridos.
           </p>
         </div>
+
       </div>
     </div>
   </footer>
+
+  <!-- ================= SCRIPTS (INTERACTIVO + RESPONSIVE) ================= -->
+  <script>
+    // Toasts (igual que main)
+    setTimeout(() => {
+      document.querySelectorAll('.alert-msg').forEach(el => {
+        el.style.transition = "all 0.7s ease";
+        el.style.opacity = "0";
+        el.style.transform = "translateX(100px)";
+        setTimeout(() => el.remove(), 700);
+      });
+    }, 3500);
+  </script>
+
+  <script>
+    // KPIs animados
+    document.addEventListener("DOMContentLoaded", () => {
+      const a = document.getElementById("kpiRiesgo");
+      const b = document.getElementById("kpiBpa");
+      const c = document.getElementById("kpiConfianza");
+
+      animateNumber(a, 0, 32, "%");
+      animateNumber(b, 0, 8, "");
+      animateNumber(c, 0, 20, "%");
+
+      function animateNumber(el, start, end, suffix) {
+        let current = start;
+        const step = Math.max(1, Math.round((end - start) / 40));
+        const interval = setInterval(() => {
+          current += step;
+          if (current >= end) {
+            current = end;
+            clearInterval(interval);
+          }
+          el.textContent = current + suffix;
+        }, 25);
+      }
+    });
+  </script>
+
+  <script>
+    // Tips rápidos (hero)
+    document.addEventListener("DOMContentLoaded", () => {
+      const tipBox = document.getElementById("tipBox");
+      const tipTitle = document.getElementById("tipTitle");
+      const tipText = document.getElementById("tipText");
+
+      const tips = {
+        epp: {
+          t: "👷 EPP obligatorio",
+          d: "Usa casco, guantes, botas, gafas y protección auditiva. Reduce accidentes y mejora la operación diaria."
+        },
+        quimicos: {
+          t: "🧪 Manejo de químicos",
+          d: "Lee la etiqueta, prepara mezclas en lugares ventilados, almacena bajo llave y respeta periodos de carencia."
+        },
+        maquinaria: {
+          t: "🚜 Maquinaria segura",
+          d: "Haz mantenimiento preventivo, checklist antes de operar y mantén zonas señalizadas y despejadas."
+        },
+        digital: {
+          t: "🔐 Seguridad digital",
+          d: "Contraseñas fuertes, no compartas códigos y revisa notificaciones. Si algo se ve raro, cambia la clave."
+        }
+      };
+
+      document.querySelectorAll(".tipBtn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const key = btn.dataset.tip;
+          tipTitle.textContent = tips[key].t;
+          tipText.textContent = tips[key].d;
+          tipBox.classList.remove("hidden");
+          tipBox.style.opacity = 0;
+          setTimeout(() => tipBox.style.opacity = 1, 50);
+        });
+      });
+    });
+  </script>
+
+  <script>
+    // Acordeón (Kit)
+    document.addEventListener("DOMContentLoaded", () => {
+      const accs = document.querySelectorAll(".acc");
+      const expandAll = document.getElementById("btnExpandAll");
+      const collapseAll = document.getElementById("btnCollapseAll");
+
+      function setAcc(acc, open) {
+        const body = acc.querySelector(".accBody");
+        const icon = acc.querySelector(".accIcon");
+        if (!body || !icon) return;
+        if (open) {
+          body.classList.remove("hidden");
+          icon.textContent = "➖";
+        } else {
+          body.classList.add("hidden");
+          icon.textContent = "➕";
+        }
+      }
+
+      accs.forEach(acc => {
+        const btn = acc.querySelector(".accBtn");
+        btn.addEventListener("click", () => {
+          const body = acc.querySelector(".accBody");
+          const isOpen = !body.classList.contains("hidden");
+          setAcc(acc, !isOpen);
+        });
+      });
+
+      expandAll?.addEventListener("click", () => accs.forEach(a => setAcc(a, true)));
+      collapseAll?.addEventListener("click", () => accs.forEach(a => setAcc(a, false)));
+    });
+  </script>
+
+  <script>
+    // Checklist + progreso + recomendación
+    document.addEventListener("DOMContentLoaded", () => {
+      const listCampo = document.getElementById("listCampo");
+      const listDigital = document.getElementById("listDigital");
+      const bar = document.getElementById("bar");
+      const pct = document.getElementById("pct");
+      const doneEl = document.getElementById("done");
+      const totalEl = document.getElementById("total");
+      const recoText = document.getElementById("recoText");
+
+      if (!listCampo || !listDigital) return;
+
+      const campoItems = [
+        "Uso EPP completo en labores de riesgo",
+        "Checklist de maquinaria antes de operar",
+        "Bodega de químicos señalizada y bajo llave",
+        "Mezclas en zona ventilada y con protección",
+        "Registros de aplicación y mantenimiento al día",
+        "Protección de fuentes hídricas y manejo de residuos"
+      ];
+
+      const digitalItems = [
+        "Contraseña fuerte y única (no la reutilizo)",
+        "Cierro sesión en equipos compartidos",
+        "No comparto códigos/enlaces sospechosos",
+        "Reviso notificaciones y actividad de cuenta",
+        "Mantengo mis datos de contacto actualizados",
+        "Reporto perfiles o productos sospechosos"
+      ];
+
+      function render(listEl, items, prefix) {
+        listEl.innerHTML = items.map((txt, i) => `
+          <label class="flex items-start gap-3 p-4 rounded-2xl border border-green-100 bg-[#f0fdf4] hover:shadow-sm transition cursor-pointer">
+            <input type="checkbox" class="mt-1 w-4 h-4 accent-green-600 chk" id="${prefix}-${i}">
+            <span class="text-sm text-gray-800">${txt}</span>
+          </label>
+        `).join("");
+      }
+
+      render(listCampo, campoItems, "c");
+      render(listDigital, digitalItems, "d");
+
+      function update() {
+        const checks = document.querySelectorAll(".chk");
+        const total = checks.length;
+        const done = Array.from(checks).filter(x => x.checked).length;
+        const percent = total ? Math.round((done / total) * 100) : 0;
+
+        totalEl.textContent = total;
+        doneEl.textContent = done;
+        pct.textContent = percent + "%";
+        bar.style.width = percent + "%";
+
+        if (percent === 0) {
+          recoText.textContent = "Marca items para recibir una recomendación.";
+        } else if (percent < 50) {
+          recoText.textContent = "Vas bien: prioriza EPP, bodega de químicos y contraseña fuerte.";
+        } else if (percent < 85) {
+          recoText.textContent = "¡Buen nivel! Refuerza registros, cierre de sesión y revisión de actividad.";
+        } else {
+          recoText.textContent = "Excelente: mantén la rutina y revisa seguridad cada semana.";
+        }
+      }
+
+      document.addEventListener("change", (e) => {
+        if (e.target && e.target.classList.contains("chk")) update();
+      });
+
+      update();
+    });
+  </script>
 
 </body>
 

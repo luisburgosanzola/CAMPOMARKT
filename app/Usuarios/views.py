@@ -14,6 +14,7 @@ from .serializers import (
 from .models import CodigoSMS, Cliente, Productor
 from .utils import enviar_sms_verificacion
 
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -25,49 +26,48 @@ from django.contrib import messages
 
 @login_required
 def seleccionar_rol_google(request):
-    # Si ya tiene rol, no debe volver aquí
+    # Si ya tiene rol asignado, no debe volver aquí
     if request.user.rol in ["cliente", "productor"]:
-        return redirect('main_page')
+        return redirect("main_page")
 
-    if request.method == 'POST':
-        rol = request.POST.get('rol')
+    if request.method == "POST":
+        rol = request.POST.get("rol")
 
-        if rol == 'cliente':
-            request.user.rol = 'cliente'
-            request.user.save()
-            return redirect('completar_cliente')
-
-        elif rol == 'productor':
-            request.user.rol = 'productor'
-            request.user.save()
-            return redirect('completar_productor')
-
-        else:
+        if rol not in ["cliente", "productor"]:
             messages.error(request, "Debes seleccionar una opción válida.")
+            return render(request, "seleccionar_rol_google.html")
 
-    return render(request, 'seleccionar_rol_google.html')
+        request.user.rol = rol
+        request.user.save()
+
+        if rol == "cliente":
+            return redirect("completar_cliente")
+        else:
+            return redirect("completar_productor")
+
+    return render(request, "seleccionar_rol_google.html")
 
 
 @login_required
 def google_completo(request):
     """
-    Después de iniciar sesión con Google:
+    Flujo después del login con Google:
     - Si no tiene rol → seleccionar rol
-    - Si tiene rol pero no perfil → completar perfil
-    - Si ya tiene todo → main
+    - Si tiene rol pero no perfil creado → completar perfil
+    - Si ya tiene todo → main_page
     """
     user = request.user
 
     if not user.rol:
-        return redirect('seleccionar_rol_google')
+        return redirect("seleccionar_rol_google")
 
     if user.rol == "cliente" and not hasattr(user, "cliente"):
-        return redirect('completar_cliente')
+        return redirect("completar_cliente")
 
     if user.rol == "productor" and not hasattr(user, "productor"):
-        return redirect('completar_productor')
+        return redirect("completar_productor")
 
-    return redirect('main_page')
+    return redirect("main_page")
 
 
 # =====================================================
@@ -76,14 +76,14 @@ def google_completo(request):
 
 @login_required
 def completar_cliente(request):
-    if request.user.rol != 'cliente':
-        return redirect('main_page')
+    if request.user.rol != "cliente":
+        return redirect("main_page")
 
-    cliente, _ = Cliente.objects.get_or_create(usuario=request.user)
+    cliente, created = Cliente.objects.get_or_create(usuario=request.user)
 
-    if request.method == 'POST':
-        direccion = request.POST.get('direccion')
-        telefono = request.POST.get('telefono')
+    if request.method == "POST":
+        direccion = request.POST.get("direccion")
+        telefono = request.POST.get("telefono")
 
         if not direccion or not telefono:
             messages.error(request, "Todos los campos son obligatorios.")
@@ -91,10 +91,11 @@ def completar_cliente(request):
             cliente.direccion = direccion
             cliente.telefono = telefono
             cliente.save()
-            messages.success(request, "Perfil de cliente completado correctamente.")
-            return redirect('main_page')
+            messages.success(
+                request, "Perfil de cliente completado correctamente.")
+            return redirect("main_page")
 
-    return render(request, 'completar_cliente.html', {'cliente': cliente})
+    return render(request, "completar_cliente.html", {"cliente": cliente})
 
 
 # =====================================================
@@ -103,14 +104,14 @@ def completar_cliente(request):
 
 @login_required
 def completar_productor(request):
-    if request.user.rol != 'productor':
-        return redirect('main_page')
+    if request.user.rol != "productor":
+        return redirect("main_page")
 
-    productor, _ = Productor.objects.get_or_create(usuario=request.user)
+    productor, created = Productor.objects.get_or_create(usuario=request.user)
 
-    if request.method == 'POST':
-        nombre_finca = request.POST.get('nombre_finca')
-        tipo_cultivo = request.POST.get('tipo_cultivo')
+    if request.method == "POST":
+        nombre_finca = request.POST.get("nombre_finca")
+        tipo_cultivo = request.POST.get("tipo_cultivo")
 
         if not nombre_finca or not tipo_cultivo:
             messages.error(request, "Todos los campos son obligatorios.")
@@ -118,14 +119,15 @@ def completar_productor(request):
             productor.nombre_finca = nombre_finca
             productor.tipo_cultivo = tipo_cultivo
             productor.save()
-            messages.success(request, "Perfil de productor completado correctamente.")
-            return redirect('main_page')
+            messages.success(
+                request, "Perfil de productor completado correctamente.")
+            return redirect("main_page")
 
-    return render(request, 'completar_productor.html', {'productor': productor})
+    return render(request, "completar_productor.html", {"productor": productor})
 
 
 # =====================================================
-# 🟢 1. ENVIAR CÓDIGO SMS
+# 🟢 API — 1. ENVIAR CÓDIGO SMS
 # =====================================================
 
 class EnviarCodigoSMSView(APIView):
@@ -137,22 +139,23 @@ class EnviarCodigoSMSView(APIView):
         if not telefono:
             return Response(
                 {"detail": "El teléfono es obligatorio."},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        codigo_obj, _ = CodigoSMS.objects.get_or_create(telefono=telefono)
+        codigo_obj, created = CodigoSMS.objects.get_or_create(
+            telefono=telefono)
         codigo_obj.generar_codigo()
 
         enviar_sms_verificacion(telefono, codigo_obj.codigo)
 
         return Response(
             {"detail": "Código enviado correctamente."},
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )
 
 
 # =====================================================
-# 🟢 2. REGISTRO CON VALIDACIÓN DE CÓDIGO SMS
+# 🟢 API — 2. REGISTRO CON VALIDACIÓN SMS + JWT
 # =====================================================
 
 class RegisterJWTView(APIView):
@@ -164,8 +167,8 @@ class RegisterJWTView(APIView):
 
         if not telefono or not codigo_sms:
             return Response(
-                {"detail": "Faltan datos: teléfono y código_sms son obligatorios."},
-                status=status.HTTP_400_BAD_REQUEST
+                {"detail": "Teléfono y código_sms son obligatorios."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
@@ -173,13 +176,13 @@ class RegisterJWTView(APIView):
         except CodigoSMS.DoesNotExist:
             return Response(
                 {"detail": "No se ha enviado ningún código a este teléfono."},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         if codigo_obj.codigo != codigo_sms:
             return Response(
                 {"detail": "El código SMS es incorrecto."},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         serializer = RegisterSerializer(data=request.data)
@@ -195,15 +198,18 @@ class RegisterJWTView(APIView):
 
         refresh = RefreshToken.for_user(user)
 
-        return Response({
-            'user': UserSerializer(user).data,
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }, status=status.HTTP_201_CREATED)
+        return Response(
+            {
+                "user": UserSerializer(user).data,
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 # =====================================================
-# 🟢 3. PERFIL DEL USUARIO (API)
+# 🟢 API — 3. PERFIL DEL USUARIO AUTENTICADO
 # =====================================================
 
 class ProfileAPIView(APIView):
@@ -219,9 +225,14 @@ class ProfileAPIView(APIView):
             perfil_data = ProductorSerializer(user.productor).data
 
         else:
-            return Response({"detail": "Perfil no encontrado"}, status=404)
+            return Response(
+                {"detail": "Perfil no encontrado"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
-        return Response({
-            "user": UserSerializer(user).data,
-            "perfil": perfil_data
-        })
+        return Response(
+            {
+                "user": UserSerializer(user).data,
+                "perfil": perfil_data,
+            }
+        )

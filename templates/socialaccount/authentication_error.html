@@ -8,30 +8,36 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-green-50 via-white to-orange-50 flex items-center justify-center px-4">
+<body class="min-h-screen bg-gradient-to-br from-green-50 via-white to-orange-50 flex items-center justify-center px-4 py-6">
 
   <div class="w-full max-w-2xl bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
     <!-- Header -->
-    <div class="px-6 py-5 bg-[#f37021] text-white flex items-center gap-4">
-      <img src="{% static 'img/logo1.png' %}" class="w-12 h-12 rounded-full object-cover ring-2 ring-white/60" alt="CampoMarkt">
-      <div>
-        <h1 class="text-xl md:text-2xl font-extrabold leading-tight">No se pudo iniciar sesión con Google</h1>
-        <p class="text-white/90 text-sm">Ocurrió un problema al validar tu cuenta.</p>
+    <div class="px-5 sm:px-6 py-4 sm:py-5 bg-[#f37021] text-white flex items-center gap-3 sm:gap-4">
+      <img src="{% static 'img/logo1.png' %}"
+           class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-white/60"
+           alt="CampoMarkt">
+      <div class="min-w-0">
+        <h1 class="text-lg sm:text-xl md:text-2xl font-extrabold leading-tight break-words">
+          No se pudo iniciar sesión con Google
+        </h1>
+        <p class="text-white/90 text-xs sm:text-sm">
+          Ocurrió un problema al validar tu cuenta.
+        </p>
       </div>
     </div>
 
     <!-- Body -->
-    <div class="p-6 md:p-8">
-      <div class="flex items-start gap-4">
+    <div class="p-5 sm:p-6 md:p-8">
+      <div class="flex flex-col sm:flex-row items-start gap-4">
         <div class="shrink-0 w-12 h-12 rounded-2xl bg-red-100 flex items-center justify-center">
           <span class="text-2xl">⚠️</span>
         </div>
 
-        <div class="flex-1">
-          <p class="text-gray-800 font-semibold">
+        <div class="flex-1 min-w-0">
+          <p class="text-gray-800 font-semibold text-sm sm:text-base">
             Hubo un error intentando ingresar con tu cuenta de Google.
           </p>
-          <p class="text-gray-600 text-sm mt-1">
+          <p class="text-gray-600 text-xs sm:text-sm mt-1 leading-relaxed">
             Normalmente pasa por: credenciales mal configuradas, redirect URI incorrecto o sesión/estado inválido.
           </p>
 
@@ -39,7 +45,7 @@
           {% if messages %}
             <div class="mt-4 space-y-2">
               {% for message in messages %}
-                <div class="p-3 rounded-xl text-sm border
+                <div class="p-3 rounded-xl text-xs sm:text-sm border break-words
                   {% if message.tags == 'success' %}bg-green-50 text-green-800 border-green-200
                   {% elif message.tags == 'error' %}bg-red-50 text-red-800 border-red-200
                   {% else %}bg-yellow-50 text-yellow-800 border-yellow-200{% endif %}">
@@ -52,10 +58,10 @@
           <!-- Debug opcional (solo si DEBUG=True) -->
           {% if exception %}
             <details class="mt-4">
-              <summary class="cursor-pointer text-sm font-bold text-gray-800 hover:text-black">
+              <summary class="cursor-pointer text-xs sm:text-sm font-bold text-gray-800 hover:text-black">
                 Ver detalles técnicos (solo para desarrollo)
               </summary>
-              <pre class="mt-2 p-4 rounded-xl bg-gray-50 border text-xs text-gray-700 overflow-auto">{{ exception }}</pre>
+              <pre class="mt-2 p-4 rounded-xl bg-gray-50 border text-[10px] sm:text-xs text-gray-700 overflow-auto whitespace-pre-wrap break-words">{{ exception }}</pre>
             </details>
           {% endif %}
         </div>
@@ -64,17 +70,17 @@
       <!-- Acciones -->
       <div class="mt-6 flex flex-col sm:flex-row gap-3">
         <a href="{% url 'login_page' %}"
-           class="w-full inline-flex items-center justify-center px-5 py-3 rounded-xl bg-green-700 text-white font-extrabold hover:bg-green-800 transition">
+           class="w-full inline-flex items-center justify-center px-5 py-3 rounded-xl bg-green-700 text-white font-extrabold hover:bg-green-800 transition text-sm sm:text-base">
           Volver a iniciar sesión
         </a>
 
         <a href="{% url 'register_page' %}"
-           class="w-full inline-flex items-center justify-center px-5 py-3 rounded-xl border border-gray-200 text-gray-800 font-extrabold hover:bg-gray-50 transition">
+           class="w-full inline-flex items-center justify-center px-5 py-3 rounded-xl border border-gray-200 text-gray-800 font-extrabold hover:bg-gray-50 transition text-sm sm:text-base">
           Ir a registrarme
         </a>
       </div>
 
-      <div class="mt-4 text-xs text-gray-500">
+      <div class="mt-4 text-[11px] sm:text-xs text-gray-500 leading-relaxed">
         Si el error persiste, revisa las credenciales de Google y que el callback coincida con tu proyecto.
       </div>
     </div>

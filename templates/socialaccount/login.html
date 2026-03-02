@@ -3,34 +3,36 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Continuar con Google | CampoMarkt</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen px-4 py-6">
 
-<div class="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-md text-center">
+<div class="bg-white shadow-2xl rounded-2xl p-6 sm:p-8 md:p-10 w-full max-w-md text-center">
 
-    <img src="{% static 'img/logo1.png' %}" class="w-20 mx-auto mb-4">
+    <img src="{% static 'img/logo1.png' %}" class="w-16 sm:w-20 mx-auto mb-4" alt="CampoMarkt">
 
-    <h1 class="text-2xl font-bold text-gray-800 mb-2">
+    <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2 leading-tight">
         Continuar con Google
     </h1>
 
-    <p class="text-gray-600 mb-6">
+    <p class="text-gray-600 text-sm sm:text-base mb-6 leading-relaxed">
         Estás a punto de iniciar sesión en <strong>CampoMarkt</strong> usando tu cuenta de Google.
     </p>
 
-    <form method="post">
+    <form method="post" class="w-full">
         {% csrf_token %}
         <button type="submit"
-            class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg shadow-lg transition">
+            class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold
+                   py-3 rounded-lg shadow-lg transition text-sm sm:text-base">
             Continuar con Google
         </button>
     </form>
 
     <a href="{% url 'login_page' %}"
-       class="block mt-6 text-sm text-gray-500 hover:underline">
+       class="block mt-6 text-xs sm:text-sm text-gray-500 hover:underline">
         Volver al inicio de sesión
     </a>
 </div>

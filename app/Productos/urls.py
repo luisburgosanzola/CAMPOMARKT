@@ -13,5 +13,6 @@ urlpatterns = [
     path('<int:producto_id>/ofertar/', views.crear_oferta, name='crear_oferta'),
     path('ofertas/quitar/<int:oferta_id>/', views.quitar_oferta, name='quitar_oferta'),
 
+
 ]
 

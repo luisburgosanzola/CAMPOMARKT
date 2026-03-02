@@ -76,7 +76,7 @@ def listar_productos(request):
     busqueda = request.GET.get('busqueda')
     orden = request.GET.get('orden')
 
-    productos = Producto.objects.all()
+    productos = Producto.objects.filter(estado="disponible")
 
     if categoria_seleccionada:
         productos = productos.filter(categoria__nombre__iexact=categoria_seleccionada)
@@ -138,8 +138,7 @@ def agregar_producto(request):
         cantidad_disponible = request.POST.get("cantidad_disponible")
         precio_unitario = request.POST.get("precio_unitario")
         calidad = request.POST.get("calidad")
-        estado = request.POST.get("estado")
-
+        estado = request.POST.get("estado") or "disponible"
         imagen_principal = request.FILES.get("imagen_principal")
         imagen_secundaria = request.FILES.get("imagen_secundaria")
 
@@ -338,6 +337,20 @@ def buscar_global(request):
         "q": q,
         "productos": productos,
         "productores": productores,
+    })
+
+
+def perfil_productor_publico(request, username):
+    productor = get_object_or_404(User, username=username, rol="productor")
+
+    productos = Producto.objects.filter(
+        productor=productor,
+        estado="disponible"
+    )
+
+    return render(request, "perfil_productor.html", {
+        "productor": productor,
+        "productos": productos
     })
 
 

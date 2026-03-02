@@ -179,15 +179,14 @@ def logout_page(request):
 # =====================================================
 # 👤 PERFIL
 # =====================================================
-
 @login_required(login_url="login_page")
 def profile_page(request):
     user = request.user
     editable = request.GET.get("editar") == "true"
 
-    # perfil según rol
     perfil = None
     template = "perfiles/cliente.html"
+    productos = None  # 👈 AGREGA ESTO
 
     if user.rol == "cliente":
         perfil, _ = Cliente.objects.get_or_create(usuario=user)
@@ -196,6 +195,11 @@ def profile_page(request):
     elif user.rol == "productor":
         perfil, _ = Productor.objects.get_or_create(usuario=user)
         template = "perfiles/productor.html"
+
+        # 🔥 AQUÍ TRAEMOS LOS PRODUCTOS
+        productos = Producto.objects.filter(
+            productor=user
+        ).order_by("-fecha_publicacion")
 
     else:
         messages.error(request, "No tienes rol asignado.")
@@ -228,7 +232,11 @@ def profile_page(request):
         messages.success(request, "✅ Perfil actualizado correctamente.")
         return redirect("mi_perfil")
 
-    return render(request, template, {"perfil": perfil, "editable": editable})
+    return render(request, template, {
+            "perfil": perfil,
+            "editable": editable,
+            "productos": productos,  # 👈 ENVÍALO AL TEMPLATE
+        })
 # =====================================================
 # 🔵 GOOGLE POST LOGIN
 # =====================================================

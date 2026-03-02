@@ -1,6 +1,6 @@
+{% load static %}
 <!doctype html>
 <html lang="es">
-{% load static %}
 
 <head>
   <meta charset="utf-8">
@@ -9,53 +9,123 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    :root { --orange:#f37021; --green:#15803d; --peach:#fbeadf; }
-    body { background-color: var(--peach); }
+    body {
+      background: radial-gradient(circle at top left, #f0fdf4 0, #dcfce7 35%, #ffffff 80%);
+    }
   </style>
 </head>
 
-<body class="min-h-screen flex flex-col antialiased text-gray-700">
+<body class="min-h-screen flex flex-col antialiased text-gray-800">
 
-  <!-- Header -->
-  <header>
-    <div class="bg-[#f37021] flex justify-between items-center px-14 py-4">
-      <div class="flex items-center space-x-3">
-        <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt" class="w-16 h-16 rounded-full object-cover" />
-        <span class="text-white font-bold text-3xl tracking-wide">CAMPOMARKT</span>
+  <!-- ================= HEADER (RESPONSIVE + HAMBURGUESA) ================= -->
+  <header class="sticky top-0 z-50">
+    <!-- Top bar -->
+    <div class="bg-[#166534] shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 md:px-14 py-4 flex items-center justify-between gap-4">
+        <!-- Logo -->
+        <a href="{% url 'main_page' %}" class="flex items-center gap-3 shrink-0">
+          <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt"
+            class="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover ring-4 ring-white/30" />
+          <span class="text-white font-extrabold text-xl sm:text-2xl md:text-3xl tracking-wide">
+            CAMPOMARKT
+          </span>
+        </a>
+
+        <!-- Desktop: Search + User -->
+        <div class="hidden md:flex items-center gap-3">
+          <form action="{% url 'buscar_global' %}" method="get"
+            class="flex items-center bg-white/15 backdrop-blur rounded-full px-4 py-2 border border-white/20 shadow-sm">
+            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
+              class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-64" />
+            <button type="submit" aria-label="Buscar">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90 hover:text-white transition"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          </form>
+
+          {% if user.is_authenticated %}
+          <a href="{% url 'mi_perfil' %}"
+            class="flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition shadow-sm border border-white/20">
+            <span class="text-sm font-semibold text-white">
+              {{ user.first_name|default:user.username|default:user.email }}
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-6 h-6 text-white/90">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+            </svg>
+          </a>
+          {% else %}
+          <div class="flex items-center gap-2">
+            <a href="{% url 'login_page' %}"
+              class="flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition shadow-sm border border-white/20">
+              <span class="text-sm font-semibold text-white">Iniciar sesión</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 text-white/90">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+              </svg>
+            </a>
+            <a href="{% url 'register_page' %}"
+              class="bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow">
+              Registrarse
+            </a>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Mobile buttons -->
+        <div class="md:hidden flex items-center gap-2">
+          <button id="btnMobileSearch"
+            class="p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/15 transition"
+            aria-label="Abrir búsqueda">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+
+          <button id="btnBellMobile" type="button"
+            class="relative p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/15 transition"
+            aria-label="Notificaciones">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-6 h-6 text-white">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+            </svg>
+            {% if user.is_authenticated and notif_unread > 0 %}
+            <span
+              class="absolute -top-1 -right-1 bg-emerald-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center shadow">
+              {{ notif_unread }}
+            </span>
+            {% endif %}
+          </button>
+
+          <button id="btnHamburger"
+            class="p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/15 transition"
+            aria-label="Abrir menú">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
       </div>
 
-      <div class="flex flex-col items-end space-y-2">
-        {% if user.is_authenticated %}
-        <a href="{% url 'mi_perfil' %}"
-          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
-          <span class="text-sm font-semibold text-gray-800">
-            {{ user.first_name|default:user.username|default:user.email }}
-          </span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" class="w-6 h-6 text-gray-700">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
-          </svg>
-        </a>
-        {% else %}
-        <a href="{% url 'login_page' %}"
-          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
-          <span class="text-sm font-semibold text-gray-800">Iniciar sesión</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" class="w-6 h-6 text-gray-700">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
-          </svg>
-        </a>
-        {% endif %}
-
+      <!-- Mobile search bar -->
+      <div id="mobileSearchBar" class="hidden md:hidden px-4 pb-4">
         <form action="{% url 'buscar_global' %}" method="get"
-          class="flex items-center bg-orange-100 rounded-full px-4 py-1.5">
+          class="flex items-center bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20 shadow-sm">
           <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
-            class="bg-transparent outline-none text-sm placeholder-gray-600 w-52" />
+            class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-full" />
           <button type="submit" aria-label="Buscar">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90 hover:text-white transition"
+              fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -64,32 +134,230 @@
       </div>
     </div>
 
-    <nav class="bg-[#81BC5D] text-white py-4">
-      <div class="max-w-7xl mx-auto flex justify-center items-center px-6">
+    <!-- Desktop nav -->
+    <nav class="hidden md:block bg-[#14532d] text-white shadow">
+      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-6 py-4">
         <ul class="flex items-center text-sm font-semibold uppercase tracking-wide">
-          <li><a href="{% url 'main_page' %}" class="hover:text-orange-300 px-2">Inicio</a></li>
-          <li class="flex items-center"><span class="mx-3">|</span><a href="{% url 'listar_productos' %}" class="hover:text-orange-300 px-2">Productos</a></li>
-          <li class="flex items-center"><span class="mx-3">|</span><a href="{% url 'listar_ofertas' %}" class="hover:text-orange-300 px-2">Ofertas</a></li>
-          <li class="flex items-center"><span class="mx-3">|</span><a href="{% url 'nosotros' %}" class="hover:text-orange-300 px-2">Nosotros</a></li>
+          <li><a href="{% url 'main_page' %}" class="hover:text-[#86efac] px-2 transition">Inicio</a></li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'listar_productos' %}" class="hover:text-[#86efac] px-2 transition">Productos</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'listar_ofertas' %}" class="hover:text-[#86efac] px-2 transition">Ofertas</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'nosotros' %}" class="hover:text-[#86efac] px-2 transition">Nosotros</a>
+          </li>
+
+          {% if user.is_authenticated %}
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'mis_favoritos' %}" class="hover:text-[#86efac] px-2 transition">Favoritos</a>
+          </li>
+          {% endif %}
         </ul>
+
+        <!-- Bell desktop -->
+        <div class="absolute right-2">
+          <div class="relative">
+            <button id="btnBell" type="button" class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 text-white hover:text-[#86efac] cursor-pointer transition">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+              </svg>
+
+              {% if user.is_authenticated and notif_unread > 0 %}
+              <span
+                class="absolute -top-1 -right-1 bg-emerald-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center shadow">
+                {{ notif_unread }}
+              </span>
+              {% endif %}
+            </button>
+
+            {% if user.is_authenticated %}
+            <div id="notifDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
+              <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
+
+              {% for n in notif_last %}
+              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-[#f0fdf4] transition">
+                <p class="text-sm text-gray-800">{{ n.message }}</p>
+                <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+              </a>
+              {% empty %}
+              <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
       </div>
     </nav>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenuOverlay" class="hidden fixed inset-0 bg-black/40 z-50"></div>
+
+    <aside id="mobileMenu"
+      class="fixed top-0 right-0 h-full w-[86%] max-w-sm bg-white z-[60] shadow-2xl translate-x-full transition-transform duration-300">
+      <div class="p-5 border-b flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src="{% static 'img/logo1.png' %}" class="w-10 h-10 rounded-full object-cover" alt="CampoMarkt">
+          <div>
+            <p class="font-extrabold text-[#166534] leading-tight">CAMPOMARKT</p>
+            <p class="text-xs text-gray-500">Tu menú</p>
+          </div>
+        </div>
+        <button id="btnCloseMenu" class="p-2 rounded-xl hover:bg-gray-100" aria-label="Cerrar menú">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-5">
+        {% if user.is_authenticated %}
+        <div class="bg-[#f0fdf4] border border-green-200 rounded-2xl p-4">
+          <p class="text-sm text-gray-600">Conectado como</p>
+          <a href="{% url 'mi_perfil' %}" class="mt-1 inline-flex items-center gap-2 font-bold text-[#166534]">
+            {{ user.first_name|default:user.username|default:user.email }}
+            <span class="text-lg">👤</span>
+          </a>
+        </div>
+        {% else %}
+        <div class="bg-white border rounded-2xl p-4">
+          <p class="text-sm text-gray-600">Accede a tu cuenta</p>
+          <div class="mt-3 flex gap-2">
+            <a href="{% url 'login_page' %}"
+              class="flex-1 text-center px-4 py-2 rounded-2xl bg-[#166534] text-white font-semibold hover:bg-[#14532d] transition">
+              Iniciar
+            </a>
+            <a href="{% url 'register_page' %}"
+              class="flex-1 text-center px-4 py-2 rounded-2xl border border-green-200 text-[#166534] font-semibold hover:bg-[#f0fdf4] transition">
+              Registro
+            </a>
+          </div>
+        </div>
+        {% endif %}
+
+        <nav class="mt-5">
+          <p class="text-xs uppercase tracking-widest text-gray-400 mb-3">Menú</p>
+
+          <a href="{% url 'main_page' %}"
+            class="flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Inicio</span><span>🏠</span>
+          </a>
+
+          <a href="{% url 'listar_productos' %}"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Productos</span><span>🛒</span>
+          </a>
+
+          <a href="{% url 'listar_ofertas' %}"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Ofertas</span><span>🔥</span>
+          </a>
+
+          <a href="{% url 'nosotros' %}"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Nosotros</span><span>👥</span>
+          </a>
+
+          {% if user.is_authenticated %}
+          <a href="{% url 'mis_favoritos' %}"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Favoritos</span><span>❤️</span>
+          </a>
+          {% endif %}
+        </nav>
+
+        {% if user.is_authenticated %}
+        <div class="mt-5">
+          <p class="text-xs uppercase tracking-widest text-gray-400 mb-3">Notificaciones</p>
+          <div class="bg-white border rounded-2xl overflow-hidden">
+            {% for n in notif_last %}
+            <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-[#f0fdf4] transition border-b">
+              <p class="text-sm text-gray-800">{{ n.message }}</p>
+              <p class="text-xs text-gray-500 mt-1">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+            </a>
+            {% empty %}
+            <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </aside>
+
+    <script>
+      function openMobileMenu() {
+        const overlay = document.getElementById("mobileMenuOverlay");
+        const menu = document.getElementById("mobileMenu");
+        overlay.classList.remove("hidden");
+        menu.classList.remove("translate-x-full");
+        document.body.style.overflow = "hidden";
+      }
+      function closeMobileMenu() {
+        const overlay = document.getElementById("mobileMenuOverlay");
+        const menu = document.getElementById("mobileMenu");
+        overlay.classList.add("hidden");
+        menu.classList.add("translate-x-full");
+        document.body.style.overflow = "";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const btnHam = document.getElementById("btnHamburger");
+        const btnClose = document.getElementById("btnCloseMenu");
+        const overlay = document.getElementById("mobileMenuOverlay");
+
+        btnHam?.addEventListener("click", openMobileMenu);
+        btnClose?.addEventListener("click", closeMobileMenu);
+        overlay?.addEventListener("click", closeMobileMenu);
+
+        const btnMobileSearch = document.getElementById("btnMobileSearch");
+        const mobileSearchBar = document.getElementById("mobileSearchBar");
+        btnMobileSearch?.addEventListener("click", () => mobileSearchBar?.classList.toggle("hidden"));
+
+        // Bell desktop dropdown
+        const btnBell = document.getElementById("btnBell");
+        const dropdown = document.getElementById("notifDropdown");
+        if (btnBell && dropdown) {
+          btnBell.addEventListener("click", (e) => { e.stopPropagation(); dropdown.classList.toggle("hidden"); });
+          document.addEventListener("click", () => dropdown.classList.add("hidden"));
+          dropdown.addEventListener("click", (e) => e.stopPropagation());
+        }
+
+        // Mobile bell opens menu
+        const btnBellMobile = document.getElementById("btnBellMobile");
+        btnBellMobile?.addEventListener("click", () => openMobileMenu());
+
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMobileMenu(); });
+      });
+    </script>
   </header>
 
   <!-- Main -->
   <main class="flex-grow max-w-6xl mx-auto px-6 py-10">
 
-    <div class="bg-white rounded-3xl shadow-xl border p-8">
+    <div class="bg-white/85 backdrop-blur rounded-3xl shadow-xl border border-green-100 p-8">
       <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <span class="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-full text-sm font-semibold">
+          <span
+            class="inline-flex items-center gap-2 bg-[#f0fdf4] text-[#166534] px-4 py-2 rounded-full text-sm font-extrabold border border-green-200">
             🔥 Panel de ofertas
           </span>
-          <h1 class="text-3xl sm:text-4xl font-extrabold text-[color:var(--green)] mt-4">
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-[#166534] mt-4">
             Crear / actualizar oferta
           </h1>
           <p class="text-gray-600 mt-2 max-w-2xl">
-            Producto: <span class="font-semibold text-gray-800">{{ producto.nombre }}</span>
+            Producto: <span class="font-extrabold text-gray-900">{{ producto.nombre }}</span>
           </p>
         </div>
 
@@ -99,7 +367,7 @@
             ⬅ Volver
           </button>
           <a href="{% url 'detalle_producto' producto.id %}"
-            class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border text-gray-800 font-semibold hover:bg-gray-50 transition">
+            class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-green-200 text-[#166534] font-extrabold hover:bg-[#f0fdf4] transition">
             👀 Ver detalle
           </a>
         </div>
@@ -107,13 +375,13 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
 
-        <div class="bg-gray-50 rounded-3xl border p-6">
+        <div class="bg-[#f0fdf4] rounded-3xl border border-green-200 p-6">
           <div class="flex items-center justify-between">
-            <p class="font-bold text-gray-900 text-lg">Vista previa</p>
-            <span class="text-xs font-bold bg-orange-500 text-white px-3 py-1 rounded-full shadow">OFERTA 🔥</span>
+            <p class="font-extrabold text-gray-900 text-lg">Vista previa</p>
+            <span class="text-xs font-extrabold bg-emerald-600 text-white px-3 py-1 rounded-full shadow">OFERTA 🔥</span>
           </div>
 
-          <div class="mt-4 rounded-2xl overflow-hidden border bg-white">
+          <div class="mt-4 rounded-2xl overflow-hidden border border-green-200 bg-white">
             <div class="h-48 bg-gray-100 overflow-hidden">
               {% if producto.imagen_principal %}
               <img src="{{ producto.imagen_principal.url }}" alt="{{ producto.nombre }}" class="w-full h-full object-cover">
@@ -129,17 +397,17 @@
               <p class="text-xl font-extrabold text-gray-900">{{ producto.nombre }}</p>
               <div class="mt-4">
                 <p class="text-xs text-gray-500">Precio actual</p>
-                <p class="text-2xl font-extrabold text-[color:var(--green)]">$ {{ producto.precio_unitario }}</p>
+                <p class="text-2xl font-extrabold text-[#166534]">$ {{ producto.precio_unitario }}</p>
               </div>
             </div>
           </div>
 
-          <div class="mt-4 text-sm text-gray-600">
-            💡 Tip: una buena oferta suele ser entre <span class="font-bold">10% y 30%</span> menos.
+          <div class="mt-4 text-sm text-gray-700">
+            💡 Tip: una buena oferta suele ser entre <span class="font-extrabold">10% y 30%</span> menos.
           </div>
         </div>
 
-        <div class="bg-white rounded-3xl border shadow-sm p-6">
+        <div class="bg-white rounded-3xl border border-green-100 shadow-sm p-6">
           <h2 class="text-xl font-extrabold text-gray-900">Publicar precio de oferta</h2>
           <p class="text-sm text-gray-600 mt-1">Actualiza el valor y guarda.</p>
 
@@ -147,30 +415,31 @@
             {% csrf_token %}
 
             <div>
-              <label class="block text-sm font-semibold text-gray-700">Precio de oferta</label>
+              <label class="block text-sm font-extrabold text-[#166534]">Precio de oferta</label>
               <div class="mt-1 flex items-center gap-2">
-                <span class="px-3 py-2 rounded-xl bg-gray-100 border text-gray-700 font-bold">$</span>
+                <span class="px-3 py-2 rounded-xl bg-[#f0fdf4] border border-green-200 text-[#166534] font-extrabold">$</span>
                 <input name="precio_oferta" value="{{ oferta.precio_oferta|default:'' }}"
-                  class="w-full border rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-orange-200"
+                  class="w-full border border-green-200 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-green-200"
                   placeholder="Ej: 4500">
               </div>
               <p class="text-xs text-gray-500 mt-2">Solo números.</p>
             </div>
 
-            <button class="w-full bg-[color:var(--green)] text-white py-3 rounded-2xl font-extrabold hover:brightness-95 transition shadow-lg">
+            <button
+              class="w-full bg-[#22c55e] text-white py-3 rounded-2xl font-extrabold hover:bg-[#16a34a] transition shadow-lg">
               ✅ Publicar oferta
             </button>
 
             <a href="{% url 'listar_ofertas' %}"
-              class="block w-full text-center bg-orange-100 text-orange-700 py-3 rounded-2xl font-bold hover:bg-orange-200 transition">
+              class="block w-full text-center bg-[#f0fdf4] text-[#166534] py-3 rounded-2xl font-extrabold border border-green-200 hover:bg-green-100 transition">
               🔥 Ver ofertas activas
             </a>
           </form>
 
-          <div class="mt-6 p-4 rounded-2xl bg-green-50 border border-green-100">
-            <p class="font-bold text-green-700">📢 Esto hará tu oferta:</p>
+          <div class="mt-6 p-4 rounded-2xl bg-[#f0fdf4] border border-green-200">
+            <p class="font-extrabold text-[#166534]">📢 Esto hará tu oferta:</p>
             <ul class="text-sm text-gray-700 mt-2 space-y-1">
-              <li>• Aparece en <span class="font-semibold">Ofertas</span></li>
+              <li>• Aparece en <span class="font-extrabold">Ofertas</span></li>
               <li>• Se puede quitar cuando quieras</li>
               <li>• Al dar clic, los lleva al detalle</li>
             </ul>
@@ -182,46 +451,53 @@
     </div>
   </main>
 
-  <footer class="bg-[#f37021] text-black mt-10">
+  <footer class="bg-[#166534] text-white mt-10">
     <div class="max-w-6xl mx-auto px-6 py-10">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start text-center md:text-left">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start text-center md:text-left">
+
         <div class="md:pl-6">
-          <h3 class="font-bold text-xl mb-4">SERVICIOS</h3>
-          <ul class="space-y-2 text-sm">
-            <li>Asesorías</li><li>Acerca de nosotros</li><li>Contáctanos</li>
+          <h3 class="font-extrabold text-xl mb-4">SERVICIOS</h3>
+          <ul class="space-y-2 text-sm text-white/90">
+            <li>Asesorías</li>
+            <li>Acerca de nosotros</li>
+            <li>Contáctanos</li>
           </ul>
         </div>
 
         <div class="flex flex-col items-center">
-          <h3 class="font-bold text-xl mb-4">Redes sociales</h3>
+          <h3 class="font-extrabold text-xl mb-4">Redes sociales</h3>
           <div class="flex gap-5">
             <a href="https://wa.me/573212279231?text=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20mas%20informacion%20por%20favor"
               target="_blank" class="hover:scale-110 transition">
-              <img src="https://thumbs.dreamstime.com/b/logotipo-de-whatsapp-verde-para-web-y-app-ui-aislado-en-fondo-blanco-png-transparente-265016409.jpg"
-                class="w-14 h-14 rounded-xl shadow-md" alt="WhatsApp">
+              <img
+                src="https://thumbs.dreamstime.com/b/logotipo-de-whatsapp-verde-para-web-y-app-ui-aislado-en-fondo-blanco-png-transparente-265016409.jpg"
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="WhatsApp">
             </a>
             <a href="https://m.me/61584277056410?ref=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20más%20información"
               target="_blank" class="hover:scale-110 transition">
-              <img src="https://static.vecteezy.com/system/resources/previews/018/910/719/non_2x/facebook-logo-facebook-icon-free-free-vector.jpg"
-                class="w-14 h-14 rounded-xl shadow-md" alt="Facebook">
+              <img
+                src="https://static.vecteezy.com/system/resources/previews/018/910/719/non_2x/facebook-logo-facebook-icon-free-free-vector.jpg"
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="Facebook">
             </a>
             <a href="https://instagram.com/CAMPOMARKT" target="_blank" class="hover:scale-110 transition">
               <img src="https://img.freepik.com/psd-premium/logotipo-aplicacion-instagram_23-2151544088.jpg"
-                class="w-14 h-14 rounded-xl shadow-md" alt="Instagram">
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="Instagram">
             </a>
           </div>
-          <div class="flex gap-8 mt-2 text-sm font-medium">
+          <div class="flex gap-8 mt-2 text-sm font-medium text-white/90">
             <span>WhatsApp</span><span>Facebook</span><span>Instagram</span>
           </div>
         </div>
 
         <div class="md:pr-6">
-          <a href="{% url 'seguridad_aw' %}" class="hover:text-orange-300 px-2">Seguridad</a>
-          <p class="text-sm leading-relaxed">Protección integral y tranquilidad.</p>
+          <a href="{% url 'seguridad_aw' %}" class="hover:text-[#86efac] px-2 font-semibold transition">Seguridad</a>
+          <p class="text-sm leading-relaxed text-white/90 mt-2">Protección integral y tranquilidad.</p>
         </div>
+
       </div>
     </div>
   </footer>
 
 </body>
+
 </html>

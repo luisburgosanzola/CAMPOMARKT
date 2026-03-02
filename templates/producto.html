@@ -1,32 +1,24 @@
+{% load static %}
 <!doctype html>
 <html lang="es">
-{% load static %}
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Agregar Producto | CampoMarkt</title>
   <script src="https://cdn.tailwindcss.com"></script>
- 
 
-<style>
-  :root {
-    --orange: #f37021;
-    --green: #15803d;
-    --peach: #fbeadf;
-  }
-
-  body {
-    background-image: url("https://www.bbva.com/wp-content/uploads/2021/06/sostenibilidad-BBVA-horticultura-agricultura-alimentacion.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-  }
-  
-</style>
-<div class="min-h-screen bg-black/40">
-
+  <style>
+    body {
+      background-image:
+        linear-gradient(120deg, rgba(0, 0, 0, .55), rgba(0, 0, 0, .55)),
+        url("https://www.bbva.com/wp-content/uploads/2021/06/sostenibilidad-BBVA-horticultura-agricultura-alimentacion.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+  </style>
 
   <script>
     function mostrarImagen(event) {
@@ -36,463 +28,630 @@
 
       if (input.files && input.files[0]) {
         const reader = new FileReader();
-
         reader.onload = function (e) {
           contenedor.style.backgroundImage = `url(${e.target.result})`;
           contenedor.style.backgroundSize = 'cover';
           contenedor.style.backgroundPosition = 'center';
-          texto.style.display = 'none';
+          if (texto) texto.style.display = 'none';
         }
-
         reader.readAsDataURL(input.files[0]);
       }
     }
   </script>
 </head>
 
-<body class="min-h-screen flex flex-col antialiased text-gray-700">
+<body class="min-h-screen flex flex-col antialiased text-gray-800 font-sans">
 
-  <!-- ================= HEADER ================= -->
-  <header>
-    <!-- Parte superior naranja -->
-    <div class="bg-[#f37021] flex justify-between items-center px-14 py-4">
-      <!-- Logo e Identidad -->
-      <div class="flex items-center space-x-3">
-        <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt" class="w-16 h-16 rounded-full object-cover" />
-        <span class="text-white font-bold text-3xl tracking-wide">
-          CAMPOMARKT
-        </span>
-      </div>
-
-      <!-- Usuario + Buscador (uno debajo del otro) -->
-      <div class="flex flex-col items-end space-y-2">
-        <!-- Usuario -->
-        <a href="{% url 'mi_perfil' %}"
-          class="flex items-center space-x-2 bg-orange-200 rounded-full px-4 py-1.5 hover:bg-orange-300 transition">
-          <span class="text-sm font-semibold text-gray-800">
-            {{ user.first_name|default:user.username|default:user.email }}
+  <!-- ================= HEADER (RESPONSIVE + HAMBURGUESA) ================= -->
+  <header class="sticky top-0 z-50">
+    <!-- Top bar -->
+    <div class="bg-[#166534] shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 md:px-14 py-4 flex items-center justify-between gap-4">
+        <!-- Logo -->
+        <a href="{% url 'main_page' %}" class="flex items-center gap-3 shrink-0">
+          <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt"
+            class="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover ring-4 ring-white/30" />
+          <span class="text-white font-extrabold text-xl sm:text-2xl md:text-3xl tracking-wide">
+            CAMPOMARKT
           </span>
-
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" class="w-6 h-6 text-gray-700">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
-          </svg>
         </a>
 
-        <!-- Campo de búsqueda -->
-<form action="{% url 'buscar_global' %}" method="get"
-      class="flex items-center bg-orange-100 rounded-full px-4 py-1.5">
-  <input type="text" name="q" value="{{ request.GET.q }}"
-         placeholder="¡Busca aquí!"
-         class="bg-transparent outline-none text-sm placeholder-gray-600 w-52" />
-
-  <button type="submit" aria-label="Buscar">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24"
-      stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
-    </svg>
-  </button>
-</form>
-
-      </div>
-    </div>
-
-    <!-- Barra de navegación verde -->
-    <nav class="bg-[#81BC5D] text-white py-4">
-      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-6">
-        <ul class="flex items-center text-sm font-semibold uppercase tracking-wide">
-          <li>
-            <a href="{% url 'main_page' %}" class="hover:text-orange-300 px-2">
-              Inicio
-            </a>
-          </li>
-
-          <li class="flex items-center">
-            <span class="mx-3">|</span>
-            <a href="{% url 'listar_productos' %}" class="hover:text-orange-300 px-2">
-              Productos
-            </a>
-          </li>
-
-          <li class="flex items-center">
-            <span class="mx-3">|</span>
-            <a href="{% url 'listar_ofertas' %}" class="hover:text-orange-300 px-2">Ofertas</a>
-
-          </li>
-
-          <li class="flex items-center">
-            <span class="mx-3">|</span>
-            <a href="{% url 'nosotros' %}" class="hover:text-orange-300 px-2">
-              Nosotros
-            </a>
-          </li>
-
-          <li class="flex items-center">
-            <span class="mx-3">|</span>
-            <a href="{% url 'mis_favoritos' %}" class="hover:text-orange-300 px-2">
-              Favoritos
-            </a>
-          </li>
-
-          <li class="flex items-center">
-            <span class="mx-3">|</span>
-            <a href="#" class="hover:text-orange-300 px-2">
-              Novedades
-            </a>
-          </li>
-        </ul>
-
-        <!-- CAMPANA TOTALMENTE A LA DERECHA -->
-<div class="absolute right-2">
-  <div class="relative">
-
-    <!-- BOTÓN CAMPANA -->
-    <button id="btnBell" type="button" class="relative">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-        stroke="currentColor" class="w-6 h-6 text-white hover:text-orange-300 cursor-pointer">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
-      </svg>
-
-      {% if user.is_authenticated and notif_unread > 0 %}
-      <span
-        class="absolute -top-1 -right-1 bg-red-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">
-        {{ notif_unread }}
-      </span>
-      {% endif %}
-    </button>
-
-    <!-- DROPDOWN -->
-    {% if user.is_authenticated %}
-    <div id="notifDropdown"
-      class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
-
-      <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
-
-      {% for n in notif_last %}
-      <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-gray-50">
-        <p class="text-sm text-gray-800">{{ n.message }}</p>
-        <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
-      </a>
-      {% empty %}
-      <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
-      {% endfor %}
-    </div>
-    {% endif %}
-
-  </div>
-</div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("btnBell");
-    const dropdown = document.getElementById("notifDropdown");
-
-    if (!btn || !dropdown) return;
-
-    // abrir/cerrar al click
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      dropdown.classList.toggle("hidden");
-    });
-
-    // click afuera => cerrar
-    document.addEventListener("click", () => {
-      dropdown.classList.add("hidden");
-    });
-
-    // evitar que click dentro del dropdown lo cierre antes de abrir links
-    dropdown.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-  });
-</script>
-
-      </div>
-    </nav>
-  </header>
-
-  <!-- ================= FORMULARIO ================= -->
-<main class="flex-grow flex justify-center px-4 py-12">
-  <!-- Tarjeta centrada y más ancha -->
-  <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8 md:p-10">
-
-    {% if errores %}
-      <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-        <ul class="list-disc list-inside text-sm">
-          {% for error in errores %}
-            <li>{{ error }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
-
-    <!-- Título -->
-    <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-6">
-      Tu mercado natural, directo del productor
-    </h2>
-
-    <!-- GRID 2 COLUMNAS -->
-    <form action="{% url 'agregar_producto' %}" method="POST" enctype="multipart/form-data"
-          class="grid gap-8 md:grid-cols-2">
-      {% csrf_token %}
-
-      <!-- COLUMNA IZQUIERDA -->
-      <div class="space-y-5">
-
-        <!-- Imagen -->
-        <label for="imagen_principal" class="group block relative cursor-pointer">
-          <div id="contenedor-imagen"
-               class="h-56 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50
-                      flex flex-col items-center justify-center text-gray-400
-                      transition hover:border-green-400 hover:bg-green-50 bg-cover bg-center">
-
-            <div id="texto-placeholder" class="flex flex-col items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mb-2" fill="none"
-                   viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      stroke-width="2" d="M12 4v16m8-8H4" />
+        <!-- Desktop: Search + User -->
+        <div class="hidden md:flex items-center gap-3">
+          <form action="{% url 'buscar_global' %}" method="get"
+            class="flex items-center bg-white/15 backdrop-blur rounded-full px-4 py-2 border border-white/20 shadow-sm">
+            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
+              class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-64" />
+            <button type="submit" aria-label="Buscar">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90 hover:text-white transition"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              <span class="font-medium text-gray-600">Agregar imagen</span>
-              <span class="text-xs text-gray-400">JPG o PNG, máximo 5MB</span>
-              {% if errores %}
-                <p class="text-xs text-red-600 mt-2">
-                  ⚠ Por seguridad, debes volver a seleccionar la imagen si hubo errores en el formulario.
-                </p>
-              {% endif %}
-            </div>
-          </div>
+            </button>
+          </form>
 
-          <input id="imagen_principal" name="imagen_principal" type="file"
-                 accept="image/*" class="hidden" onchange="mostrarImagen(event)" />
-        </label>
-
-        <!-- Categoría -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Categoría</label>
-          <select name="categoria"
-                  class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2
-                         focus:ring-green-500 focus:border-green-500">
-            {% for categoria in categorias %}
-              <option value="{{ categoria.id }}"
-                      {% if form_data.categoria == categoria.id|stringformat:"s" %}selected{% endif %}>
-                {{ categoria.nombre }}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
-
-        <!-- Nombre del producto -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Nombre del producto</label>
-          <select name="nombre" id="selectNombre"
-                  class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2
-                         focus:ring-green-500 focus:border-green-500">
-            <option value="">Seleccione una categoría primero</option>
-          </select>
-        </div>
-
-        <!-- Precio -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Precio unitario</label>
-          <div class="flex mt-1">
-            <span class="inline-flex items-center px-3 bg-gray-200 border border-r-0
-                          border-gray-300 rounded-l-lg text-gray-600 text-sm">
-              $ COP
+          <a href="{% url 'mi_perfil' %}"
+            class="flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition shadow-sm border border-white/20">
+            <span class="text-sm font-semibold text-white">
+              {{ user.first_name|default:user.username|default:user.email }}
             </span>
-            <input type="text" name="precio_unitario"
-                   value="{{ form_data.precio_unitario|default:'' }}"
-                   inputmode="numeric" pattern="[0-9]+"
-                   placeholder="Ej: 2500"
-                   class="w-full border border-gray-300 rounded-r-lg px-3 py-2
-                          focus:ring-green-500 focus:border-green-500" />
-          </div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-6 h-6 text-white/90">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+            </svg>
+          </a>
         </div>
 
-        <!-- Unidad de medida -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Unidad de medida</label>
-          <select name="unidad_medida"
-                  class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2
-                         focus:ring-green-500 focus:border-green-500">
-            <option value="">Seleccione una unidad</option>
-            <option value="kg">Kilogramos</option>
-            <option value="g">Gramos</option>
-            <option value="ton">Toneladas</option>
-            <option value="unidad">Unidad</option>
-            <option value="caja">Caja</option>
-            <option value="bulto">Bulto</option>
-          </select>
-        </div>
+        <!-- Mobile buttons: search icon + bell + hamburger -->
+        <div class="md:hidden flex items-center gap-2">
+          <button id="btnMobileSearch"
+            class="p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/15 transition"
+            aria-label="Abrir búsqueda">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
 
-        <!-- Cantidad disponible -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Cantidad disponible</label>
-          <input type="number" name="cantidad_disponible" min="1" step="1"
-                 value="{{ form_data.cantidad_disponible|default:'' }}"
-                 class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2
-                        focus:ring-green-500 focus:border-green-500" />
-        </div>
+          <!-- Bell -->
+          <button id="btnBellMobile" type="button"
+            class="relative p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/15 transition"
+            aria-label="Notificaciones">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-6 h-6 text-white">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+            </svg>
 
-        <!-- Teléfono -->
-  
-      </div>
+            {% if user.is_authenticated and notif_unread > 0 %}
+            <span
+              class="absolute -top-1 -right-1 bg-emerald-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center shadow">
+              {{ notif_unread }}
+            </span>
+            {% endif %}
+          </button>
 
-      <!-- COLUMNA DERECHA -->
-      <div class="space-y-5">
-
-          <div>
-          <label class="block text-sm font-medium text-gray-700">Número de teléfono</label>
-          <input type="tel" name="telefono" pattern="[0-9]{10}"
-                 placeholder="Ej: 3123456789"
-                 value="{{ form_data.telefono|default:'' }}"
-                 class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2
-                        focus:ring-green-500 focus:border-green-500" />
-          <p class="text-xs text-gray-400 mt-1">Formato: 10 dígitos sin guiones.</p>
-        </div>
-
-        <!-- Fecha disponibilidad -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Fecha de disponibilidad</label>
-          <input type="date" name="fecha_disponibilidad"
-                 value="{{ form_data.fecha_disponibilidad|default:'' }}"
-                 class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2
-                        focus:ring-green-500 focus:border-green-500" />
-        </div>
-
-        <!-- Departamento -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Departamento</label>
-          <select name="departamento" id="departamentoSelect"
-                  class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2
-                         focus:ring-green-500 focus:border-green-500">
-            <option value="">Seleccione un departamento</option>
-            {% for departamento in departamentos_municipios.keys %}
-              <option value="{{ departamento }}"
-                      {% if form_data.departamento == departamento %}selected{% endif %}>
-                {{ departamento }}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
-
-        <!-- Municipio -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Municipio</label>
-          <select name="municipio" id="municipioSelect"
-                  class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2
-                         focus:ring-green-500 focus:border-green-500">
-            <option value="">Seleccione primero un departamento</option>
-          </select>
-        </div>
-
-        <!-- Descripción -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Descripción</label>
-          <textarea name="descripcion" rows="4"
-                    class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2
-                           focus:ring-green-500 focus:border-green-500">{{ form_data.descripcion|default:'' }}</textarea>
-        </div>
-
-        <!-- Calidad y Estado -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Calidad</label>
-            <select name="calidad"
-                    class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2
-                           focus:ring-green-500 focus:border-green-500">
-              <option value="alta"  {% if form_data.calidad == "alta"  %}selected{% endif %}>Alta</option>
-              <option value="media" {% if form_data.calidad == "media" or not form_data.calidad %}selected{% endif %}>Media</option>
-              <option value="baja"  {% if form_data.calidad == "baja"  %}selected{% endif %}>Baja</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Estado</label>
-            <select name="estado"
-                    class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2
-                           focus:ring-green-500 focus:border-green-500">
-              <option value="disponible" {% if form_data.estado == "disponible" or not form_data.estado %}selected{% endif %}>Disponible</option>
-              <option value="vendido"     {% if form_data.estado == "vendido" %}selected{% endif %}>Vendido</option>
-              <option value="pausado"     {% if form_data.estado == "pausado" %}selected{% endif %}>Pausado</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Botón -->
-        <div class="pt-4 border-t border-gray-100 flex justify-end">
-          <button type="submit"
-                  class="bg-[color:var(--green)] hover:brightness-90 text-white font-semibold
-                         px-6 py-2 rounded-lg shadow-md text-sm">
-            Guardar Producto
+          <!-- Hamburger -->
+          <button id="btnHamburger"
+            class="p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/15 transition"
+            aria-label="Abrir menú">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
           </button>
         </div>
       </div>
-    </form>
-  </div>
-</main>
 
+      <!-- Mobile search bar -->
+      <div id="mobileSearchBar" class="hidden md:hidden px-4 pb-4">
+        <form action="{% url 'buscar_global' %}" method="get"
+          class="flex items-center bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20 shadow-sm">
+          <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
+            class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-full" />
+          <button type="submit" aria-label="Buscar">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90 hover:text-white transition"
+              fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Desktop nav -->
+    <nav class="hidden md:block bg-[#14532d] text-white shadow">
+      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-6 py-4">
+        <ul class="flex items-center text-sm font-semibold uppercase tracking-wide">
+          <li><a href="{% url 'main_page' %}" class="hover:text-[#86efac] px-2 transition">Inicio</a></li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'listar_productos' %}" class="hover:text-[#86efac] px-2 transition">Productos</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'listar_ofertas' %}" class="hover:text-[#86efac] px-2 transition">Ofertas</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'nosotros' %}" class="hover:text-[#86efac] px-2 transition">Nosotros</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="{% url 'mis_favoritos' %}" class="hover:text-[#86efac] px-2 transition">Favoritos</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <a href="#novedades" class="hover:text-[#86efac] px-2 transition">Novedades</a>
+          </li>
+
+          <li class="flex items-center">
+            <span class="mx-3 text-white/40">|</span>
+            <span class="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[#bbf7d0]">
+              Agregar producto
+            </span>
+          </li>
+        </ul>
+
+        <!-- Bell desktop -->
+        <div class="absolute right-2">
+          <div class="relative">
+            <button id="btnBell" type="button" class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 text-white hover:text-[#86efac] cursor-pointer transition">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+              </svg>
+
+              {% if user.is_authenticated and notif_unread > 0 %}
+              <span
+                class="absolute -top-1 -right-1 bg-emerald-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center shadow">
+                {{ notif_unread }}
+              </span>
+              {% endif %}
+            </button>
+
+            {% if user.is_authenticated %}
+            <div id="notifDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
+              <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
+              {% for n in notif_last %}
+              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-[#f0fdf4] transition">
+                <p class="text-sm text-gray-800">{{ n.message }}</p>
+                <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+              </a>
+              {% empty %}
+              <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenuOverlay" class="hidden fixed inset-0 bg-black/40 z-50"></div>
+
+    <aside id="mobileMenu"
+      class="fixed top-0 right-0 h-full w-[86%] max-w-sm bg-white z-[60] shadow-2xl translate-x-full transition-transform duration-300">
+      <div class="p-5 border-b flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src="{% static 'img/logo1.png' %}" class="w-10 h-10 rounded-full object-cover" alt="CampoMarkt">
+          <div>
+            <p class="font-extrabold text-[#166534] leading-tight">CAMPOMARKT</p>
+            <p class="text-xs text-gray-500">Panel del productor</p>
+          </div>
+        </div>
+        <button id="btnCloseMenu" class="p-2 rounded-xl hover:bg-gray-100" aria-label="Cerrar menú">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-5">
+        <div class="bg-[#f0fdf4] border border-green-200 rounded-2xl p-4">
+          <p class="text-sm text-gray-600">Conectado como</p>
+          <a href="{% url 'mi_perfil' %}" class="mt-1 inline-flex items-center gap-2 font-bold text-[#166534]">
+            {{ user.first_name|default:user.username|default:user.email }}
+            <span class="text-lg">👤</span>
+          </a>
+        </div>
+
+        <nav class="mt-5">
+          <p class="text-xs uppercase tracking-widest text-gray-400 mb-3">Menú</p>
+
+          <a href="{% url 'main_page' %}"
+            class="flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Inicio</span>
+            <span>🏠</span>
+          </a>
+
+          <a href="{% url 'listar_productos' %}"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Productos</span>
+            <span>🛒</span>
+          </a>
+
+          <a href="{% url 'listar_ofertas' %}"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Ofertas</span>
+            <span>🔥</span>
+          </a>
+
+          <a href="{% url 'nosotros' %}"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Nosotros</span>
+            <span>👥</span>
+          </a>
+
+          <a href="{% url 'mis_favoritos' %}"
+            class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-gray-50 transition border">
+            <span class="font-semibold text-gray-800">Favoritos</span>
+            <span>❤️</span>
+          </a>
+
+          <div class="mt-2 flex items-center justify-between px-4 py-3 rounded-2xl bg-[#f0fdf4] border border-green-200">
+            <span class="font-extrabold text-[#166534]">Agregar producto</span>
+            <span>➕</span>
+          </div>
+        </nav>
+
+        {% if user.is_authenticated %}
+        <div class="mt-5">
+          <p class="text-xs uppercase tracking-widest text-gray-400 mb-3">Notificaciones</p>
+          <div class="bg-white border rounded-2xl overflow-hidden">
+            {% for n in notif_last %}
+            <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-[#f0fdf4] transition border-b">
+              <p class="text-sm text-gray-800">{{ n.message }}</p>
+              <p class="text-xs text-gray-500 mt-1">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+            </a>
+            {% empty %}
+            <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </aside>
+
+    <script>
+      function openMobileMenu() {
+        const overlay = document.getElementById("mobileMenuOverlay");
+        const menu = document.getElementById("mobileMenu");
+        overlay.classList.remove("hidden");
+        menu.classList.remove("translate-x-full");
+        document.body.style.overflow = "hidden";
+      }
+      function closeMobileMenu() {
+        const overlay = document.getElementById("mobileMenuOverlay");
+        const menu = document.getElementById("mobileMenu");
+        overlay.classList.add("hidden");
+        menu.classList.add("translate-x-full");
+        document.body.style.overflow = "";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const btnHam = document.getElementById("btnHamburger");
+        const btnClose = document.getElementById("btnCloseMenu");
+        const overlay = document.getElementById("mobileMenuOverlay");
+
+        btnHam?.addEventListener("click", openMobileMenu);
+        btnClose?.addEventListener("click", closeMobileMenu);
+        overlay?.addEventListener("click", closeMobileMenu);
+
+        const btnMobileSearch = document.getElementById("btnMobileSearch");
+        const mobileSearchBar = document.getElementById("mobileSearchBar");
+        btnMobileSearch?.addEventListener("click", () => mobileSearchBar?.classList.toggle("hidden"));
+
+        // Bell desktop dropdown
+        const btnBell = document.getElementById("btnBell");
+        const dropdown = document.getElementById("notifDropdown");
+        if (btnBell && dropdown) {
+          btnBell.addEventListener("click", (e) => { e.stopPropagation(); dropdown.classList.toggle("hidden"); });
+          document.addEventListener("click", () => dropdown.classList.add("hidden"));
+          dropdown.addEventListener("click", (e) => e.stopPropagation());
+        }
+
+        // Mobile bell opens menu
+        const btnBellMobile = document.getElementById("btnBellMobile");
+        btnBellMobile?.addEventListener("click", () => openMobileMenu());
+
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMobileMenu(); });
+      });
+    </script>
+  </header>
+
+  <!-- ================= FORMULARIO (RESPONSIVE + INTERACTIVO) ================= -->
+  <main class="flex-grow flex justify-center px-4 py-10 sm:py-12">
+    <div class="w-full max-w-5xl">
+      <!-- Card -->
+      <div class="bg-white/90 backdrop-blur rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+        <!-- Banner -->
+        <div class="p-6 sm:p-8 bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7] border-b border-green-200">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <p class="inline-flex items-center gap-2 text-sm font-semibold text-[#166534] bg-white/70 px-3 py-1.5 rounded-full border border-green-200">
+                🌱 Publica tu producto
+              </p>
+              <h1 class="mt-3 text-2xl sm:text-3xl font-extrabold text-[#166534]">
+                Tu mercado natural, directo del productor
+              </h1>
+              <p class="mt-2 text-sm sm:text-base text-gray-700">
+                Completa los datos y publícalo. La previsualización de imagen es en vivo.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 shadow border border-green-100 w-full sm:w-auto">
+              <p class="text-xs uppercase tracking-widest text-gray-400">Checklist</p>
+              <ul class="mt-2 text-sm text-gray-700 space-y-1">
+                <li class="flex items-center gap-2"><span>✅</span> Imagen</li>
+                <li class="flex items-center gap-2"><span>✅</span> Precio y stock</li>
+                <li class="flex items-center gap-2"><span>✅</span> Ubicación</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6 sm:p-8">
+          {% if errores %}
+          <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl">
+            <p class="font-bold mb-1">⚠️ Revisa esto:</p>
+            <ul class="list-disc list-inside text-sm">
+              {% for error in errores %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            <p class="text-xs mt-2 text-red-600">
+              Por seguridad, si hubo errores debes volver a seleccionar la imagen.
+            </p>
+          </div>
+          {% endif %}
+
+          <form action="{% url 'agregar_producto' %}" method="POST" enctype="multipart/form-data"
+            class="grid gap-8 lg:grid-cols-2">
+            {% csrf_token %}
+
+            <!-- LEFT -->
+            <div class="space-y-5">
+              <!-- Imagen -->
+              <label for="imagen_principal" class="block">
+                <span class="block text-sm font-semibold text-gray-700 mb-2">Imagen principal</span>
+
+                <div id="contenedor-imagen"
+                  class="h-56 sm:h-64 rounded-2xl border-2 border-dashed border-green-200 bg-white
+                         flex flex-col items-center justify-center text-gray-400
+                         transition hover:border-[#22c55e] hover:bg-[#f0fdf4] shadow-sm">
+                  <div id="texto-placeholder" class="flex flex-col items-center justify-center px-6 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-11 h-11 mb-2 text-[#166534]" fill="none"
+                      viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span class="font-extrabold text-gray-800">Toca para subir una imagen</span>
+                    <span class="text-xs text-gray-500 mt-1">JPG/PNG, recomendado cuadrada. Máx 5MB</span>
+                  </div>
+                </div>
+
+                <input id="imagen_principal" name="imagen_principal" type="file" accept="image/*" class="hidden"
+                  onchange="mostrarImagen(event)" />
+              </label>
+
+              <!-- Categoría -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Categoría</label>
+                <select name="categoria" id="selectCategoria"
+                  class="mt-1 w-full border border-green-200 rounded-2xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-300 bg-white">
+                  {% for categoria in categorias %}
+                  <option value="{{ categoria.id }}"
+                    {% if form_data.categoria == categoria.id|stringformat:"s" %}selected{% endif %}>
+                    {{ categoria.nombre }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Nombre del producto -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Nombre del producto</label>
+                <select name="nombre" id="selectNombre"
+                  class="mt-1 w-full border border-green-200 rounded-2xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-300 bg-white">
+                  <option value="">Seleccione una categoría primero</option>
+                </select>
+                <p class="text-xs text-gray-500 mt-2">Se llena automáticamente según la categoría.</p>
+              </div>
+
+              <!-- Precio -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Precio unitario</label>
+                <div class="flex mt-1">
+                  <span
+                    class="inline-flex items-center px-3 bg-[#f0fdf4] border border-green-200 rounded-l-2xl text-[#166534] text-sm font-bold">
+                    $ COP
+                  </span>
+                  <input id="precio_unitario" type="text" name="precio_unitario"
+                    value="{{ form_data.precio_unitario|default:'' }}" inputmode="numeric" pattern="[0-9]+"
+                    placeholder="Ej: 2500"
+                    class="w-full border border-green-200 rounded-r-2xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-300" />
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Vista previa: <span id="previewPrecio" class="font-bold text-gray-800">$ 0</span></p>
+              </div>
+
+              <!-- Unidad de medida -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Unidad de medida</label>
+                <select name="unidad_medida" id="unidad_medida"
+                  class="mt-1 w-full border border-green-200 rounded-2xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-300 bg-white">
+                  <option value="">Seleccione una unidad</option>
+                  <option value="kg">Kilogramos</option>
+                  <option value="g">Gramos</option>
+                  <option value="ton">Toneladas</option>
+                  <option value="unidad">Unidad</option>
+                  <option value="caja">Caja</option>
+                  <option value="bulto">Bulto</option>
+                </select>
+              </div>
+
+              <!-- Cantidad disponible -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Cantidad disponible</label>
+                <input type="number" name="cantidad_disponible" min="1" step="1"
+                  value="{{ form_data.cantidad_disponible|default:'' }}"
+                  class="mt-1 w-full border border-green-200 rounded-2xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-300 bg-white" />
+              </div>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="space-y-5">
+              <!-- Teléfono -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Número de teléfono</label>
+                <input type="tel" name="telefono" pattern="[0-9]{10}" placeholder="Ej: 3123456789"
+                  value="{{ form_data.telefono|default:'' }}"
+                  class="mt-1 w-full border border-green-200 rounded-2xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-300 bg-white" />
+                <p class="text-xs text-gray-500 mt-2">Formato: 10 dígitos sin guiones.</p>
+              </div>
+
+              <!-- Fecha disponibilidad -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Fecha de disponibilidad</label>
+                <input type="date" name="fecha_disponibilidad"
+                  value="{{ form_data.fecha_disponibilidad|default:'' }}"
+                  class="mt-1 w-full border border-green-200 rounded-2xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-300 bg-white" />
+              </div>
+
+              <!-- Departamento -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Departamento</label>
+                <select name="departamento" id="departamentoSelect"
+                  class="mt-1 w-full border border-green-200 rounded-2xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-300 bg-white">
+                  <option value="">Seleccione un departamento</option>
+                  {% for departamento in departamentos_municipios.keys %}
+                  <option value="{{ departamento }}"
+                    {% if form_data.departamento == departamento %}selected{% endif %}>
+                    {{ departamento }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Municipio -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Municipio</label>
+                <select name="municipio" id="municipioSelect"
+                  class="mt-1 w-full border border-green-200 rounded-2xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-300 bg-white">
+                  <option value="">Seleccione primero un departamento</option>
+                </select>
+              </div>
+
+              <!-- Descripción -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700">Descripción</label>
+                <textarea name="descripcion" rows="4"
+                  class="mt-1 w-full border border-green-200 rounded-2xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-300 bg-white"
+                  placeholder="Ej: producto fresco, cosecha de hoy, sin químicos...">{{ form_data.descripcion|default:'' }}</textarea>
+              </div>
+
+              <!-- Calidad y Estado -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700">Calidad</label>
+                  <select name="calidad"
+                    class="mt-1 w-full border border-green-200 rounded-2xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-300 bg-white">
+                    <option value="alta" {% if form_data.calidad == "alta" %}selected{% endif %}>Alta</option>
+                    <option value="media" {% if form_data.calidad == "media" or not form_data.calidad %}selected{% endif %}>Media</option>
+                    <option value="baja" {% if form_data.calidad == "baja" %}selected{% endif %}>Baja</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700">Estado</label>
+                  <select name="estado"
+                    class="mt-1 w-full border border-green-200 rounded-2xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-green-300 bg-white">
+                    <option value="disponible" {% if form_data.estado == "disponible" or not form_data.estado %}selected{% endif %}>Disponible</option>
+                    <option value="vendido" {% if form_data.estado == "vendido" %}selected{% endif %}>Vendido</option>
+                    <option value="pausado" {% if form_data.estado == "pausado" %}selected{% endif %}>Pausado</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Submit -->
+              <div class="pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end">
+                <a href="{% url 'listar_productos' %}"
+                  class="text-center px-6 py-2.5 rounded-2xl border border-green-200 text-[#166534] font-semibold hover:bg-[#f0fdf4] transition">
+                  Cancelar
+                </a>
+                <button type="submit"
+                  class="bg-[#22c55e] hover:bg-[#16a34a] text-white font-extrabold px-7 py-2.5 rounded-2xl shadow-lg">
+                  Guardar producto ✅
+                </button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- mini tips -->
+      <div class="mt-5 grid sm:grid-cols-3 gap-4">
+        <div class="bg-white/85 backdrop-blur border border-white/20 rounded-2xl p-4 shadow">
+          <p class="font-bold text-[#166534]">📸 Tip imagen</p>
+          <p class="text-sm text-gray-700 mt-1">Si subes una foto bien iluminada, vendes más rápido.</p>
+        </div>
+        <div class="bg-white/85 backdrop-blur border border-white/20 rounded-2xl p-4 shadow">
+          <p class="font-bold text-[#166534]">💰 Tip precio</p>
+          <p class="text-sm text-gray-700 mt-1">Pon un precio competitivo para destacar en búsquedas.</p>
+        </div>
+        <div class="bg-white/85 backdrop-blur border border-white/20 rounded-2xl p-4 shadow">
+          <p class="font-bold text-[#166534]">📍 Tip ubicación</p>
+          <p class="text-sm text-gray-700 mt-1">Ubicación clara = más confianza para el comprador.</p>
+        </div>
+      </div>
+    </div>
+  </main>
 
   <!-- Chatbot Widget -->
   {% include 'includes/chatbot_widget.html' %}
 
   <!-- ================= FOOTER ================= -->
-  <footer class="bg-[#f37021] text-black mt-10">
+  <footer class="bg-[#166534] text-white mt-10">
     <div class="max-w-6xl mx-auto px-6 py-10">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start text-center md:text-left">
-
-        <!-- SERVICIOS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start text-center md:text-left">
         <div class="md:pl-6">
-          <h3 class="font-bold text-xl mb-4">SERVICIOS</h3>
-          <ul class="space-y-2 text-sm">
+          <h3 class="font-extrabold text-xl mb-4">SERVICIOS</h3>
+          <ul class="space-y-2 text-sm text-white/90">
             <li>Asesorías</li>
             <li>Acerca de nosotros</li>
             <li>Contáctanos</li>
           </ul>
         </div>
 
-        <!-- REDES SOCIALES -->
         <div class="flex flex-col items-center">
-          <h3 class="font-bold text-xl mb-4">Redes sociales</h3>
-
+          <h3 class="font-extrabold text-xl mb-4">Redes sociales</h3>
           <div class="flex gap-5">
-            <!-- WHATSAPP -->
             <a href="https://wa.me/573212279231?text=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20mas%20informacion%20por%20favor"
               target="_blank" class="hover:scale-110 transition">
               <img
                 src="https://thumbs.dreamstime.com/b/logotipo-de-whatsapp-verde-para-web-y-app-ui-aislado-en-fondo-blanco-png-transparente-265016409.jpg"
-                class="w-14 h-14 rounded-xl shadow-md" alt="WhatsApp">
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="WhatsApp">
             </a>
 
-            <!-- FACEBOOK -->
             <a href="https://m.me/61584277056410?ref=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20más%20información"
               target="_blank" class="hover:scale-110 transition">
               <img
                 src="https://static.vecteezy.com/system/resources/previews/018/910/719/non_2x/facebook-logo-facebook-icon-free-free-vector.jpg"
-                class="w-14 h-14 rounded-xl shadow-md" alt="Facebook">
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="Facebook">
             </a>
 
-            <!-- INSTAGRAM -->
             <a href="https://instagram.com/CAMPOMARKT" target="_blank" class="hover:scale-110 transition">
               <img src="https://img.freepik.com/psd-premium/logotipo-aplicacion-instagram_23-2151544088.jpg"
-                class="w-14 h-14 rounded-xl shadow-md" alt="Instagram">
+                class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="Instagram">
             </a>
           </div>
 
-          <!-- Texto debajo iconos -->
-          <div class="flex gap-8 mt-2 text-sm font-medium">
+          <div class="flex gap-8 mt-2 text-sm font-medium text-white/90">
             <span>WhatsApp</span>
             <span>Facebook</span>
             <span>Instagram</span>
           </div>
         </div>
 
-        <!-- SEGURIDAD -->
         <div class="md:pr-6">
-          <h3 class="font-bold text-xl mb-4">Seguridad</h3>
-          <p class="text-sm leading-relaxed">
+          <h3 class="font-extrabold text-xl mb-4">Seguridad</h3>
+          <p class="text-sm leading-relaxed text-white/90">
             Nuestra aplicación de seguridad está diseñada para ofrecer a los usuarios una protección integral y
             tranquilidad en el mundo digital y físico. Con un enfoque en la simplicidad y la eficiencia, esta
             herramienta intuitiva empodera a individuos y empresas para salvaguardar sus activos, información y seres
@@ -508,7 +667,6 @@
 
   <!-- ========== SCRIPT: DEPARTAMENTO → MUNICIPIOS ========== -->
   <script>
-    // Obtenemos el diccionario que mandó Django (del json_script)
     const departamentosMunicipios = JSON.parse(
       document.getElementById('departamentos-municipios-data').textContent
     );
@@ -516,25 +674,34 @@
     const departamentoSelect = document.getElementById('departamentoSelect');
     const municipioSelect = document.getElementById('municipioSelect');
 
+    // si hay un municipio guardado en form_data, lo intentamos re-seleccionar
+    const municipioGuardado = "{{ form_data.municipio|default:'' }}";
+
+    function llenarMunicipios(depto, preselect = "") {
+      if (!municipioSelect) return;
+      municipioSelect.innerHTML = '<option value="">Seleccione municipio</option>';
+
+      if (depto && departamentosMunicipios[depto]) {
+        departamentosMunicipios[depto].forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m;
+          opt.textContent = m;
+          if (preselect && preselect === m) opt.selected = true;
+          municipioSelect.appendChild(opt);
+        });
+      } else {
+        municipioSelect.innerHTML = '<option value="">Seleccione primero un departamento</option>';
+      }
+    }
+
     if (departamentoSelect && municipioSelect) {
+      // on load
+      if (departamentoSelect.value) {
+        llenarMunicipios(departamentoSelect.value, municipioGuardado);
+      }
+
       departamentoSelect.addEventListener('change', function () {
-        const departamento = this.value;
-
-        // Limpiar municipios
-        municipioSelect.innerHTML = '<option value="">Seleccione municipio</option>';
-
-        if (departamento && departamentosMunicipios[departamento]) {
-          const municipios = departamentosMunicipios[departamento];
-
-          municipios.forEach(function (municipio) {
-            const option = document.createElement('option');
-            option.value = municipio;
-            option.textContent = municipio;
-            municipioSelect.appendChild(option);
-          });
-        } else {
-          municipioSelect.innerHTML = '<option value="">Seleccione primero un departamento</option>';
-        }
+        llenarMunicipios(this.value, "");
       });
     }
   </script>
@@ -560,11 +727,40 @@
       return texto.charAt(0).toUpperCase() + texto.slice(1);
     }
 
-    const selectCategoria = document.querySelector('select[name="categoria"]');
+    const selectCategoria = document.getElementById('selectCategoria');
     const selectNombre = document.getElementById('selectNombre');
 
+    // intentar restaurar nombre si venía en form_data
+    const nombreGuardado = "{{ form_data.nombre|default:'' }}";
+
+    function cargarNombresPorCategoria() {
+      if (!selectCategoria || !selectNombre) return;
+
+      const categoriaTexto = selectCategoria.options[selectCategoria.selectedIndex].text.toLowerCase();
+      let lista = [];
+
+      if (categoriaTexto.includes('fruta')) lista = NOMBRES_VALIDOS.fruta;
+      if (categoriaTexto.includes('verdura')) lista = NOMBRES_VALIDOS.verdura;
+      if (categoriaTexto.includes('tuberculo')) lista = NOMBRES_VALIDOS.tuberculo;
+
+      selectNombre.innerHTML = '<option value="">Seleccione producto</option>';
+
+      lista.forEach(nombre => {
+        const opt = document.createElement('option');
+        opt.value = nombre;
+        opt.textContent = capitalizar(nombre);
+        if (nombreGuardado && nombreGuardado === nombre) opt.selected = true;
+        selectNombre.appendChild(opt);
+      });
+    }
+
     if (selectCategoria && selectNombre) {
+      // on load
+      cargarNombresPorCategoria();
+
       selectCategoria.addEventListener('change', function () {
+        // al cambiar categoría, limpiamos el guardado
+        selectNombre.innerHTML = '<option value="">Seleccione producto</option>';
         const categoriaTexto = this.options[this.selectedIndex].text.toLowerCase();
         let lista = [];
 
@@ -572,16 +768,40 @@
         if (categoriaTexto.includes('verdura')) lista = NOMBRES_VALIDOS.verdura;
         if (categoriaTexto.includes('tuberculo')) lista = NOMBRES_VALIDOS.tuberculo;
 
-        selectNombre.innerHTML = '<option value="">Seleccione producto</option>';
-
         lista.forEach(nombre => {
-          selectNombre.innerHTML += `
-            <option value="${nombre}">
-              ${capitalizar(nombre)}
-            </option>`;
+          const opt = document.createElement('option');
+          opt.value = nombre;
+          opt.textContent = capitalizar(nombre);
+          selectNombre.appendChild(opt);
         });
       });
     }
+  </script>
+
+  <!-- ========== SCRIPT: PREVIEW PRECIO ========== -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const inp = document.getElementById("precio_unitario");
+      const out = document.getElementById("previewPrecio");
+      if (!inp || !out) return;
+
+      function fmt(n) {
+        try {
+          return new Intl.NumberFormat("es-CO").format(n);
+        } catch {
+          return String(n);
+        }
+      }
+
+      function update() {
+        const raw = (inp.value || "").replace(/[^\d]/g, "");
+        const n = raw ? Number(raw) : 0;
+        out.textContent = "$ " + fmt(n);
+      }
+
+      inp.addEventListener("input", update);
+      update();
+    });
   </script>
 
 </body>
