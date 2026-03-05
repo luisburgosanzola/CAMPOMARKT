@@ -39,10 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # necesario para allauth
+    'django.contrib.sites',
+
     # apps locales
     'app.Usuarios',
-    'app.Productos.apps.ProductosConfig',
-    "Ashly.Ashly.chatbot.apps.ChatbotConfig", # ✅ coma aquí
+    'app.Productos',
+    'app.Notificaciones',
+    'Ashly.Ashly.chatbot',
 
     # terceros
     'rest_framework',
@@ -51,13 +55,12 @@ INSTALLED_APPS = [
     'theme',
 
     # allauth
-    'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',  # ✅ coma aquí
-    'app.Notificaciones.apps.NotificacionesConfig',
+    'allauth.socialaccount.providers.google',
 ]
+SITE_ID = 1
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # 🔥 de primero
@@ -199,20 +202,24 @@ AUTHENTICATION_BACKENDS = [
 
 
 
+
+
 # ---------
 # Allauth - account
 # ---------
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_LOGIN_METHODS = {'email'}
+# ✅ PRO (recomendado): obliga confirmar correo antes de poder loguearse
+# ---------
+# Allauth - account
+# ---------
 
 # ✅ PRO (recomendado): obliga confirmar correo antes de poder loguearse
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
 # ✅ Para que allauth no pida username en formularios
+ACCOUNT_LOGIN_METHODS = {'email'}  # ← AGREGA ESTA
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
-ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3  # opcional
-
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
 # Reset de contraseña
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
