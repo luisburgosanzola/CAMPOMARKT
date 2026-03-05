@@ -65,8 +65,7 @@
             <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
               class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-56" />
             <button type="submit" aria-label="Buscar">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                class="w-5 h-5 text-white/90 hover:text-white transition"
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90 hover:text-white transition"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -90,8 +89,7 @@
             aria-label="Abrir menú">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </div>
@@ -195,8 +193,7 @@
           </div>
         </div>
         <button id="btnCloseMenu" class="p-2 rounded-xl hover:bg-gray-100" aria-label="Cerrar menú">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
@@ -205,7 +202,8 @@
       <div class="p-5 space-y-4">
 
         {% if user.is_authenticated %}
-        <a href="{% url 'mi_perfil' %}" class="block bg-emerald-50 border rounded-2xl p-4 hover:bg-emerald-100 transition">
+        <a href="{% url 'mi_perfil' %}"
+          class="block bg-emerald-50 border rounded-2xl p-4 hover:bg-emerald-100 transition">
           <p class="text-xs text-gray-500">Conectado como</p>
           <p class="font-bold text-gray-900 mt-1">
             {{ user.first_name|default:user.username|default:user.email }}
@@ -377,7 +375,8 @@
       <div class="relative">
         <img src="https://agriculturadigital.cepal.org/sites/default/files/2023-04/Gesti%C3%B3n%20Integral%201.jpeg"
           class="rounded-2xl shadow-2xl w-full object-cover ring-1 ring-black/5" />
-        <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur rounded-2xl p-4 shadow-lg border border-gray-100">
+        <div
+          class="absolute bottom-4 left-4 bg-white/90 backdrop-blur rounded-2xl p-4 shadow-lg border border-gray-100">
           <p class="font-semibold text-gray-800">🚜 Producción local</p>
           <p class="text-sm text-gray-600">Apoya el agro, compra sin intermediarios</p>
         </div>
@@ -393,19 +392,24 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <button class="catBtn bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow"
+          <button
+            class="catBtn bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow"
             data-cat="todos">Todos</button>
-          <button class="catBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
+          <button
+            class="catBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
             data-cat="frutas">🍍 Frutas</button>
-          <button class="catBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
+          <button
+            class="catBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
             data-cat="verduras">🥦 Verduras</button>
-          <button class="catBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
+          <button
+            class="catBtn bg-white border border-green-200 px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#f0fdf4] transition"
             data-cat="granos">🌾 Granos</button>
         </div>
       </div>
 
       <div id="catGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-        <div class="catCard bg-white rounded-2xl shadow-md border border-green-100 hover:shadow-xl transition p-5 hover:-translate-y-0.5"
+        <div
+          class="catCard bg-white rounded-2xl shadow-md border border-green-100 hover:shadow-xl transition p-5 hover:-translate-y-0.5"
           data-cat="frutas">
           <p class="text-3xl">🍌</p>
           <h3 class="text-xl font-bold mt-2 text-gray-900">Frutas</h3>
@@ -415,7 +419,8 @@
           </a>
         </div>
 
-        <div class="catCard bg-white rounded-2xl shadow-md border border-green-100 hover:shadow-xl transition p-5 hover:-translate-y-0.5"
+        <div
+          class="catCard bg-white rounded-2xl shadow-md border border-green-100 hover:shadow-xl transition p-5 hover:-translate-y-0.5"
           data-cat="verduras">
           <p class="text-3xl">🥬</p>
           <h3 class="text-xl font-bold mt-2 text-gray-900">Verduras</h3>
@@ -425,7 +430,8 @@
           </a>
         </div>
 
-        <div class="catCard bg-white rounded-2xl shadow-md border border-green-100 hover:shadow-xl transition p-5 hover:-translate-y-0.5"
+        <div
+          class="catCard bg-white rounded-2xl shadow-md border border-green-100 hover:shadow-xl transition p-5 hover:-translate-y-0.5"
           data-cat="granos">
           <p class="text-3xl">🌽</p>
           <h3 class="text-xl font-bold mt-2 text-gray-900">Granos</h3>
@@ -453,14 +459,20 @@
           <div class="bg-white rounded-2xl p-4 shadow border border-green-100 w-full sm:w-auto">
             <p class="text-sm font-semibold text-gray-700 mb-2">Simulador (ajusta valores)</p>
             <div class="flex gap-2 items-center">
-              <input id="precioIntermediario" type="number" value="8000"
+              <input id="precioIntermediario" type="number" value="0"
                 class="w-32 border border-green-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-300" />
               <span class="text-sm text-gray-600">$/Kg con intermediario</span>
             </div>
-            <div class="flex gap-2 items-center mt-2">
-              <input id="precioCampoMarkt" type="number" value="6000"
+            <br>
+            <div class="flex gap-2 items-center">
+              <input id="precioCampoMarkt" type="number" value="0"
                 class="w-32 border border-green-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-300" />
-              <span class="text-sm text-gray-600">$/Kg en CampoMarkt</span>
+              <span class="text-sm text-gray-600">$/Kg con CampoMarkt</span>
+            </div>
+            <div class="flex gap-2 items-center mt-2">
+              <input id="porcentajeDescuento" type="number" value="17" step="0.1" min="0" max="99"
+                class="w-20 border border-green-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-300" />
+              <span class="text-sm text-gray-600">% más barato en CampoMarkt</span>
             </div>
             <button id="btnCalcular"
               class="mt-3 w-full bg-[#22c55e] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#16a34a] transition shadow">
@@ -469,6 +481,7 @@
             <p id="resultadoAhorro" class="text-sm text-gray-700 mt-2"></p>
           </div>
         </div>
+
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
           <div class="bg-white rounded-2xl p-6 shadow border border-green-100">
@@ -531,7 +544,7 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
         <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-green-100 hover:shadow-2xl transition">
-          <img src="{% static 'img/producer-image.jpg' %}" alt="Productor" class="w-full h-56 object-cover" />
+          <img src="{% static 'img/campesino2.png' %}" alt="Productor" class="w-full h-56 object-cover" />
           <div class="p-5">
             <h3 class="text-xl font-bold text-[#166534]">Juan Pérez</h3>
             <p class="text-gray-600 text-sm mt-1">Finca orgánica - Valle del Cauca</p>
@@ -539,14 +552,14 @@
               Cultiva con prácticas sostenibles y vende directo para garantizar frescura y precio justo.
             </p>
             <div class="flex items-center justify-between mt-4">
-              <span class="text-xs bg-[#dcfce7] text-[#166534] px-3 py-1 rounded-full font-semibold border border-green-200">Orgánico</span>
-              <a href="#!" class="text-[#166534] font-semibold hover:underline">Leer más →</a>
+              <span
+                class="text-xs bg-[#dcfce7] text-[#166534] px-3 py-1 rounded-full font-semibold border border-green-200">Orgánico</span>
             </div>
           </div>
         </div>
 
         <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-green-100 hover:shadow-2xl transition">
-          <img src="{% static 'img/producer-image.jpg' %}" alt="Productor" class="w-full h-56 object-cover" />
+          <img src="{% static 'img/campesina.png' %}" alt="Productor" class="w-full h-56 object-cover" />
           <div class="p-5">
             <h3 class="text-xl font-bold text-[#166534]">María González</h3>
             <p class="text-gray-600 text-sm mt-1">Productora - Cundinamarca</p>
@@ -554,14 +567,14 @@
               Produce hortalizas frescas y usa CampoMarkt para reducir pérdidas por intermediación.
             </p>
             <div class="flex items-center justify-between mt-4">
-              <span class="text-xs bg-[#dcfce7] text-[#166534] px-3 py-1 rounded-full font-semibold border border-green-200">Hortalizas</span>
-              <a href="#!" class="text-[#166534] font-semibold hover:underline">Leer más →</a>
+              <span
+                class="text-xs bg-[#dcfce7] text-[#166534] px-3 py-1 rounded-full font-semibold border border-green-200">Hortalizas</span>
             </div>
           </div>
         </div>
 
         <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-green-100 hover:shadow-2xl transition">
-          <img src="{% static 'img/producer-image.jpg' %}" alt="Productor" class="w-full h-56 object-cover" />
+          <img src="{% static 'img/campesino1.png' %}" alt="Productor" class="w-full h-56 object-cover" />
           <div class="p-5">
             <h3 class="text-xl font-bold text-[#166534]">Carlos Rojas</h3>
             <p class="text-gray-600 text-sm mt-1">Granos - Tolima</p>
@@ -569,8 +582,8 @@
               Comercializa maíz y fríjol con trazabilidad, asegurando calidad para el comprador final.
             </p>
             <div class="flex items-center justify-between mt-4">
-              <span class="text-xs bg-[#dcfce7] text-[#166534] px-3 py-1 rounded-full font-semibold border border-green-200">Granos</span>
-              <a href="#!" class="text-[#166534] font-semibold hover:underline">Leer más →</a>
+              <span
+                class="text-xs bg-[#dcfce7] text-[#166534] px-3 py-1 rounded-full font-semibold border border-green-200">Granos</span>
             </div>
           </div>
         </div>
@@ -610,12 +623,14 @@
           <div class="flex gap-5">
             <a href="https://wa.me/573212279231?text=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20mas%20informacion%20por%20favor"
               target="_blank" class="hover:scale-110 transition">
-              <img src="https://thumbs.dreamstime.com/b/logotipo-de-whatsapp-verde-para-web-y-app-ui-aislado-en-fondo-blanco-png-transparente-265016409.jpg"
+              <img
+                src="https://thumbs.dreamstime.com/b/logotipo-de-whatsapp-verde-para-web-y-app-ui-aislado-en-fondo-blanco-png-transparente-265016409.jpg"
                 class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="WhatsApp">
             </a>
             <a href="https://m.me/61584277056410?ref=Hola%20vengo%20desde%20CampoMarkt%20y%20quiero%20más%20información"
               target="_blank" class="hover:scale-110 transition">
-              <img src="https://static.vecteezy.com/system/resources/previews/018/910/719/non_2x/facebook-logo-facebook-icon-free-free-vector.jpg"
+              <img
+                src="https://static.vecteezy.com/system/resources/previews/018/910/719/non_2x/facebook-logo-facebook-icon-free-free-vector.jpg"
                 class="w-14 h-14 rounded-xl shadow-md ring-2 ring-white/20" alt="Facebook">
             </a>
             <a href="https://instagram.com/CAMPOMARKT" target="_blank" class="hover:scale-110 transition">
@@ -632,7 +647,8 @@
         <div class="md:pr-6">
           <a href="{% url 'seguridad_aw' %}" class="hover:text-[#86efac] px-2 font-semibold transition">Seguridad</a>
           <p class="text-sm leading-relaxed text-white/90 mt-2">
-            Nuestra aplicación de seguridad está diseñada para ofrecer a los usuarios una protección integral y tranquilidad.
+            Nuestra aplicación de seguridad está diseñada para ofrecer a los usuarios una protección integral y
+            tranquilidad.
           </p>
         </div>
       </div>
@@ -732,26 +748,121 @@
         });
       });
     });
+    /*
+        // Simulador ahorro
+        document.addEventListener("DOMContentLoaded", () => {
+          const btn = document.getElementById("btnCalcular");
+          const p1 = document.getElementById("precioIntermediario");
+          const p2 = document.getElementById("precioCampoMarkt");
+          const out = document.getElementById("resultadoAhorro");
+    
+          if (!btn) return;
+    
+          btn.addEventListener("click", () => {
+            const a = Number(p1.value);
+            const b = Number(p2.value);
+            if (!a || !b || a <= 0 || b <= 0) {
+              out.textContent = "⚠️ Ingresa valores válidos.";
+              return;
+            }
+            const ahorro = Math.round(((a - b) / a) * 100);
+            out.innerHTML = `✅ Ahorro estimado: <strong>${ahorro}%</strong> por Kg comprando directo del campo.`;
+          });
+        });
+    
+         
+        });*/
 
-    // Simulador ahorro
     document.addEventListener("DOMContentLoaded", () => {
-      const btn = document.getElementById("btnCalcular");
-      const p1 = document.getElementById("precioIntermediario");
-      const p2 = document.getElementById("precioCampoMarkt");
+      const pLocal = document.getElementById("precioIntermediario");
+      const pCampo = document.getElementById("precioCampoMarkt");
+      const pDesc = document.getElementById("porcentajeDescuento"); // puede existir o no
       const out = document.getElementById("resultadoAhorro");
 
-      if (!btn) return;
+      let updating = false;
 
-      btn.addEventListener("click", () => {
-        const a = Number(p1.value);
-        const b = Number(p2.value);
-        if (!a || !b || a <= 0 || b <= 0) {
-          out.textContent = "⚠️ Ingresa valores válidos.";
+      function getFactorCampo() {
+        // si no existe el input, usa 17%
+        let d = pDesc ? Number(pDesc.value) : 17;
+        if (!isFinite(d)) d = 17;
+        if (d < 0) d = 0;
+        if (d >= 100) d = 99; // evita factor 0
+        return 1 - d / 100;
+      }
+
+      function formatMoney(n) {
+        return Math.round(n).toString();
+      }
+
+      function updateResultado(local, campo) {
+        if (local > 0 && campo > 0) {
+          const ahorroPesos = local - campo;
+          const ahorroPct = (ahorroPesos / local) * 100;
+          out.innerHTML = `✅ Ahorro: <strong>${formatMoney(ahorroPesos)}</strong> (${ahorroPct.toFixed(1)}%)`;
+        } else {
+          out.textContent = "";
+        }
+      }
+
+      function fromLocal() {
+        const local = Number(pLocal.value);
+        if (!(local > 0)) {
+          updating = true;
+          pCampo.value = "";
+          updating = false;
+          updateResultado(0, 0);
           return;
         }
-        const ahorro = Math.round(((a - b) / a) * 100);
-        out.innerHTML = `✅ Ahorro estimado: <strong>${ahorro}%</strong> por Kg comprando directo del campo.`;
+
+        const factor = getFactorCampo();
+        const campo = local * factor;
+
+        updating = true;
+        pCampo.value = formatMoney(campo);
+        updating = false;
+
+        updateResultado(local, campo);
+      }
+
+      function fromCampo() {
+        const campo = Number(pCampo.value);
+        if (!(campo > 0)) {
+          updating = true;
+          pLocal.value = "";
+          updating = false;
+          updateResultado(0, 0);
+          return;
+        }
+
+        const factor = getFactorCampo();
+        const local = campo / factor;
+
+        updating = true;
+        pLocal.value = formatMoney(local);
+        updating = false;
+
+        updateResultado(local, campo);
+      }
+
+      pLocal.addEventListener("input", () => {
+        if (updating) return;
+        fromLocal();
       });
+
+      pCampo.addEventListener("input", () => {
+        if (updating) return;
+        fromCampo();
+      });
+
+      if (pDesc) {
+        pDesc.addEventListener("input", () => {
+          if (updating) return;
+          // recalcula usando el campo que tenga valor
+          if (Number(pLocal.value) > 0) fromLocal();
+          else if (Number(pCampo.value) > 0) fromCampo();
+          else updateResultado(0, 0);
+        });
+      }
     });
 
     // Gráficos (Chart.js)

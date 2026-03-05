@@ -242,6 +242,13 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "burgosanzolaluis@gmail.com"
+EMAIL_HOST_PASSWORD = "kaow wdio ngvv isml"  # contraseña de aplicación
+DEFAULT_FROM_EMAIL = "CampoMarkt <burgosanzolaluis@gmail.com>"
 
 
 # ✅ URLs que usará allauth para armar links correctos
