@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-8l^d=)_fj7mv0r^nnkkc4$c9qti(&%0(v!9lj8ojm3b!s8=@^r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -102,17 +102,17 @@ WSGI_APPLICATION = 'CampoMarkt.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {  # MySQL (base principal)
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'agroapp',
-        'USER': 'agroapp',
-        'PASSWORD': '14647',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {'charset': 'utf8mb4'},
-    },
-
-
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ.get("MYSQLDATABASE"),
+        "USER": os.environ.get("MYSQLUSER"),
+        "PASSWORD": os.environ.get("MYSQLPASSWORD"),
+        "HOST": os.environ.get("MYSQLHOST"),
+        "PORT": os.environ.get("MYSQLPORT"),
+        "OPTIONS": {
+            "charset": "utf8mb4",
+        },
+    }
 }
 
 
@@ -253,13 +253,13 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "burgosanzolaluis@gmail.com"
-EMAIL_HOST_PASSWORD = "kaow wdio ngvv isml"  # contraseña de aplicación
+EMAIL_HOST_USER = os.environ.get("EMAIL_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 DEFAULT_FROM_EMAIL = "CampoMarkt <burgosanzolaluis@gmail.com>"
 
 
 # ✅ URLs que usará allauth para armar links correctos
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 
 # ==========================
 # TWILIO (si lo usas)
