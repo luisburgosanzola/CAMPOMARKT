@@ -1,19 +1,15 @@
-from twilio.rest import Client
+
 from django.conf import settings
+from django.core.mail import send_mail
 
 def enviar_sms_verificacion(telefono, codigo):
     client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-
     mensaje = f"Tu código de verificación CampoMarkt es: {codigo}"
-
     client.messages.create(
         body=mensaje,
         from_=settings.TWILIO_PHONE_NUMBER,
         to=telefono
     )
-
-from django.core.mail import send_mail
-from django.conf import settings
 
 def enviar_codigo_email(email, codigo):
     asunto = "Código de verificación - CampoMarkt"

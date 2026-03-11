@@ -125,6 +125,7 @@ class Producto(models.Model):
         productor_nombre = self.productor.username if self.productor else "Sin productor"
         return f"{self.nombre} - {productor_nombre} ({self.estado})"
 
+
 class Oferta(models.Model):
     producto = models.OneToOneField(
         Producto,
