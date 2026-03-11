@@ -15,7 +15,7 @@ python-dotenv==1.1.1
 
 twilio==9.8.7
 openai==2.4.0
-
+cryptography==46.0.3
 
 
 
