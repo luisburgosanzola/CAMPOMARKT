@@ -50,7 +50,7 @@ urlpatterns = [
  
     path('', main, name='main'),
 
-    path('chatbot/', include('Ashly.Ashly.chatbot.urls')),
+    path('chatbot/', include('Ashly.chatbot.urls')),
 
     path('', include("app.Usuarios.urls")),
     path('producto/', include("app.Productos.urls")),
