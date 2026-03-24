@@ -80,7 +80,6 @@ promise==2.3
 propcache==0.4.1
 protobuf==6.33.1
 psutil==7.1.1
-psycopg2==2.9.10
 pyarrow==23.0.0
 pycparser==2.23
 pydantic==2.12.2
