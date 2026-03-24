@@ -13,65 +13,107 @@
 
   <!-- ================= HEADER RESPONSIVE (HAMBURGUESA) ================= -->
   <header class="sticky top-0 z-50">
-    <!-- TOP BAR -->
+
+    <!-- BARRA ÚNICA -->
     <div class="bg-[#166534] shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 md:px-14 py-4 flex items-center justify-between gap-3">
+      <div class="max-w-7xl mx-auto px-4 md:px-10 py-3 flex items-center justify-between gap-4">
 
         <!-- Logo -->
         <a href="{% url 'main_page' %}" class="flex items-center gap-3 shrink-0">
           <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt"
-            class="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover ring-4 ring-white/30" />
-          <span class="text-white font-extrabold text-xl sm:text-2xl md:text-3xl tracking-wide">
+            class="w-10 h-10 rounded-full object-cover ring-2 ring-white/30" />
+          <span class="text-white font-extrabold text-lg sm:text-xl tracking-wide hidden sm:block">
             CAMPOMARKT
           </span>
         </a>
 
-        <!-- Desktop: user + search -->
-        <div class="hidden md:flex flex-col items-end gap-2">
-
+        <!-- Desktop: nav central -->
+        <nav class="hidden md:flex items-center text-sm font-semibold uppercase tracking-wide">
+          <a href="{% url 'main_page' %}" class="text-white/85 hover:text-[#86efac] px-3 transition">Inicio</a>
+          <span class="text-white/30">|</span>
+          <a href="{% url 'listar_productos' %}" class="text-white/85 hover:text-[#86efac] px-3 transition">Productos</a>
+          <span class="text-white/30">|</span>
+          <a href="{% url 'listar_ofertas' %}" class="text-white/85 hover:text-[#86efac] px-3 transition">Ofertas</a>
+          <span class="text-white/30">|</span>
+          <a href="{% url 'nosotros' %}" class="text-white/85 hover:text-[#86efac] px-3 transition">Nosotros</a>
           {% if user.is_authenticated %}
-          <a href="{% url 'mi_perfil' %}"
-            class="flex items-center space-x-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition shadow-sm border border-white/20">
-            <span class="text-sm font-semibold text-white">
-              {{ user.first_name|default:user.username|default:user.email }}
-            </span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="w-6 h-6 text-white/90">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
-            </svg>
-          </a>
-          {% else %}
-          <div class="flex items-center space-x-2">
-            <a href="{% url 'login_page' %}"
-              class="flex items-center space-x-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition shadow-sm border border-white/20">
-              <span class="text-sm font-semibold text-white">Iniciar sesión</span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-6 h-6 text-white/90">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
-              </svg>
-            </a>
-
-            <a href="{% url 'register_page' %}"
-              class="bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow">
-              Registrarse
-            </a>
-          </div>
+          <span class="text-white/30">|</span>
+          <a href="{% url 'mis_favoritos' %}" class="text-white/85 hover:text-[#86efac] px-3 transition">Favoritos</a>
           {% endif %}
+        </nav>
 
+        <!-- Desktop: buscador + sesión + campana -->
+        <div class="hidden md:flex items-center gap-3 shrink-0">
+
+          <!-- Buscador -->
           <form action="{% url 'buscar_global' %}" method="get"
             class="flex items-center bg-white/15 backdrop-blur rounded-full px-4 py-2 border border-white/20 shadow-sm">
             <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
-              class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-56" />
+              class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-40" />
             <button type="submit" aria-label="Buscar">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90 hover:text-white transition"
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white/90 hover:text-white transition"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
           </form>
+
+          {% if user.is_authenticated %}
+          <!-- Usuario autenticado -->
+          <a href="{% url 'mi_perfil' %}"
+            class="flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition border border-white/20">
+            <span class="text-sm font-semibold text-white">
+              {{ user.first_name|default:user.username|default:user.email }}
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5 text-white/90">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+            </svg>
+          </a>
+
+          <!-- Campanita: solo si está autenticado -->
+          <div class="relative">
+            <button id="btnBell" type="button" class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 text-white hover:text-[#86efac] cursor-pointer transition">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
+              </svg>
+              {% if notif_unread > 0 %}
+              <span
+                class="absolute -top-1 -right-1 bg-emerald-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center shadow">
+                {{ notif_unread }}
+              </span>
+              {% endif %}
+            </button>
+
+            <div id="notifDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
+              <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
+              {% for n in notif_last %}
+              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-[#f0fdf4] transition">
+                <p class="text-sm text-gray-800">{{ n.message }}</p>
+                <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+              </a>
+              {% empty %}
+              <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+              {% endfor %}
+            </div>
+          </div>
+
+          {% else %}
+          <!-- No autenticado: botones login/registro -->
+          <a href="{% url 'login_page' %}"
+            class="flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition border border-white/20">
+            <span class="text-sm font-semibold text-white">Iniciar sesión</span>
+          </a>
+          <a href="{% url 'register_page' %}"
+            class="bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow">
+            Registrarse
+          </a>
+          {% endif %}
         </div>
 
         <!-- Mobile buttons -->
@@ -112,72 +154,6 @@
         </form>
       </div>
     </div>
-
-    <!-- DESKTOP NAV -->
-    <nav class="hidden md:block bg-[#14532d] text-white py-4 shadow">
-      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-6">
-        <ul class="flex items-center text-sm font-semibold uppercase tracking-wide">
-          <li><a href="{% url 'main_page' %}" class="hover:text-[#86efac] px-2 transition">Inicio</a></li>
-
-          <li class="flex items-center">
-            <span class="mx-3 text-white/40">|</span>
-            <a href="{% url 'listar_productos' %}" class="hover:text-[#86efac] px-2 transition">Productos</a>
-          </li>
-
-          <li class="flex items-center">
-            <span class="mx-3 text-white/40">|</span>
-            <a href="{% url 'listar_ofertas' %}" class="hover:text-[#86efac] px-2 transition">Ofertas</a>
-          </li>
-
-          <li class="flex items-center">
-            <span class="mx-3 text-white/40">|</span>
-            <a href="{% url 'nosotros' %}" class="hover:text-[#86efac] px-2 transition">Nosotros</a>
-          </li>
-
-          {% if user.is_authenticated %}
-          <li class="flex items-center">
-            <span class="mx-3 text-white/40">|</span>
-            <a href="{% url 'mis_favoritos' %}" class="hover:text-[#86efac] px-2 transition">Favoritos</a>
-          </li>
-          {% endif %}
-        </ul>
-
-        <!-- Bell desktop -->
-        <div class="absolute right-2">
-          <div class="relative">
-            <button id="btnBell" type="button" class="relative">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-6 h-6 text-white hover:text-[#86efac] cursor-pointer transition">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
-              </svg>
-
-              {% if user.is_authenticated and notif_unread > 0 %}
-              <span
-                class="absolute -top-1 -right-1 bg-emerald-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center shadow">
-                {{ notif_unread }}
-              </span>
-              {% endif %}
-            </button>
-
-            {% if user.is_authenticated %}
-            <div id="notifDropdown"
-              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
-              <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
-              {% for n in notif_last %}
-              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-[#f0fdf4] transition">
-                <p class="text-sm text-gray-800">{{ n.message }}</p>
-                <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
-              </a>
-              {% empty %}
-              <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
-              {% endfor %}
-            </div>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-    </nav>
 
     <!-- MOBILE MENU (OFFCANVAS) -->
     <div id="mobileOverlay" class="hidden fixed inset-0 bg-black/40 z-50"></div>
@@ -750,45 +726,20 @@
         });
       });
     });
-    /*
-        // Simulador ahorro
-        document.addEventListener("DOMContentLoaded", () => {
-          const btn = document.getElementById("btnCalcular");
-          const p1 = document.getElementById("precioIntermediario");
-          const p2 = document.getElementById("precioCampoMarkt");
-          const out = document.getElementById("resultadoAhorro");
-    
-          if (!btn) return;
-    
-          btn.addEventListener("click", () => {
-            const a = Number(p1.value);
-            const b = Number(p2.value);
-            if (!a || !b || a <= 0 || b <= 0) {
-              out.textContent = "⚠️ Ingresa valores válidos.";
-              return;
-            }
-            const ahorro = Math.round(((a - b) / a) * 100);
-            out.innerHTML = `✅ Ahorro estimado: <strong>${ahorro}%</strong> por Kg comprando directo del campo.`;
-          });
-        });
-    
-         
-        });*/
 
     document.addEventListener("DOMContentLoaded", () => {
       const pLocal = document.getElementById("precioIntermediario");
       const pCampo = document.getElementById("precioCampoMarkt");
-      const pDesc = document.getElementById("porcentajeDescuento"); // puede existir o no
+      const pDesc = document.getElementById("porcentajeDescuento");
       const out = document.getElementById("resultadoAhorro");
 
       let updating = false;
 
       function getFactorCampo() {
-        // si no existe el input, usa 17%
         let d = pDesc ? Number(pDesc.value) : 17;
         if (!isFinite(d)) d = 17;
         if (d < 0) d = 0;
-        if (d >= 100) d = 99; // evita factor 0
+        if (d >= 100) d = 99;
         return 1 - d / 100;
       }
 
@@ -815,14 +766,11 @@
           updateResultado(0, 0);
           return;
         }
-
         const factor = getFactorCampo();
         const campo = local * factor;
-
         updating = true;
         pCampo.value = formatMoney(campo);
         updating = false;
-
         updateResultado(local, campo);
       }
 
@@ -835,31 +783,20 @@
           updateResultado(0, 0);
           return;
         }
-
         const factor = getFactorCampo();
         const local = campo / factor;
-
         updating = true;
         pLocal.value = formatMoney(local);
         updating = false;
-
         updateResultado(local, campo);
       }
 
-      pLocal.addEventListener("input", () => {
-        if (updating) return;
-        fromLocal();
-      });
-
-      pCampo.addEventListener("input", () => {
-        if (updating) return;
-        fromCampo();
-      });
+      pLocal.addEventListener("input", () => { if (updating) return; fromLocal(); });
+      pCampo.addEventListener("input", () => { if (updating) return; fromCampo(); });
 
       if (pDesc) {
         pDesc.addEventListener("input", () => {
           if (updating) return;
-          // recalcula usando el campo que tenga valor
           if (Number(pLocal.value) > 0) fromLocal();
           else if (Number(pCampo.value) > 0) fromCampo();
           else updateResultado(0, 0);

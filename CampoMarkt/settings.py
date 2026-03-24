@@ -27,9 +27,9 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = 'django-insecure-8l^d=)_fj7mv0r^nnkkc4$c9qti(&%0(v!9lj8ojm3b!s8=@^r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -262,7 +262,7 @@ DEFAULT_FROM_EMAIL = "CampoMarkt <burgosanzolaluis@gmail.com>"
 
 
 # ✅ URLs que usará allauth para armar links correctos
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 
 # ==========================
 # TWILIO (si lo usas)

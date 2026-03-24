@@ -17,32 +17,47 @@
 
 <body class="min-h-screen text-gray-800">
 
-  <!-- ================= HEADER (RESPONSIVE + HAMBURGUESA) ================= -->
-  <header class="sticky top-0 z-50 shadow-sm">
+  <!-- ================= HEADER RESPONSIVE (HAMBURGUESA) ================= -->
+  <header class="sticky top-0 z-50">
 
-    <!-- Top bar -->
+    <!-- BARRA ÚNICA -->
     <div class="bg-[#166534] shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 md:px-14 py-4 flex items-center justify-between gap-4">
+      <div class="max-w-7xl mx-auto px-4 md:px-10 py-3 flex items-center justify-between gap-4">
 
         <!-- Logo -->
         <a href="{% url 'main_page' %}" class="flex items-center gap-3 shrink-0">
           <img src="{% static 'img/logo1.png' %}" alt="Logo CampoMarkt"
-            class="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover ring-4 ring-white/30" />
-          <div class="leading-tight">
-            <span class="text-white font-extrabold text-xl sm:text-2xl md:text-3xl tracking-wide">CAMPOMARKT</span>
-            <p class="text-white/85 text-xs md:text-sm -mt-1">Directo del productor</p>
-          </div>
+            class="w-10 h-10 rounded-full object-cover ring-2 ring-white/30" />
+          <span class="text-white font-extrabold text-lg sm:text-xl tracking-wide hidden sm:block">
+            CAMPOMARKT
+          </span>
         </a>
 
-        <!-- Desktop: Search + User -->
-        <div class="hidden md:flex items-center gap-3">
+        <!-- Desktop: nav central -->
+        <nav class="hidden md:flex items-center text-sm font-semibold uppercase tracking-wide">
+          <a href="{% url 'main_page' %}" class="text-white/85 hover:text-[#86efac] px-3 transition">Inicio</a>
+          <span class="text-white/30">|</span>
+          <a href="{% url 'listar_productos' %}" class="text-white/85 hover:text-[#86efac] px-3 transition">Productos</a>
+          <span class="text-white/30">|</span>
+          <a href="{% url 'listar_ofertas' %}" class="text-white/85 hover:text-[#86efac] px-3 transition">Ofertas</a>
+          <span class="text-white/30">|</span>
+          <a href="{% url 'nosotros' %}" class="text-white/85 hover:text-[#86efac] px-3 transition">Nosotros</a>
+          {% if user.is_authenticated %}
+          <span class="text-white/30">|</span>
+          <a href="{% url 'mis_favoritos' %}" class="text-white/85 hover:text-[#86efac] px-3 transition">Favoritos</a>
+          {% endif %}
+        </nav>
 
+        <!-- Desktop: buscador + sesión + campana -->
+        <div class="hidden md:flex items-center gap-3 shrink-0">
+
+          <!-- Buscador -->
           <form action="{% url 'buscar_global' %}" method="get"
             class="flex items-center bg-white/15 backdrop-blur rounded-full px-4 py-2 border border-white/20 shadow-sm">
             <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
-              class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-64" />
+              class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-40" />
             <button type="submit" aria-label="Buscar">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90 hover:text-white transition"
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white/90 hover:text-white transition"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -51,40 +66,65 @@
           </form>
 
           {% if user.is_authenticated %}
+          <!-- Usuario autenticado -->
           <a href="{% url 'mi_perfil' %}"
-            class="flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition shadow-sm border border-white/20">
+            class="flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition border border-white/20">
             <span class="text-sm font-semibold text-white">
               {{ user.first_name|default:user.username|default:user.email }}
             </span>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="w-6 h-6 text-white/90">
+              stroke="currentColor" class="w-5 h-5 text-white/90">
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
             </svg>
           </a>
-          {% else %}
-          <div class="flex items-center gap-2">
-            <a href="{% url 'login_page' %}"
-              class="flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition shadow-sm border border-white/20">
-              <span class="text-sm font-semibold text-white">Iniciar sesión</span>
+
+          <!-- Campanita: solo si está autenticado -->
+          <div class="relative">
+            <button id="btnBell" type="button" class="relative">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-6 h-6 text-white/90">
+                stroke="currentColor" class="w-6 h-6 text-white hover:text-[#86efac] cursor-pointer transition">
                 <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+                  d="M14.25 18.75a1.5 1.5 0 01-3 0m6 0h-9a2.25 2.25 0 01-2.25-2.25V10.5a6.75 6.75 0 1113.5 0v6a2.25 2.25 0 01-2.25 2.25z" />
               </svg>
-            </a>
-            <a href="{% url 'register_page' %}"
-              class="bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow">
-              Registrarse
-            </a>
+              {% if notif_unread > 0 %}
+              <span
+                class="absolute -top-1 -right-1 bg-emerald-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center shadow">
+                {{ notif_unread }}
+              </span>
+              {% endif %}
+            </button>
+
+            <div id="notifDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
+              <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
+              {% for n in notif_last %}
+              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-[#f0fdf4] transition">
+                <p class="text-sm text-gray-800">{{ n.message }}</p>
+                <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+              </a>
+              {% empty %}
+              <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+              {% endfor %}
+            </div>
           </div>
+
+          {% else %}
+          <!-- No autenticado: botones login/registro -->
+          <a href="{% url 'login_page' %}"
+            class="flex items-center gap-2 bg-white/15 backdrop-blur rounded-full px-4 py-2 hover:bg-white/25 transition border border-white/20">
+            <span class="text-sm font-semibold text-white">Iniciar sesión</span>
+          </a>
+          <a href="{% url 'register_page' %}"
+            class="bg-[#22c55e] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#16a34a] transition shadow">
+            Registrarse
+          </a>
           {% endif %}
         </div>
 
         <!-- Mobile buttons -->
         <div class="md:hidden flex items-center gap-2">
-          <button id="btnMobileSearch"
-            class="p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/15 transition"
+          <button id="btnMobileSearch" class="p-2 rounded-xl bg-white/15 hover:bg-white/25 transition"
             aria-label="Abrir búsqueda">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
@@ -93,28 +133,26 @@
             </svg>
           </button>
 
-          <button id="btnHamburger"
-            class="p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/15 transition"
+          <button id="btnHamburger" class="p-2 rounded-xl bg-white/15 hover:bg-white/25 transition"
             aria-label="Abrir menú">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </div>
 
       </div>
 
-      <!-- Mobile search bar -->
+      <!-- Mobile search -->
       <div id="mobileSearchBar" class="hidden md:hidden px-4 pb-4">
         <form action="{% url 'buscar_global' %}" method="get"
           class="flex items-center bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20 shadow-sm">
           <input type="text" name="q" value="{{ request.GET.q }}" placeholder="¡Busca aquí!"
             class="bg-transparent outline-none text-sm placeholder-white/70 text-white w-full" />
           <button type="submit" aria-label="Buscar">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90 hover:text-white transition"
-              fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white/90" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -123,39 +161,8 @@
       </div>
     </div>
 
-    <!-- Desktop nav -->
-    <nav class="hidden md:block bg-[#14532d] text-white shadow">
-      <div class="relative max-w-7xl mx-auto flex justify-center items-center px-6 py-4">
-        <ul class="flex items-center text-sm font-semibold uppercase tracking-wide">
-          <li><a href="{% url 'main_page' %}" class="hover:text-[#86efac] px-2 transition">Inicio</a></li>
-
-          <li class="flex items-center">
-            <span class="mx-3 text-white/40">|</span>
-            <a href="{% url 'listar_productos' %}" class="hover:text-[#86efac] px-2 transition">Productos</a>
-          </li>
-
-          <li class="flex items-center">
-            <span class="mx-3 text-white/40">|</span>
-            <a href="{% url 'listar_ofertas' %}" class="hover:text-[#86efac] px-2 transition">Ofertas</a>
-          </li>
-
-          <li class="flex items-center">
-            <span class="mx-3 text-white/40">|</span>
-            <a href="{% url 'nosotros' %}" class="hover:text-[#86efac] px-2 transition">Nosotros</a>
-          </li>
-
-          {% if user.is_authenticated %}
-          <li class="flex items-center">
-            <span class="mx-3 text-white/40">|</span>
-            <a href="{% url 'mis_favoritos' %}" class="hover:text-[#86efac] px-2 transition">Favoritos</a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
-    </nav>
-
-    <!-- Mobile menu -->
-    <div id="mobileMenuOverlay" class="hidden fixed inset-0 bg-black/40 z-50"></div>
+    <!-- MOBILE MENU (OFFCANVAS) -->
+    <div id="mobileOverlay" class="hidden fixed inset-0 bg-black/40 z-50"></div>
 
     <aside id="mobileMenu"
       class="fixed top-0 right-0 h-full w-[86%] max-w-sm bg-white z-[60] shadow-2xl translate-x-full transition-transform duration-300">
@@ -163,36 +170,37 @@
         <div class="flex items-center gap-3">
           <img src="{% static 'img/logo1.png' %}" class="w-10 h-10 rounded-full object-cover" alt="CampoMarkt">
           <div>
-            <p class="font-extrabold text-[#166534] leading-tight">CAMPOMARKT</p>
-            <p class="text-xs text-gray-500">Tu menú</p>
+            <p class="font-bold text-gray-900 leading-tight">CAMPOMARKT</p>
+            <p class="text-xs text-gray-500">Menú</p>
           </div>
         </div>
         <button id="btnCloseMenu" class="p-2 rounded-xl hover:bg-gray-100" aria-label="Cerrar menú">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
 
       <div class="p-5 space-y-4">
+
         {% if user.is_authenticated %}
-        <a href="{% url 'mi_perfil' %}" class="block bg-[#f0fdf4] border border-green-200 rounded-2xl p-4">
-          <p class="text-xs text-gray-600">Conectado como</p>
-          <p class="font-extrabold text-[#166534] mt-1">
+        <a href="{% url 'mi_perfil' %}"
+          class="block bg-emerald-50 border rounded-2xl p-4 hover:bg-emerald-100 transition">
+          <p class="text-xs text-gray-500">Conectado como</p>
+          <p class="font-bold text-gray-900 mt-1">
             {{ user.first_name|default:user.username|default:user.email }}
           </p>
         </a>
         {% else %}
         <div class="bg-white border rounded-2xl p-4">
-          <p class="text-sm text-gray-600 font-semibold">Accede a tu cuenta</p>
+          <p class="text-sm text-gray-700 font-semibold">Accede a tu cuenta</p>
           <div class="mt-3 flex gap-2">
             <a href="{% url 'login_page' %}"
-              class="flex-1 text-center px-4 py-2 rounded-2xl bg-[#166534] text-white font-semibold hover:bg-[#14532d] transition">
+              class="flex-1 text-center px-4 py-2 rounded-2xl bg-[#166534] text-white font-semibold hover:brightness-95 transition">
               Iniciar
             </a>
             <a href="{% url 'register_page' %}"
-              class="flex-1 text-center px-4 py-2 rounded-2xl border border-green-200 text-[#166534] font-semibold hover:bg-[#f0fdf4] transition">
+              class="flex-1 text-center px-4 py-2 rounded-2xl border font-semibold hover:bg-gray-50 transition">
               Registro
             </a>
           </div>
@@ -216,48 +224,85 @@
             class="flex items-center justify-between px-4 py-3 rounded-2xl border hover:bg-gray-50 transition">
             <span class="font-semibold">Nosotros</span><span>👥</span>
           </a>
+
           {% if user.is_authenticated %}
           <a href="{% url 'mis_favoritos' %}"
             class="flex items-center justify-between px-4 py-3 rounded-2xl border hover:bg-gray-50 transition">
             <span class="font-semibold">Favoritos</span><span>❤️</span>
+          </a>
+
+          <a href="{% url 'logout_page' %}"
+            class="flex items-center justify-between px-4 py-3 rounded-2xl border bg-red-50 hover:bg-red-100 transition">
+            <span class="font-bold text-red-700">Cerrar sesión</span><span>🚪</span>
           </a>
           {% endif %}
         </nav>
       </div>
     </aside>
 
+    <!-- JS HEADER -->
     <script>
-      function openMobileMenu() {
-        const overlay = document.getElementById("mobileMenuOverlay");
-        const menu = document.getElementById("mobileMenu");
-        overlay.classList.remove("hidden");
-        menu.classList.remove("translate-x-full");
-        document.body.style.overflow = "hidden";
-      }
-      function closeMobileMenu() {
-        const overlay = document.getElementById("mobileMenuOverlay");
-        const menu = document.getElementById("mobileMenu");
-        overlay.classList.add("hidden");
-        menu.classList.add("translate-x-full");
-        document.body.style.overflow = "";
-      }
-
       document.addEventListener("DOMContentLoaded", () => {
-        const btnHamburger = document.getElementById("btnHamburger");
-        const btnClose = document.getElementById("btnCloseMenu");
-        const overlay = document.getElementById("mobileMenuOverlay");
+        // Mobile search
         const btnMobileSearch = document.getElementById("btnMobileSearch");
         const mobileSearchBar = document.getElementById("mobileSearchBar");
-
-        btnHamburger?.addEventListener("click", openMobileMenu);
-        btnClose?.addEventListener("click", closeMobileMenu);
-        overlay?.addEventListener("click", closeMobileMenu);
-
         btnMobileSearch?.addEventListener("click", () => mobileSearchBar?.classList.toggle("hidden"));
 
-        document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMobileMenu(); });
+        // Desktop bell dropdown
+        const btnBell = document.getElementById("btnBell");
+        const dropdown = document.getElementById("notifDropdown");
+        if (btnBell && dropdown) {
+          btnBell.addEventListener("click", (e) => { e.stopPropagation(); dropdown.classList.toggle("hidden"); });
+          document.addEventListener("click", () => dropdown.classList.add("hidden"));
+          dropdown.addEventListener("click", (e) => e.stopPropagation());
+        }
+
+        // Mobile menu
+        const btnHamburger = document.getElementById("btnHamburger");
+        const btnClose = document.getElementById("btnCloseMenu");
+        const overlay = document.getElementById("mobileOverlay");
+        const menu = document.getElementById("mobileMenu");
+
+        function openMenu() {
+          overlay.classList.remove("hidden");
+          menu.classList.remove("translate-x-full");
+          document.body.style.overflow = "hidden";
+        }
+        function closeMenu() {
+          overlay.classList.add("hidden");
+          menu.classList.add("translate-x-full");
+          document.body.style.overflow = "";
+        }
+
+        btnHamburger?.addEventListener("click", openMenu);
+        btnClose?.addEventListener("click", closeMenu);
+        overlay?.addEventListener("click", closeMenu);
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") closeMenu();
+        });
       });
     </script>
+
+    <!-- 🔥 BIENVENIDA INTERACTIVA -->
+    {% if user.is_authenticated %}
+    <div id="welcomeBox"
+      class="hidden max-w-5xl mx-auto mt-6 bg-[#dcfce7] border border-green-200 text-green-900 px-6 py-4 rounded-xl shadow-lg text-lg font-semibold transition-all duration-700">
+    </div>
+    {% endif %}
+
+    {% if messages %}
+    <div id="alert-container" class="fixed top-6 right-6 z-50 space-y-3">
+      {% for message in messages %}
+      <div class="alert-msg px-6 py-4 rounded-xl shadow-xl text-white font-semibold
+      {% if message.tags == 'success' %} bg-emerald-600
+      {% elif message.tags == 'error' %} bg-red-500
+      {% else %} bg-gray-700 {% endif %}">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
   </header>
 
   <!-- ================= MAIN ================= -->
