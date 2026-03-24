@@ -276,7 +276,7 @@ DEFAULT_FROM_EMAIL = "CampoMarkt <burgosanzolaluis@gmail.com>"
 
 
 # ✅ URLs que usará allauth para armar links correctos
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 
 # ==========================
 # TWILIO (si lo usas)
