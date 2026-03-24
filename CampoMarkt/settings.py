@@ -104,12 +104,25 @@ WSGI_APPLICATION = 'CampoMarkt.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if os.environ.get("MYSQLDATABASE") or os.environ.get("DB_NAME"):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.environ.get("MYSQLDATABASE") or os.environ.get("DB_NAME", "agroapp"),
+            "USER": os.environ.get("MYSQLUSER") or os.environ.get("DB_USER", "agroapp"),
+            "PASSWORD": os.environ.get("MYSQLPASSWORD") or os.environ.get("DB_PASSWORD", "14647"),
+            "HOST": os.environ.get("MYSQLHOST") or os.environ.get("DB_HOST", "localhost"),
+            "PORT": os.environ.get("MYSQLPORT") or os.environ.get("DB_PORT", "3306"),
+            "OPTIONS": {"charset": "utf8mb4"},
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 
@@ -240,6 +253,13 @@ SOCIALACCOUNT_AUTO_SIGNUP = False
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
+        "APPS": [
+            {
+                "client_id": os.environ.get("GOOGLE_CLIENT_ID", ""),
+                "secret": os.environ.get("GOOGLE_CLIENT_SECRET", ""),
+                "key": "",
+            }
+        ],
         "SCOPE": ["profile", "email"],
         "AUTH_PARAMS": {"access_type": "online"},
     }
