@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-8l^d=)_fj7mv0r^nnkkc4$c9qti(&%0(v!9lj8ojm3b!s8=@^r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'awake-spirit-production-ebac.up.railway.app']
 
 
 # Application definition
@@ -106,15 +106,8 @@ WSGI_APPLICATION = 'CampoMarkt.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": os.environ.get("MYSQLDATABASE", "agroapp"),
-        "USER": os.environ.get("MYSQLUSER", "agroapp"),
-        "PASSWORD": os.environ.get("MYSQLPASSWORD", "14647"),
-        "HOST": os.environ.get("MYSQLHOST", "localhost"),
-        "PORT": os.environ.get("MYSQLPORT", "3306"),
-        "OPTIONS": {
-            "charset": "utf8mb4",
-        },
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -191,6 +184,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://localhost:5173",
     "http://localhost:3000",
+    "https://awake-spirit-production-ebac.up.railway.app",
 ]
 # ==========================
 # DJANGO ALLAUTH + SITES
