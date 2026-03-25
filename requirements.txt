@@ -79,3 +79,4 @@ Jinja2==3.1.6
 importlib_resources==6.5.2
 zipp==3.23.0
 setuptools==80.9.0
+whitenoise
