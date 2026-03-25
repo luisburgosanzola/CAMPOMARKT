@@ -254,7 +254,7 @@ SOCIALACCOUNT_AUTO_SIGNUP = False
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
-        "APPS": [
+        "APP": [
             {
                 "client_id": os.environ.get("GOOGLE_CLIENT_ID", ""),
                 "secret": os.environ.get("GOOGLE_CLIENT_SECRET", ""),
