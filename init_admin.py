@@ -1,4 +1,14 @@
 from django.contrib.auth import get_user_model
+from django.contrib.sites.models import Site
+
+# Garantizar que el Site id=1 exista
+Site.objects.update_or_create(
+    id=1,
+    defaults={
+        'domain': 'awake-spirit-production-ebac.up.railway.app',
+        'name': 'CampoMarkt',
+    }
+)
 
 User = get_user_model()
 
