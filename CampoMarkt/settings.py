@@ -246,6 +246,7 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "/main/"
 # ---------
 # Allauth - socialaccount (Google)
 # ---------
+ACCOUNT_ADAPTER = "app.Usuarios.adapters.CustomAccountAdapter"
 SOCIALACCOUNT_ADAPTER = "app.Usuarios.adapters.CustomSocialAccountAdapter"
 
 

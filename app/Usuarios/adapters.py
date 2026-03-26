@@ -1,7 +1,16 @@
+from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
+
+class CustomAccountAdapter(DefaultAccountAdapter):
+    def add_message(self, request, level, message_template, message_context=None, extra_tags=""):
+        # Suprimir el mensaje "Successfully signed in as..."
+        if message_template == "account/messages/logged_in.txt":
+            return
+        super().add_message(request, level, message_template, message_context, extra_tags)
 
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
@@ -36,5 +45,4 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
                 sociallogin.connect(request, user)
 
     def is_open_for_signup(self, request, sociallogin):
-        # Siempre permitir registro/login via Google
         return True
