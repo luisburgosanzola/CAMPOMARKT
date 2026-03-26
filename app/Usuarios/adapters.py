@@ -1,48 +1,40 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
-from allauth.exceptions import ImmediateHttpResponse
-from django.contrib import messages
-from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
-    def _get_process(self, request):
-        return (
-            (request.GET.get("process") or "")
-            or (request.POST.get("process") or "")
-            or (request.session.get("socialaccount_process") or "")
-            or (request.session.get("process") or "")
-        ).lower()
-
     def pre_social_login(self, request, sociallogin):
-        # Si ya existe el socialaccount (Google ya linkeado) => login normal
-        if sociallogin.is_existing:
-            return
+        # Guardar avatar de Google si está disponible
+        extra = sociallogin.account.extra_data
+        google_picture = extra.get("picture") or extra.get("avatar_url")
 
-        process = self._get_process(request)
+        # Si ya está vinculado => actualizar avatar si no tiene foto propia
+        if sociallogin.is_existing:
+            user = sociallogin.user
+            if google_picture and not user.google_avatar:
+                user.google_avatar = google_picture
+                user.save(update_fields=["google_avatar"])
+            return
 
         # Normalizar email
         email = (sociallogin.user.email or "").strip().lower()
         sociallogin.user.email = email
 
-        # Si ya existe usuario local con ese email -> link + login
+        # Guardar avatar en el objeto user antes de que allauth lo guarde
+        if google_picture:
+            sociallogin.user.google_avatar = google_picture
+
+        # Si ya existe un usuario local con ese email -> vincular y entrar
         if email:
             user = User.objects.filter(email__iexact=email).first()
             if user:
+                if google_picture and not user.google_avatar:
+                    user.google_avatar = google_picture
+                    user.save(update_fields=["google_avatar"])
                 sociallogin.connect(request, user)
-                return
-
-        # Si viene desde LOGIN y no existe usuario -> mandarlo a registrarse
-        if process == "login":
-            messages.error(request, "Ese correo no está registrado. Regístrate primero.")
-            raise ImmediateHttpResponse(redirect("register_page"))
-
-        # Si viene desde SIGNUP -> dejamos que allauth cree la cuenta
-        return
 
     def is_open_for_signup(self, request, sociallogin):
-        # Solo cerramos signup cuando vienen desde LOGIN
-        process = self._get_process(request)
-        return process != "login"
+        # Siempre permitir registro/login via Google
+        return True

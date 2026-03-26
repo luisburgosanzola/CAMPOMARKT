@@ -27,6 +27,15 @@ class User(AbstractUser):
         blank=True,
         null=True
     )
+    google_avatar = models.URLField(blank=True, null=True)
+
+    def get_avatar_url(self):
+        """Retorna la foto de perfil subida, o el avatar de Google, o el default."""
+        if self.profile_image and self.profile_image.name != "perfiles/default.png":
+            return self.profile_image.url
+        if self.google_avatar:
+            return self.google_avatar
+        return None
 
     def __str__(self):
         return f"{self.username} ({self.rol or 'sin rol'})"

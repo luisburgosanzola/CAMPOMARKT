@@ -327,11 +327,7 @@
 
           <!-- FOTO GRANDE -->
           <div class="flex items-center gap-4">
-            {% if user.profile_image %}
-            <img src="{{ user.profile_image.url }}" class="w-24 h-24 rounded-full object-cover ring-4 ring-green-200" alt="Foto de perfil">
-            {% else %}
-            <img src="{% static 'img/user_default.png' %}" class="w-24 h-24 rounded-full object-cover ring-4 ring-green-200" alt="Foto de perfil">
-            {% endif %}
+            <img src="{% if user.get_avatar_url %}{{ user.get_avatar_url }}{% else %}{% static 'img/user_default.png' %}{% endif %}" class="w-24 h-24 rounded-full object-cover ring-4 ring-green-200" alt="Foto de perfil">
 
             <div>
               <h1 class="text-2xl md:text-3xl font-extrabold text-[#166534]">
@@ -368,7 +364,7 @@
         <div class="flex flex-col md:flex-row items-center md:items-end gap-5">
           <div class="flex flex-col items-center">
             <img id="profilePreview"
-              src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'img/user_default.png' %}{% endif %}"
+              src="{% if user.get_avatar_url %}{{ user.get_avatar_url }}{% else %}{% static 'img/user_default.png' %}{% endif %}"
               alt="Foto de perfil"
               class="w-28 h-28 rounded-full object-cover ring-4 ring-green-200" />
             <p class="mt-2 text-xs text-gray-500">Foto de perfil</p>

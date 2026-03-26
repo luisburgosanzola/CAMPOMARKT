@@ -249,18 +249,16 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "/main/"
 SOCIALACCOUNT_ADAPTER = "app.Usuarios.adapters.CustomSocialAccountAdapter"
 
 
-SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_AUTO_SIGNUP = True
 
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
-        "APP": [
-            {
-                "client_id": os.environ.get("GOOGLE_CLIENT_ID", ""),
-                "secret": os.environ.get("GOOGLE_CLIENT_SECRET", ""),
-                "key": "",
-            }
-        ],
+        "APP": {
+            "client_id": os.environ.get("GOOGLE_CLIENT_ID", ""),
+            "secret": os.environ.get("GOOGLE_CLIENT_SECRET", ""),
+            "key": "",
+        },
         "SCOPE": ["profile", "email"],
         "AUTH_PARAMS": {"access_type": "online"},
     }
@@ -277,7 +275,7 @@ DEFAULT_FROM_EMAIL = "CampoMarkt <burgosanzolaluis@gmail.com>"
 
 
 # ✅ URLs que usará allauth para armar links correctos
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http" if DEBUG else "https"
 
 # ==========================
 # TWILIO (si lo usas)
