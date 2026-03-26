@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-8l^d=)_fj7mv0r^nnkkc4$c9qti(&%0(v!9lj8ojm3b!s8=@^r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'awake-spirit-production-ebac.up.railway.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'awake-spirit-production-ebac.up.railway.app', 'campomarkt.site', 'www.campomarkt.site']
 
 
 # Application definition
@@ -199,6 +199,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:3000",
     "https://awake-spirit-production-ebac.up.railway.app",
+    "https://campomarkt.site",
+    "https://www.campomarkt.site",
 ]
 # ==========================
 # DJANGO ALLAUTH + SITES

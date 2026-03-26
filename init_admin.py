@@ -6,7 +6,7 @@ try:
     Site.objects.update_or_create(
         id=1,
         defaults={
-            'domain': 'awake-spirit-production-ebac.up.railway.app',
+            'domain': 'campomarkt.site',
             'name': 'CampoMarkt',
         }
     )
