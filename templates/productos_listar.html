@@ -96,20 +96,18 @@
               {% endif %}
             </button>
 
-<div id="notifMobile"
-  class="hidden fixed top-16 right-4 w-72 bg-white rounded-xl shadow-lg z-50 border">
-
-  <div class="p-3 font-bold border-b">Notificaciones</div>
-
-  {% for n in notif_last %}
-  <a href="{% url 'abrir_notificacion' n.id %}" class="block p-3 hover:bg-gray-100">
-    <p class="text-sm">{{ n.message }}</p>
-  </a>
-  {% empty %}
-  <p class="p-3 text-gray-500">Sin notificaciones</p>
-  {% endfor %}
-
-</div>
+            <div id="notifDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
+              <div class="px-4 py-3 font-bold text-gray-800 border-b">Notificaciones</div>
+              {% for n in notif_last %}
+              <a href="{% url 'abrir_notificacion' n.id %}" class="block px-4 py-3 hover:bg-[#f0fdf4] transition">
+                <p class="text-sm text-gray-800">{{ n.message }}</p>
+                <p class="text-xs text-gray-500">{{ n.created_at|date:"d/m/Y H:i" }}</p>
+              </a>
+              {% empty %}
+              <div class="px-4 py-3 text-sm text-gray-500">Sin notificaciones</div>
+              {% endfor %}
+            </div>
           </div>
 
           {% else %}
@@ -126,27 +124,7 @@
         </div>
 
         <!-- Mobile buttons -->
-<div class="md:hidden flex items-center gap-2">
 
-  {% if user.is_authenticated %}
-  <!-- 🔔 CAMPANA MOBILE -->
-  <button id="btnBellMobile" class="relative p-2 rounded-xl bg-white/15 hover:bg-white/25 transition text-white">
-    🔔
-    {% if notif_unread > 0 %}
-    <span class="absolute -top-1 -right-1 bg-green-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">
-      {{ notif_unread }}
-    </span>
-    {% endif %}
-  </button>
-  {% endif %}
-
-  <!-- 🔍 -->
-  <button id="btnMobileSearch" class="p-2 rounded-xl bg-white/15 hover:bg-white/25 transition">🔍</button>
-
-  <!-- ☰ -->
-  <button id="btnHamburger" class="p-2 rounded-xl bg-white/15 hover:bg-white/25 transition">☰</button>
-
-</div>
 
       </div>
 
@@ -247,70 +225,49 @@
     </aside>
 
     <!-- JS HEADER -->
-   <script>
-document.addEventListener("DOMContentLoaded", () => {
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Mobile search
+        const btnMobileSearch = document.getElementById("btnMobileSearch");
+        const mobileSearchBar = document.getElementById("mobileSearchBar");
+        btnMobileSearch?.addEventListener("click", () => mobileSearchBar?.classList.toggle("hidden"));
 
-  // Mobile search
-  const btnMobileSearch = document.getElementById("btnMobileSearch");
-  const mobileSearchBar = document.getElementById("mobileSearchBar");
-  btnMobileSearch?.addEventListener("click", () => mobileSearchBar?.classList.toggle("hidden"));
+        // Desktop bell dropdown
+        const btnBell = document.getElementById("btnBell");
+        const dropdown = document.getElementById("notifDropdown");
+        if (btnBell && dropdown) {
+          btnBell.addEventListener("click", (e) => { e.stopPropagation(); dropdown.classList.toggle("hidden"); });
+          document.addEventListener("click", () => dropdown.classList.add("hidden"));
+          dropdown.addEventListener("click", (e) => e.stopPropagation());
+        }
 
-  // Desktop bell
-  const btnBell = document.getElementById("btnBell");
-  const dropdown = document.getElementById("notifDropdown");
+        // Mobile menu
+        const btnHamburger = document.getElementById("btnHamburger");
+        const btnClose = document.getElementById("btnCloseMenu");
+        const overlay = document.getElementById("mobileOverlay");
+        const menu = document.getElementById("mobileMenu");
 
-  if (btnBell && dropdown) {
-    btnBell.addEventListener("click", (e) => {
-      e.stopPropagation();
-      dropdown.classList.toggle("hidden");
-    });
+        function openMenu() {
+          overlay.classList.remove("hidden");
+          menu.classList.remove("translate-x-full");
+          document.body.style.overflow = "hidden";
+        }
+        function closeMenu() {
+          overlay.classList.add("hidden");
+          menu.classList.add("translate-x-full");
+          document.body.style.overflow = "";
+        }
 
-    document.addEventListener("click", () => dropdown.classList.add("hidden"));
-    dropdown.addEventListener("click", (e) => e.stopPropagation());
-  }
+        btnHamburger?.addEventListener("click", openMenu);
+        btnClose?.addEventListener("click", closeMenu);
+        overlay?.addEventListener("click", closeMenu);
 
-  // 🔔 MOBILE BELL (ESTO TE FALTABA)
-  const btnBellMobile = document.getElementById("btnBellMobile");
-  const notifMobile = document.getElementById("notifMobile");
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") closeMenu();
+        });
+      });
+    </script>
 
-  if (btnBellMobile && notifMobile) {
-    btnBellMobile.addEventListener("click", (e) => {
-      e.stopPropagation();
-      notifMobile.classList.toggle("hidden");
-    });
-
-    document.addEventListener("click", () => notifMobile.classList.add("hidden"));
-    notifMobile.addEventListener("click", (e) => e.stopPropagation());
-  }
-
-  // Mobile menu
-  const btnHamburger = document.getElementById("btnHamburger");
-  const btnClose = document.getElementById("btnCloseMenu");
-  const overlay = document.getElementById("mobileOverlay");
-  const menu = document.getElementById("mobileMenu");
-
-  function openMenu() {
-    overlay.classList.remove("hidden");
-    menu.classList.remove("translate-x-full");
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeMenu() {
-    overlay.classList.add("hidden");
-    menu.classList.add("translate-x-full");
-    document.body.style.overflow = "";
-  }
-
-  btnHamburger?.addEventListener("click", openMenu);
-  btnClose?.addEventListener("click", closeMenu);
-  overlay?.addEventListener("click", closeMenu);
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeMenu();
-  });
-
-});
-</script>
     <!-- 🔥 BIENVENIDA INTERACTIVA -->
     {% if user.is_authenticated %}
     <div id="welcomeBox"
