@@ -272,7 +272,14 @@
 
         // Desktop bell dropdown
         const btnBell = document.getElementById("btnBell");
+        
         const dropdown = document.getElementById("notifDropdown");
+        const btnBellMobile = document.getElementById("btnBellMobile");
+
+btnBellMobile?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  dropdown.classList.toggle("hidden");
+});
         if (btnBell && dropdown) {
           btnBell.addEventListener("click", (e) => { e.stopPropagation(); dropdown.classList.toggle("hidden"); });
           document.addEventListener("click", () => dropdown.classList.add("hidden"));
