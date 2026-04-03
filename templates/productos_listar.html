@@ -19,7 +19,7 @@
 <body class="min-h-screen flex flex-col antialiased text-gray-800 bg-[#f6fbf7] font-sans">
 
   <!-- ================= HEADER RESPONSIVE (HAMBURGUESA) ================= -->
-   <header class="sticky top-0 z-50">
+  <header class="sticky top-0 z-50">
 
     <!-- BARRA ÚNICA -->
     <div class="bg-[#166534] shadow-lg">
@@ -125,6 +125,27 @@
 
         <!-- Mobile buttons -->
         <div class="md:hidden flex items-center gap-2">
+          {% if user.is_authenticated %}
+<div class="relative">
+  <button id="btnBellMobile" type="button">
+    <svg xmlns="http://www.w3.org/2000/svg"
+      class="w-6 h-6 text-white"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor">
+
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M15 17h5l-1.405-1.405M19 17v-6a7 7 0 10-14 0v6l-1.405 1.405M5 17h14"/>
+    </svg>
+
+    {% if notif_unread > 0 %}
+    <span class="absolute -top-1 -right-1 bg-emerald-500 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">
+      {{ notif_unread }}
+    </span>
+    {% endif %}
+  </button>
+</div>
+{% endif %}
           <button id="btnMobileSearch" class="p-2 rounded-xl bg-white/15 hover:bg-white/25 transition"
             aria-label="Abrir búsqueda">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
