@@ -19,7 +19,7 @@
 <body class="min-h-screen flex flex-col antialiased text-gray-800 bg-[#f6fbf7] font-sans">
 
   <!-- ================= HEADER RESPONSIVE (HAMBURGUESA) ================= -->
-  <header class="sticky top-0 z-50">
+   <header class="sticky top-0 z-50">
 
     <!-- BARRA ÚNICA -->
     <div class="bg-[#166534] shadow-lg">
@@ -124,7 +124,24 @@
         </div>
 
         <!-- Mobile buttons -->
+        <div class="md:hidden flex items-center gap-2">
+          <button id="btnMobileSearch" class="p-2 rounded-xl bg-white/15 hover:bg-white/25 transition"
+            aria-label="Abrir búsqueda">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
 
+          <button id="btnHamburger" class="p-2 rounded-xl bg-white/15 hover:bg-white/25 transition"
+            aria-label="Abrir menú">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
 
       </div>
 
