@@ -483,6 +483,14 @@ btnBellMobile?.addEventListener("click", (e) => {
         </div>
       </div>
     </section>
+        {% if user.is_authenticated and user.rol == "productor" %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 pb-4 flex justify-end">
+      <a href="{% url 'agregar_producto' %}"
+        class="inline-flex items-center gap-2 bg-[#166534] text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-[#14532d] transition shadow-lg">
+        ➕ Publicar producto
+      </a>
+    </div>
+    {% endif %}
 
     <!-- CATEGORÍAS -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-12" id="novedades">
